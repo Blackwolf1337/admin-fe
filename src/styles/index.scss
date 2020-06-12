@@ -22,8 +22,16 @@ label {
 html {
   height: 100%;
   box-sizing: border-box;
+  font-size: 62.5%;
 }
 
+h1 {
+  font-size: 3.2em;
+}
+
+h2 {
+  font-size: 2.4em;
+}
 #app {
   height: 100%;
 }
@@ -171,33 +179,4 @@ code {
   &.deleted {
     background: #d0d0d0;
   }
-}
-
-.link-type,
-.link-type:focus {
-  color: #337ab7;
-  cursor: pointer;
-
-  &:hover {
-    color: rgb(32, 160, 255);
-  }
-}
-
-.filter-container {
-  padding-bottom: 10px;
-
-  .filter-item {
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 10px;
-  }
-}
-
-//refine vue-multiselect plugin
-.multiselect {
-  line-height: 16px;
-}
-
-.multiselect--active {
-  z-index: 1000 !important;
 }
