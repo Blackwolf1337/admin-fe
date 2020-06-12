@@ -128,11 +128,6 @@ export default {
     cancel: 'Anullar',
     confirm: 'Confirmar'
   },
-  errorLog: {
-    tips: 'Mercés de clicar l’icòna del babau amont a man drecha',
-    description: 'Ara que lo sistèma de gestion es coma un spa, melhora l’experiéncia dels utilizaire mas aumenta tanben lo risc de problèmas sus la pagina, una pichona negligéncia pòt menar a un blocatge complèt de la pagina. Urosament Vue fornís de manièras per gerir las excepcions, trobar las errors o senhalar las excepcions.',
-    documentation: 'Presentacion del document'
-  },
   excel: {
     export: 'Exportar',
     selectedExport: 'Exportar los elements seleccionats',
