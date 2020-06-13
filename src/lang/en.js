@@ -71,9 +71,13 @@ export default {
   },
   errLog: {
     error401: 'Oops! 401 Error',
+    error404: 'Oops! 404 Error',
+    pageNotFound: 'Page not found',
+    correctUrl: 'Please make sure you URL is correct',
     unauth: 'Unauthorized',
     back: 'Back',
-    login: 'Login'
+    login: 'Login',
+    homePage: 'Home Page'
   },
   navbar: {
     logOut: 'Log Out',
