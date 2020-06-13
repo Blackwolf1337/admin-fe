@@ -49,7 +49,7 @@
         <div slot="header" class="clearfix">
           <span>{{ $t('invites.tokenCreated') }}</span>
         </div>
-        <el-form label-width="80px" class="new-token-card">
+        <el-form label-width="9rem" class="new-token-card">
           <el-form-item :label="$t('invites.inviteLink')">
             <el-link :href="inviteLink" :underline="false" target="_blank">
               {{ inviteLink }}
@@ -186,7 +186,7 @@ export default {
       'authHost'
     ]),
     getLabelWidth() {
-      return this.isDesktop ? '100px' : '80px'
+      return this.isDesktop ? '10rem' : '8.5rem'
     },
     inviteLink() {
       return `${baseName(this.authHost)}/registration/${this.newToken.token}`
@@ -258,42 +258,39 @@ export default {
 .invites-container {
   .actions-container {
     display: flex;
-    height: 36px;
+    height: 3.6rem;
     justify-content: space-between;
     align-items: center;
-    margin: 15px 15px 15px 15px;
+    margin: 1.5rem 1.5rem 1.5rem 1.5rem;
   }
   .create-invite-token {
     text-align: left;
-    width: 350px;
-    padding: 10px;
+    width: 35rem;
+    padding: 1rem;
   }
   .create-new-token-dialog {
-    width: 50%;
-    a {
-      margin-bottom: 3px;
-    }
+    width: 60%;
     .el-card__body {
-      padding: 10px 20px;
+      padding: 1rem 2rem;
     }
   }
   .el-dialog__body {
-    padding: 5px 20px 0 20px
+    padding: .5rem 2rem 0 2rem
   }
   h1 {
     margin: 0;
   }
   .icon {
-    margin-right: 5px;
+    margin-right: .5rem;
   }
   .invite-token-table {
     width: 100%;
-    margin: 0 15px;
+    margin: 0 1.5rem;
   }
   .invite-via-email {
     text-align: left;
-    width: 350px;
-    padding: 10px;
+    width: 35rem;
+    padding: 1rem;
   }
   .invite-via-email-dialog {
     width: 50%
@@ -302,13 +299,13 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 10px 15px;
+    margin: 1rem 1.5rem;
   }
   .info {
     color: #666666;
-    font-size: 13px;
-    line-height: 22px;
-    margin: 0 0 10px 0;
+    font-size: 1.3rem;
+    line-height: 2rem;
+    margin: 0 0 1rem 0;
   }
   .new-token-card {
     .el-form-item {
@@ -316,9 +313,9 @@ export default {
     }
   }
   .reboot-button {
-    padding: 10px;
+    padding: 1rem;
     margin: 0;
-    width: 145px;
+    width: 14.5rem;
   }
 }
 
@@ -326,10 +323,10 @@ export default {
   .invites-container {
     .actions-container {
       display: flex;
-      height: 82px;
+      height: 8.2rem;
       flex-direction: column;
       align-items: center;
-      margin: 15px 10px 7px 10px;
+      margin: 1.5rem 1rem 0.7rem 1rem;
     }
     .cell {
       padding: 0;
@@ -341,32 +338,32 @@ export default {
       width: 85%
     }
     .el-date-editor {
-      width: 150px;
+      width: 15rem;
     }
     .el-dialog__body {
-      padding: 5px 15px 0 15px
+      padding: .5rem 1.5rem 0 1.5rem
     }
     h1 {
       margin: 0;
     }
     .invite-token-table {
       width: 100%;
-      margin: 0 5px;
-      font-size: 12px;
+      margin: 0 .5rem;
+      font-size: 1.2rem;
       font-weight: 500;
     }
     .invite-via-email {
       width: 100%;
-      margin: 10px 0 0 0;
+      margin: 1rem 0 0 0;
     }
     .invite-via-email-dialog {
       width: 85%
     }
     .invites-header-container {
-      margin: 0 10px;
+      margin: 0 1rem;
     }
     .info {
-      margin: 0 0 10px 5px;
+      margin: 0 0 1rem .5rem;
     }
     th {
       .cell {
