@@ -404,6 +404,7 @@ export default {
   invites: {
     inviteTokens: 'Invite tokens',
     createInviteToken: 'Generate invite token',
+    createAnotherToken: 'Generate another invite token',
     pickDate: 'Pick a date',
     maxUse: 'Max use',
     expiresAt: 'Expires at',
@@ -426,7 +427,8 @@ export default {
     invalidEmailError: 'Please input valid e-mail',
     emailSent: 'Invite was sent',
     submitFormError: 'There are invalid values in the form. Please fix them before continuing.',
-    inviteViaEmailAlert: 'To send invite via email make sure to enable `invites_enabled` and disable `registrations_open`'
+    inviteViaEmailAlert: 'To send invite via email make sure to enable `invites_enabled` and disable `registrations_open`',
+    copyLink: 'Copy link'
   },
   emoji: {
     emojiPacks: 'Emoji packs',

@@ -3,7 +3,7 @@ import Clipboard from 'clipboard'
 
 function clipboardSuccess() {
   Vue.prototype.$message({
-    message: 'Copy successfully',
+    message: 'Link copied',
     type: 'success',
     duration: 1500
   })

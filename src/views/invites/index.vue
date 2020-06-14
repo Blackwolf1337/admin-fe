@@ -21,8 +21,31 @@
     <el-dialog
       :visible.sync="createTokenDialogVisible"
       :show-close="false"
-      :title="$t('invites.createInviteToken')"
+      :title="isTokenCreated() ? $t('invites.tokenCreated') : $t('invites.createInviteToken')"
+      :width="isTokenCreated() ? '60%' : '30%'"
       custom-class="create-new-token-dialog">
+      <el-card v-if="isTokenCreated()">
+        <el-form label-width="9rem" class="new-token-card">
+          <el-form-item :label="$t('invites.inviteLink')">
+            <div class="invite-link-container">
+              <el-link :href="inviteLink" :underline="false" target="_blank">
+                {{ inviteLink }}
+              </el-link>
+              <el-button type="text" size="small" @click="handleCopy($event)">{{ $t('invites.copyLink') }}</el-button>
+            </div>
+          </el-form-item>
+          <el-form-item :label="$t('invites.token')">
+            {{ newToken.token }}
+          </el-form-item>
+          <el-form-item :label="$t('invites.maxUse')">
+            {{ newToken.maxUse }}
+          </el-form-item>
+          <el-form-item :label="$t('invites.expiresAt')">
+            {{ newToken.expiresAt || '(not set)' }}
+          </el-form-item>
+        </el-form>
+      </el-card>
+      <h3 v-if="isTokenCreated()" class="create-another-token-header">{{ $t('invites.createAnotherToken') }}</h3>
       <el-form ref="newTokenForm" :model="newTokenForm" :label-width="getLabelWidth" status-icon>
         <el-form-item :label="$t('invites.maxUse')">
           <el-input-number
@@ -45,27 +68,6 @@
         <el-button class="invites-close-dialog" @click="closeDialogWindow">{{ $t('invites.cancel') }}</el-button>
         <el-button type="primary" @click="createToken">{{ $t('invites.create') }}</el-button>
       </span>
-      <el-card v-if="'token' in newToken">
-        <div slot="header" class="clearfix">
-          <span>{{ $t('invites.tokenCreated') }}</span>
-        </div>
-        <el-form label-width="9rem" class="new-token-card">
-          <el-form-item :label="$t('invites.inviteLink')">
-            <el-link :href="inviteLink" :underline="false" target="_blank">
-              {{ inviteLink }}
-            </el-link>
-          </el-form-item>
-          <el-form-item :label="$t('invites.token')">
-            {{ newToken.token }}
-          </el-form-item>
-          <el-form-item :label="$t('invites.maxUse')">
-            {{ newToken.maxUse }}
-          </el-form-item>
-          <el-form-item :label="$t('invites.expiresAt')">
-            {{ newToken.expiresAt || '(not set)' }}
-          </el-form-item>
-        </el-form>
-      </el-card>
     </el-dialog>
     <el-dialog
       :visible.sync="inviteUserDialogVisible"
@@ -156,6 +158,7 @@
 </template>
 
 <script>
+import clip from '@/utils/clipboard'
 import RebootButton from '@/components/RebootButton'
 import { mapGetters } from 'vuex'
 import { baseName } from '@/api/utils'
@@ -220,6 +223,9 @@ export default {
     createToken() {
       this.$store.dispatch('GenerateInviteToken', this.$data.newTokenForm)
     },
+    handleCopy(event) {
+      clip(this.inviteLink, event)
+    },
     async inviteUserViaEmail() {
       this.$refs['inviteUserForm'].validate(async(valid) => {
         if (valid) {
@@ -233,6 +239,9 @@ export default {
           return false
         }
       })
+    },
+    isTokenCreated() {
+      return 'token' in this.newToken
     },
     revokeInviteToken(token) {
       this.$store.dispatch('RevokeToken', token)
@@ -263,16 +272,21 @@ export default {
     align-items: center;
     margin: 1.5rem 1.5rem 1.5rem 1.5rem;
   }
+  .create-another-token-header {
+    font-size: 1.8rem;
+  }
   .create-invite-token {
     text-align: left;
     width: 35rem;
     padding: 1rem;
   }
   .create-new-token-dialog {
-    width: 60%;
     .el-card__body {
       padding: 1rem 2rem;
     }
+  }
+  .el-form-item__label {
+    font-weight: 500;
   }
   .el-dialog__body {
     padding: .5rem 2rem 0 2rem
@@ -282,6 +296,14 @@ export default {
   }
   .icon {
     margin-right: .5rem;
+  }
+  .invite-link-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    button {
+      margin-left: 1rem;
+    }
   }
   .invite-token-table {
     width: 100%;
