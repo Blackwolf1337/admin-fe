@@ -139,39 +139,39 @@ export default {
 
 <style rel='stylesheet/scss' lang='scss' scoped>
 .moderation-log-container {
-  margin: 0 15px;
+  margin: 0 1.5rem;
 }
 h1 {
   margin: 0;
 }
 .el-timeline {
-  margin: 25px 45px 0 0;
-  padding: 0px;
+  margin: 2.5rem 4.5rem 0 0;
+  padding: 0rem;
 }
 .moderation-log-date-panel {
-  width: 350px;
+  width: 35rem;
 }
 .moderation-log-header-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 10px 0 15px 0;
+  margin: 1rem 0 1.5rem 0;
 }
 .moderation-log-nav-container {
   display: flex;
   justify-content: space-between;
 }
 .moderation-log-search {
-  width: 350px;
+  width: 35rem;
 }
 .moderation-log-user-select {
-  margin: 0 0 20px;
-  width: 350px;
+  margin: 0 0 2rem;
+  width: 35rem;
 }
 .reboot-button {
-  padding: 10px;
+  padding: 1rem;
   margin: 0;
-  width: 145px;
+  width: 14.5rem;
 }
 .search-container {
   text-align: right;
@@ -182,13 +182,13 @@ h1 {
 
 @media only screen and (max-width:480px) {
   h1 {
-    font-size: 24px;
+    font-size: 2.4rem;
   }
   .moderation-log-date-panel {
     width: 100%;
   }
   .moderation-log-user-select {
-    margin: 0 0 10px;
+    margin: 0 0 1rem;
     width: 55%;
   }
   .moderation-log-search {
@@ -201,7 +201,7 @@ h1 {
     width: 55%;
   }
   .moderation-log-user-select {
-    margin: 0 0 10px;
+    margin: 0 0 1rem;
     width: 55%;
   }
   .moderation-log-search {
