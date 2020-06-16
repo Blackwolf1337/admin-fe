@@ -16,7 +16,7 @@ const settings = {
       path: 'index',
       component: () => import('@/views/settings/index'),
       name: 'Settings',
-      meta: { title: 'Settings', icon: 'settings', noCache: true }
+      meta: { title: 'Settings', icon: 'el-icon-setting', noCache: true }
     }
   ]
 }
@@ -30,7 +30,7 @@ const statuses = {
       path: 'index',
       component: () => import('@/views/statuses/index'),
       name: 'Statuses',
-      meta: { title: 'Statuses', icon: 'form', noCache: true }
+      meta: { title: 'Statuses', icon: 'el-icon-chat-line-square', noCache: true }
     }
   ]
 }
@@ -44,7 +44,7 @@ const reports = {
       path: 'index',
       component: () => import('@/views/reports/index'),
       name: 'Reports',
-      meta: { title: 'Reports', icon: 'documentation', noCache: true }
+      meta: { title: 'Reports', icon: 'el-icon-receiving', noCache: true }
     }
   ]
 }
@@ -58,7 +58,7 @@ const invites = {
       path: 'index',
       component: () => import('@/views/invites/index'),
       name: 'Invites',
-      meta: { title: 'Invites', icon: 'guide', noCache: true }
+      meta: { title: 'Invites', icon: 'el-icon-postcard', noCache: true }
     }
   ]
 }
@@ -72,7 +72,7 @@ const emojiPacks = {
       path: 'index',
       component: () => import('@/views/emojiPacks/index'),
       name: 'Emoji Packs',
-      meta: { title: 'Emoji Packs', icon: 'eye-open', noCache: true }
+      meta: { title: 'Emoji Packs', icon: 'el-icon-picture-outline-round', noCache: true }
     }
   ]
 }
@@ -86,7 +86,7 @@ const moderationLog = {
       path: 'index',
       component: () => import('@/views/moderationLog/index'),
       name: 'Moderation Log',
-      meta: { title: 'moderationLog', icon: 'list', noCache: true }
+      meta: { title: 'moderationLog', icon: 'el-icon-notebook-2', noCache: true }
     }
   ]
 }
@@ -150,7 +150,7 @@ export const asyncRouterMap = [
         path: 'index',
         component: () => import('@/views/users/index'),
         name: 'Users',
-        meta: { title: 'users', icon: 'peoples', noCache: true }
+        meta: { title: 'users', icon: 'el-icon-user', noCache: true }
       }
     ]
   },
