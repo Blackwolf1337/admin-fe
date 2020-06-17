@@ -218,4 +218,43 @@ export default {
   cursor: pointer;
   user-select: none;
 }
+
+@media only screen and (max-width:480px) {
+  .el-card__body {
+    padding: 2rem;
+  }
+
+  .login-button {
+    margin: 0 0 2rem 0;
+  }
+
+  .login-container {
+    .el-input {
+      width: stretch;
+
+      input {
+        padding-left: .5rem;
+      }
+    }
+  }
+
+  .login-form {
+    .el-form-item__content {
+      display: flex;
+      align-items: baseline;
+    }
+  }
+
+  .login-form-card {
+    width: 90%;
+  }
+
+  .show-pwd {
+    padding-right: 1.5rem;
+  }
+
+  .title-container {
+    margin-bottom: 0rem;
+  }
+}
 </style>

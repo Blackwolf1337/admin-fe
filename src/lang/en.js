@@ -92,7 +92,7 @@ export default {
     logInViaPleromaFE: 'Log in via PleromaFE',
     username: 'username@host',
     password: 'password',
-    omitHostname: 'omit hostname if Pleroma is located on this domain',
+    omitHostname: 'Omit hostname if Pleroma is located on this domain',
     errorMessage: 'Username must contain username and host, e.g. john@pleroma.social',
     any: 'any',
     thirdparty: 'Or connect with',
