@@ -245,10 +245,6 @@ export default {
   .el-icon-arrow-right {
     margin-right: 6px;
   }
-  .el-icon-close {
-    padding: 10px 5px 10px 10px;
-    cursor: pointer;
-  }
   .id {
     color: gray;
     margin-top: 6px;

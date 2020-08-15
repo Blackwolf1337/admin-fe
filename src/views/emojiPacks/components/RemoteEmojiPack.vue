@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item>
           <el-link
-            v-if="pack.pack['can-download']"
+            v-if="pack.pack['can-download'] && pack.pack['fallback-src']"
             :href="pack.pack['fallback-src']"
             :underline="false"
             type="primary"
@@ -34,15 +34,18 @@
         </el-form-item>
       </el-form>
       <el-collapse v-model="showPackContent" class="contents-collapse">
-        <el-collapse-item v-if="pack.files.length > 0" :title=" $t('emoji.manageEmoji')" name="manageEmoji" class="no-background">
-          <single-emoji-editor
-            v-for="[shortcode, file] in pack.files"
-            :key="shortcode"
-            :host="host"
-            :pack-name="name"
-            :shortcode="shortcode"
-            :file="file"
-            :is-local="isLocal" />
+        <el-collapse-item :title=" $t('emoji.manageEmoji')" name="manageEmoji" class="no-background">
+          <div v-if="pack.files && Object.keys(pack.files).length > 0">
+            <single-emoji-editor
+              v-for="(file, shortcode) in pack.files"
+              :key="shortcode"
+              :host="host"
+              :pack-name="name"
+              :shortcode="shortcode"
+              :file="file"
+              :is-local="isLocal" />
+          </div>
+          <span v-else class="expl">{{ $t('emoji.emptyPack') }}</span>
         </el-collapse-item>
         <el-collapse-item :title=" $t('emoji.downloadPack')" name="downloadPack" class="no-background">
           <p>
@@ -92,6 +95,9 @@ export default {
     }
   },
   computed: {
+    currentPage() {
+      return this.$store.state.emojiPacks.currentPage
+    },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
@@ -111,7 +117,7 @@ export default {
       }
     },
     loadRemotePack() {
-      return this.$store.state.emojiPacks.activeCollapseItems.includes(this.name)
+      return this.$store.state.emojiPacks.activeTab === this.name
     },
     remoteInstanceAddress() {
       return this.$store.state.emojiPacks.remoteInstance
@@ -179,7 +185,7 @@ export default {
         'DownloadFrom',
         { instanceAddress: this.remoteInstanceAddress, packName: this.name, as: this.downloadSharedAs }
       ).then(() => this.$store.dispatch('ReloadEmoji'))
-        .then(() => this.$store.dispatch('SetLocalEmojiPacks'))
+        .then(() => this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage))
     }
   }
 }

@@ -2,12 +2,13 @@ import { changeState, fetchReports, createNote, deleteNote } from '@/api/reports
 
 const reports = {
   state: {
-    fetchedReports: [],
-    totalReportsCount: 0,
     currentPage: 1,
+    fetchedReports: [],
+    loading: true,
+    openReportsCount: 0,
     pageSize: 50,
     stateFilter: '',
-    loading: true
+    totalReportsCount: 0
   },
   mutations: {
     SET_LAST_REPORT_ID: (state, id) => {
@@ -15,6 +16,9 @@ const reports = {
     },
     SET_LOADING: (state, status) => {
       state.loading = status
+    },
+    SET_OPEN_REPORTS_COUNT: (state, total) => {
+      state.openReportsCount = total
     },
     SET_PAGE: (state, page) => {
       state.currentPage = page
@@ -30,7 +34,7 @@ const reports = {
     }
   },
   actions: {
-    async ChangeReportState({ commit, getters, state }, reportsData) {
+    async ChangeReportState({ commit, dispatch, getters, state }, reportsData) {
       changeState(reportsData, getters.authHost, getters.token)
 
       const updatedReports = state.fetchedReports.map(report => {
@@ -39,6 +43,7 @@ const reports = {
       })
 
       commit('SET_REPORTS', updatedReports)
+      dispatch('FetchOpenReportsCount')
     },
     ClearFetchedReports({ commit }) {
       commit('SET_REPORTS', [])
@@ -52,7 +57,14 @@ const reports = {
       commit('SET_PAGE', page)
       commit('SET_LOADING', false)
     },
-    SetFilter({ commit }, filter) {
+    async FetchOpenReportsCount({ commit, getters, state }) {
+      commit('SET_LOADING', true)
+      const { data } = await fetchReports('open', state.currentPage, state.pageSize, getters.authHost, getters.token)
+
+      commit('SET_OPEN_REPORTS_COUNT', data.total)
+      commit('SET_LOADING', false)
+    },
+    SetReportsFilter({ commit }, filter) {
       commit('SET_REPORTS_FILTER', filter)
     },
     CreateReportNote({ commit, getters, state, rootState }, { content, reportID }) {

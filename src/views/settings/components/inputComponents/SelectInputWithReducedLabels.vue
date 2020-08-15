@@ -56,7 +56,7 @@ export default {
     inputValue() {
       if (this.setting.key === 'Pleroma.Web.Auth.Authenticator') {
         return this.data.value
-      } else if (this.setting.key === ':rewrite_policy') {
+      } else if (this.setting.key === ':policies') {
         return typeof this.data[this.setting.key] === 'string'
           ? [this.data[this.setting.key]]
           : this.data[this.setting.key]
@@ -71,7 +71,7 @@ export default {
   methods: {
     options(suggestions) {
       const prefixes = {
-        ':rewrite_policy': 'Pleroma.Web.ActivityPub.MRF.',
+        ':policies': 'Pleroma.Web.ActivityPub.MRF.',
         'Pleroma.Web.Auth.Authenticator': 'Pleroma.Web.Auth.',
         ':method': 'Pleroma.Captcha.',
         ':adapter': 'Swoosh.Adapters.',
@@ -99,14 +99,6 @@ export default {
         (type.includes('regex') && type.includes('string')) ||
         this.setting.key === ':args'
       )
-    },
-    rewritePolicyOptions(suggestions) {
-      return suggestions.map(element => {
-        const label = element.split('Pleroma.Web.ActivityPub.MRF.')[1]
-          ? element.split('Pleroma.Web.ActivityPub.MRF.')[1]
-          : element
-        return { value: element, label }
-      })
     },
     updateSetting(value, group, key, input, type) {
       const updatedValue = getBooleanValue(value)

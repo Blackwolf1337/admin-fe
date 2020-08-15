@@ -7,12 +7,13 @@
     class="select-field"
     @change="toggleFilters">
     <el-option-group :label="$t('usersFilter.byAccountType')">
-      <el-option value="local">{{ $t('usersFilter.local') }}</el-option>
-      <el-option value="external">{{ $t('usersFilter.external') }}</el-option>
+      <el-option value="local" label="Local">{{ $t('usersFilter.local') }}</el-option>
+      <el-option value="external" label="External">{{ $t('usersFilter.external') }}</el-option>
     </el-option-group>
     <el-option-group :label="$t('usersFilter.byStatus')">
-      <el-option value="active">{{ $t('usersFilter.active') }}</el-option>
-      <el-option value="deactivated">{{ $t('usersFilter.deactivated') }}</el-option>
+      <el-option value="active" label="Active">{{ $t('usersFilter.active') }}</el-option>
+      <el-option value="need_approval" label="Need Approval">{{ $t('usersFilter.pending') }}</el-option>
+      <el-option value="deactivated" label="Deactivated">{{ $t('usersFilter.deactivated') }}</el-option>
     </el-option-group>
   </el-select>
 </template>
@@ -21,7 +22,7 @@
 export default {
   data() {
     return {
-      value: []
+      value: ['local', 'active']
     }
   },
   computed: {
@@ -29,23 +30,32 @@ export default {
       return this.$store.state.app.device === 'desktop'
     }
   },
+  created() {
+    const currentFilters = this.$data.value.reduce((acc, filter) => ({ ...acc, [filter]: true }), {})
+    this.$store.dispatch('ToggleUsersFilter', currentFilters)
+  },
   methods: {
     removeOppositeFilters() {
       const filtersQuantity = Object.keys(this.$store.state.users.filters).length
-      const currentFilters = this.$data.value.slice()
-      const indexOfLocal = currentFilters.indexOf('local')
-      const indexOfExternal = currentFilters.indexOf('external')
-      const indexOfActive = currentFilters.indexOf('active')
-      const indexOfDeactivated = currentFilters.indexOf('deactivated')
-      if (currentFilters.length === filtersQuantity) {
+      const currentFilters = []
+      const indexOfLocal = this.$data.value.indexOf('local')
+      const indexOfExternal = this.$data.value.indexOf('external')
+      const indexOfActive = this.$data.value.indexOf('active')
+      const indexOfDeactivated = this.$data.value.indexOf('deactivated')
+      const indexOfPending = this.$data.value.indexOf('need_approval')
+
+      if (this.$data.value.length === filtersQuantity) {
         return []
-      } else if (indexOfLocal > -1 && indexOfExternal > -1) {
-        const filterToRemove = indexOfLocal > indexOfExternal ? indexOfExternal : indexOfLocal
-        currentFilters.splice(filterToRemove, 1)
-      } else if (indexOfActive > -1 && indexOfDeactivated > -1) {
-        const filterToRemove = indexOfActive > indexOfDeactivated ? indexOfDeactivated : indexOfActive
-        currentFilters.splice(filterToRemove, 1)
       }
+
+      Math.max(indexOfLocal, indexOfExternal) > -1
+        ? currentFilters.push(this.$data.value[Math.max(indexOfLocal, indexOfExternal)])
+        : currentFilters
+
+      Math.max(indexOfActive, indexOfDeactivated, indexOfPending) > -1
+        ? currentFilters.push(this.$data.value[Math.max(indexOfActive, indexOfDeactivated, indexOfPending)])
+        : currentFilters
+
       return currentFilters
     },
     toggleFilters() {

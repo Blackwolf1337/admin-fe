@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form v-if="!loading" ref="gopher" :model="gopherData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form v-if="!loading" :model="gopherData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="gopher" :data="gopherData"/>
     </el-form>
     <div class="submit-button-container">

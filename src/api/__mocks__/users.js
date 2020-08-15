@@ -1,7 +1,8 @@
 export let users = [
-  { active: true, deactivated: false, id: '2', nickname: 'allis', local: true, external: false, roles: { admin: true, moderator: false }, tags: [] },
-  { active: true, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['sandbox'] },
-  { active: false, deactivated: true, id: 'abc', nickname: 'john', local: true, external: false, roles: { admin: false, moderator: false }, tags: ['strip_media'] }
+  { active: true, approval_pending: false, deactivated: false, id: '2', nickname: 'allis', local: true, external: false, roles: { admin: true, moderator: false }, tags: [] },
+  { active: true, approval_pending: false, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'] },
+  { active: false, approval_pending: false, deactivated: true, id: 'abc', nickname: 'john', local: true, external: false, roles: { admin: false, moderator: false }, tags: ['mrf_tag:media-strip'] },
+  { active: true, approval_pending: true, deactivated: false, id: '100', nickname: 'sally', local: true, external: false, roles: { admin: false, moderator: false }, tags: [] }
 ]
 
 const userProfile = { avatar: 'avatar.jpg', nickname: 'allis', id: '2', tags: [], roles: { admin: true, moderator: false }, local: true, external: false }
@@ -81,6 +82,14 @@ export async function deactivateUsers(nicknames, authHost, token) {
   const response = nicknames.map(nickname => {
     const currentUser = users.find(user => user.nickname === nickname)
     return { ...currentUser, deactivated: true }
+  })
+  return Promise.resolve({ data: response })
+}
+
+export async function approveUserAccount(nicknames, authHost, token) {
+  const response = nicknames.map(nickname => {
+    const currentUser = users.find(user => user.nickname === nickname)
+    return { ...currentUser, approval_pending: false }
   })
   return Promise.resolve({ data: response })
 }

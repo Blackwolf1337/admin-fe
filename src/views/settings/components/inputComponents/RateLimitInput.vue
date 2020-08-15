@@ -1,14 +1,16 @@
 <template>
   <div :data-search="setting.key || setting.group" class="rate-limit-container">
     <div v-if="!rateLimitAuthUsers">
-      <el-input
+      <el-input-number
         :value="rateLimitAllUsers[0]"
+        :controls="false"
         placeholder="scale"
         class="scale-input"
         @input="parseRateLimiter($event, setting.key, 'scale', 'oneLimit', rateLimitAllUsers)"/>
       <span>:</span>
-      <el-input
+      <el-input-number
         :value="rateLimitAllUsers[1]"
+        :controls="false"
         placeholder="limit"
         class="limit-input"
         @input="parseRateLimiter($event, setting.key, 'limit', 'oneLimit', rateLimitAllUsers)"/>
@@ -25,16 +27,18 @@
           </span>
         </div>
         <div class="rate-limit-content">
-          <el-input
+          <el-input-number
             :value="rateLimitUnauthUsers[0]"
+            :controls="false"
             placeholder="scale"
             class="scale-input"
             @input="parseRateLimiter(
               $event, setting.key, 'scale', 'unauthUsersLimit', [rateLimitUnauthUsers, rateLimitAuthUsers]
           )"/>
           <span>:</span>
-          <el-input
+          <el-input-number
             :value="rateLimitUnauthUsers[1]"
+            :controls="false"
             placeholder="limit"
             class="limit-input"
             @input="parseRateLimiter(
@@ -49,14 +53,16 @@
           </span>
         </div>
         <div class="rate-limit-content">
-          <el-input
+          <el-input-number
             :value="rateLimitAuthUsers[0]"
+            :controls="false"
             placeholder="scale"
             class="scale-input"
             @input="parseRateLimiter($event, setting.key, 'scale', 'authUserslimit', [rateLimitUnauthUsers, rateLimitAuthUsers])"/>
           <span>:</span>
-          <el-input
+          <el-input-number
             :value="rateLimitAuthUsers[1]"
+            :controls="false"
             placeholder="limit"
             class="limit-input"
             @input="parseRateLimiter($event, setting.key, 'limit', 'authUserslimit', [rateLimitUnauthUsers, rateLimitAuthUsers])"/>

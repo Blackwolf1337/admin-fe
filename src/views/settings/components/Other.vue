@@ -1,10 +1,19 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="mimeTypes" :model="mimeTypesData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="mimeTypesData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="mimeTypes" :data="mimeTypesData"/>
     </el-form>
-    <el-form ref="remoteIp" :model="remoteIpData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-divider v-if="mimeTypes" class="divider thick-line"/>
+    <el-form :model="remoteIpData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="remoteIp" :data="remoteIpData"/>
+    </el-form>
+    <el-divider v-if="remoteIpData" class="divider thick-line"/>
+    <el-form :model="modulesData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="modules" :data="modulesData"/>
+    </el-form>
+    <el-divider v-if="castAndValidate" class="divider thick-line"/>
+    <el-form :model="castAndValidateData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="castAndValidate" :data="castAndValidateData"/>
     </el-form>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
@@ -25,6 +34,12 @@ export default {
     ...mapGetters([
       'settings'
     ]),
+    castAndValidate() {
+      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.ApiSpec.CastAndValidate')
+    },
+    castAndValidateData() {
+      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.ApiSpec.CastAndValidate']) || {}
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -54,6 +69,12 @@ export default {
     },
     mimeTypesData() {
       return _.get(this.settings.settings, [':mime']) || {}
+    },
+    modules() {
+      return this.settings.description.find(setting => setting.key === ':modules')
+    },
+    modulesData() {
+      return _.get(this.settings.settings, [':pleroma', ':modules']) || {}
     },
     remoteIp() {
       return this.settings.description.find(setting => setting.key === 'Pleroma.Plugs.RemoteIp')

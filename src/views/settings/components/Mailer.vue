@@ -1,20 +1,22 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="mailer" :model="mailerData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="mailerData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="mailer" :data="mailerData"/>
     </el-form>
     <el-divider v-if="mailer" class="divider thick-line"/>
-    <el-form ref="swoosh" :model="swooshData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="swooshData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="swoosh" :data="swooshData"/>
     </el-form>
     <el-divider v-if="swoosh" class="divider thick-line"/>
-    <el-form ref="emailNotifications" :model="emailNotificationsData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="emailNotificationsData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="emailNotifications" :data="emailNotificationsData"/>
     </el-form>
-    <el-form ref="userEmail" :model="userEmailData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-divider v-if="emailNotifications" class="divider thick-line"/>
+    <el-form :model="userEmailData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="userEmail" :data="userEmailData"/>
     </el-form>
-    <el-form ref="newUsersDigestEmail" :model="newUsersDigestEmailData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-divider v-if="userEmail" class="divider thick-line"/>
+    <el-form :model="newUsersDigestEmailData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="newUsersDigestEmail" :data="newUsersDigestEmailData"/>
     </el-form>
     <div class="submit-button-container">

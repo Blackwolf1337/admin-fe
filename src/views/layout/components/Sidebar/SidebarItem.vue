@@ -4,14 +4,21 @@
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
-          <item v-if="onlyOneChild.meta" :icon="onlyOneChild.meta.icon||item.meta.icon" :title="generateTitle(onlyOneChild.meta.title)" />
+          <item
+            v-if="onlyOneChild.meta"
+            :count="showCount(item) ? normalizedReportsCount : null"
+            :icon="onlyOneChild.meta.icon||item.meta.icon"
+            :title="generateTitle(onlyOneChild.meta.title)" />
         </el-menu-item>
       </app-link>
     </template>
-
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)">
       <template slot="title">
-        <item v-if="item.meta" :icon="item.meta.icon" :title="generateTitle(item.meta.title)" />
+        <item
+          v-if="item.meta"
+          :count="showCount(item) ? normalizedReportsCount : null"
+          :icon="item.meta.icon"
+          :title="generateTitle(item.meta.title)" />
       </template>
 
       <template v-for="child in item.children">
@@ -26,7 +33,11 @@
 
           <app-link v-else :to="resolvePath(child.path)" :key="child.name">
             <el-menu-item :index="resolvePath(child.path)">
-              <item v-if="child.meta" :icon="child.meta.icon" :title="generateTitle(child.meta.title)" />
+              <item
+                v-if="child.meta"
+                :count="showCount(item) ? normalizedReportsCount : null"
+                :icon="child.meta.icon"
+                :title="generateTitle(child.meta.title)" />
             </el-menu-item>
           </app-link>
         </template>
@@ -43,6 +54,7 @@ import { isExternal } from '@/utils'
 import Item from './Item'
 import AppLink from './Link'
 import FixiOSBug from './FixiOSBug'
+import numeral from 'numeral'
 
 export default {
   name: 'SidebarItem',
@@ -71,6 +83,9 @@ export default {
   computed: {
     invitesEnabled() {
       return this.basePath === '/invites' ? this.$store.state.app.invitesEnabled : true
+    },
+    normalizedReportsCount() {
+      return numeral(this.$store.state.reports.openReportsCount).format('0a')
     }
   },
   methods: {
@@ -103,6 +118,9 @@ export default {
         return routePath
       }
       return path.resolve(this.basePath, routePath)
+    },
+    showCount(item) {
+      return item.path === '/reports'
     },
     isExternalLink(routePath) {
       return isExternal(routePath)

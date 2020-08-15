@@ -62,6 +62,16 @@ export async function deleteUsers(nicknames, authHost, token) {
   })
 }
 
+export async function disableMfa(nickname, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/users/disable_mfa`,
+    method: 'put',
+    headers: authHeaders(token),
+    data: { nickname }
+  })
+}
+
 export async function fetchUser(id, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
@@ -153,6 +163,16 @@ export async function fetchUserStatuses(id, authHost, godmode, token) {
     url: `/api/pleroma/admin/users/${id}/statuses?godmode=${godmode}`,
     method: 'get',
     headers: authHeaders(token)
+  })
+}
+
+export async function approveUserAccount(nicknames, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: '/api/pleroma/admin/users/approve',
+    method: 'patch',
+    headers: authHeaders(token),
+    data: { nicknames }
   })
 }
 

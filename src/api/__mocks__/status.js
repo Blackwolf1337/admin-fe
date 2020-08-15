@@ -12,7 +12,7 @@ export async function fetchStatus(id, authHost, token) {
       id: '9n1bySks25olxWrku0',
       avatar: 'http://localhost:4000/images/avi.png',
       nickname: 'dolin',
-      tags: ['strip_media', 'sandbox', 'disable_any_subscription', 'force_nsfw'],
+      tags: ['mrf_tag:media-strip', 'mrf_tag:sandbox', 'mrf_tag:disable-any-subscription', 'mrf_tag:media-force-nsfw'],
       url: 'http://localhost:4000/users/dolin'
     },
     content: 'pizza makes everything better',

@@ -1,34 +1,30 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="frontendData" :model="frontendData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="frontendData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="frontend" :data="frontendData"/>
     </el-form>
-    <el-form ref="staticFeData" :model="staticFeData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-divider v-if="frontend" class="divider thick-line"/>
+    <el-form :model="staticFeData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="staticFe" :data="staticFeData"/>
     </el-form>
     <el-divider v-if="staticFe" class="divider thick-line"/>
-    <el-form ref="assetsData" :model="assetsData" :label-position="labelPosition" :label-width="labelWidth">
-      <el-form-item v-if="assets" class="grouped-settings-header">
-        <span class="label-font label-with-margin">{{ $t('settings.assets') }}</span>
-      </el-form-item>
+    <el-form :model="frontendsData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="frontends" :data="frontendsData"/>
+    </el-form>
+    <el-divider v-if="frontends" class="divider thick-line"/>
+    <el-form :model="assetsData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="assets" :data="assetsData"/>
     </el-form>
     <el-divider v-if="assets" class="divider thick-line"/>
-    <el-form ref="emojiData" :model="emojiData" :label-position="labelPosition" :label-width="labelWidth">
-      <el-form-item v-if="emoji" data-search=":emoji" class="grouped-settings-header">
-        <span class="label-font label-with-margin">{{ $t('settings.emoji') }}</span>
-      </el-form-item>
+    <el-form :model="emojiData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="emoji" :data="emojiData"/>
     </el-form>
     <el-divider v-if="emoji" class="divider thick-line"/>
-    <el-form ref="chatData" :model="chatData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="chatData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="chat" :data="chatData"/>
     </el-form>
     <el-divider v-if="chat" class="divider thick-line"/>
-    <el-form ref="markupData" :model="markupData" :label-position="labelPosition" :label-width="labelWidth">
-      <el-form-item v-if="markup" data-search=":markup" class="grouped-settings-header">
-        <span class="label-font label-with-margin">{{ $t('settings.markup') }}</span>
-      </el-form-item>
+    <el-form :model="markupData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="markup" :data="markupData"/>
     </el-form>
     <div class="submit-button-container">
@@ -73,6 +69,12 @@ export default {
     },
     frontendData() {
       return _.get(this.settings.settings, [':pleroma', ':frontend_configurations']) || {}
+    },
+    frontends() {
+      return this.settings.description.find(setting => setting.key === ':frontends')
+    },
+    frontendsData() {
+      return _.get(this.settings.settings, [':pleroma', ':frontends']) || {}
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'

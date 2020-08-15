@@ -38,11 +38,11 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('SetFilter', this.$data.filter)
+    this.$store.dispatch('SetReportsFilter', this.$data.filter)
   },
   methods: {
     toggleFilters() {
-      this.$store.dispatch('SetFilter', this.$data.filter)
+      this.$store.dispatch('SetReportsFilter', this.$data.filter)
       this.$store.dispatch('ClearFetchedReports')
       this.$store.dispatch('FetchReports', 1)
     }

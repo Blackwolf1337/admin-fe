@@ -91,6 +91,20 @@ const moderationLog = {
   ]
 }
 
+const mediaProxyCacheDisabled = disabledFeatures.includes('media-proxy-cache')
+const mediaProxyCache = {
+  path: '/media_proxy_cache',
+  component: Layout,
+  children: [
+    {
+      path: 'index',
+      component: () => import('@/views/mediaProxyCache/index'),
+      name: 'MediaProxy Cache',
+      meta: { title: 'mediaProxyCache', icon: 'example', noCache: true }
+    }
+  ]
+}
+
 export const constantRouterMap = [
   {
     path: '/redirect',
@@ -159,6 +173,7 @@ export const asyncRouterMap = [
   ...(invitesDisabled ? [] : [invites]),
   ...(emojiPacksDisabled ? [] : [emojiPacks]),
   ...(moderationLogDisabled ? [] : [moderationLog]),
+  ...(mediaProxyCacheDisabled ? [] : [mediaProxyCache]),
   ...(settingsDisabled ? [] : [settings]),
   {
     path: '/users/:id',

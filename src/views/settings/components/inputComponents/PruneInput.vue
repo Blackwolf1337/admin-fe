@@ -5,7 +5,7 @@
       <el-radio label=":maxlen">Limit-based</el-radio>
       <el-radio label=":maxage">Time-based</el-radio>
     </el-radio-group>
-    <el-form-item v-if="prune === ':maxlen'" label="max length" label-width="100" label-position="left">
+    <el-form-item v-if="prune === ':maxlen'" label="Max length" label-width="100" label-position="left">
       <el-input-number
         :value="data[1]"
         :min="0"
@@ -14,7 +14,7 @@
         class="top-margin"
         @change="updateIntInput($event, ':maxlen')"/>
     </el-form-item>
-    <el-form-item v-if="prune === ':maxage'" label="max age" label-width="100" label-position="left">
+    <el-form-item v-if="prune === ':maxage'" label="Max age" label-width="100" label-position="left">
       <el-input-number
         :value="data[1]"
         :min="0"

@@ -79,12 +79,17 @@
               <tr class="el-table__row">
                 <td>{{ $t('userProfile.status') }}</td>
                 <td>
-                  <el-tag v-if="!user.deactivated" type="success">{{ $t('userProfile.active') }}</el-tag>
+                  <el-tag v-if="user.approval_pending" type="info">{{ $t('userProfile.pending') }}</el-tag>
+                  <el-tag v-if="!user.deactivated & !user.approval_pending" type="success">{{ $t('userProfile.active') }}</el-tag>
                   <el-tag v-if="user.deactivated" type="danger">{{ $t('userProfile.deactivated') }}</el-tag>
                 </td>
               </tr>
             </tbody>
           </table>
+          <div v-if="user.registration_reason">
+            <div class="reason-label">{{ $t('userProfile.reason') }}</div>
+            "{{ user.registration_reason }}"
+          </div>
         </div>
         <el-button v-if="propertyExists(user, 'nickname')" icon="el-icon-lock" class="security-setting-button" @click="securitySettingsModalVisible = true">
           {{ $t('userProfile.securitySettings.securitySettings') }}
@@ -169,12 +174,12 @@ export default {
     },
     humanizeTag(tag) {
       const mapTags = {
-        'force_nsfw': 'Force NSFW',
-        'strip_media': 'Strip Media',
-        'force_unlisted': 'Force Unlisted',
-        'sandbox': 'Sandbox',
-        'disable_remote_subscription': 'Disable remote subscription',
-        'disable_any_subscription': 'Disable any subscription'
+        'mrf_tag:media-force-nsfw': 'Force NSFW',
+        'mrf_tag:media-strip': 'Strip Media',
+        'mrf_tag:force-unlisted': 'Force Unlisted',
+        'mrf_tag:sandbox': 'Sandbox',
+        'mrf_tag:disable-remote-subscription': 'Disable remote subscription',
+        'mrf_tag:disable-any-subscription': 'Disable any subscription'
       }
       return mapTags[tag]
     },
@@ -304,6 +309,7 @@ table {
 .user-profile-card {
   margin: 0 20px;
   width: 30%;
+  min-width: 300px;
   height: fit-content;
 }
 .user-profile-container {
@@ -315,6 +321,11 @@ table {
 }
 .user-profile-tag {
   margin: 0 4px 4px 0;
+}
+.reason-label {
+  color: #878d99;
+  font-weight: bold;
+  margin: 5px 0;
 }
 
 @media only screen and (max-width:480px) {

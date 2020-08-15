@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## Unreleased
+## [2.1] - 2020-08-14
 
 ### Added
 
@@ -13,26 +13,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - On Reports page add links to reported account and the author of the report 
 - In Notes add link to the note author's profile page 
 - In Moderation log add link to the actor's profile page
+- Support pagination of local emoji packs and files
+- Add MRF Activity Expiration setting
+- Add ability to disable multi-factor authentication for a user
+- Add ability to configure Invalidation settings on MediaProxy tab
+- Ability to configure `S3` settings on Upload tab, `Pleroma.Web.ApiSpec.CastAndValidate` and `:modules` settings on Other tab, `:pools`, `:connections_pool` and `:hackney_pools` settings on Job Queue tab, `:restrict_unauthenticated` settings on Authentication tab, `:favicons` and `:welcome` settings on Instance tab, `:frontends` settings on Frontend tab
+- Show number of open reports in Sidebar Menu
+- Add confirmation message when deleting a user
+- Add new MediaProxy Cache Tab with ability to manually evict and ban objects from the Pleroma MediaProxy cache
 
 ### Changed
 
 - Statuses count changes when an instance is selected and shows the amount of statuses from an originating instance
-- Add a dialog window with a confirmation when a remove button is clicked on the Settings page
+- Add a confirmation dialog window when Remove button is clicked on the Settings page
 - Disable tab on the Settings page if there are no settings on this tab that can be changed in Admin FE
 - Settings that can't be altered in Admin FE are removed: HTTP Signatures settings, Federation publisher modules and Oban Repo
 - When rendering user's profile, statuses, reports and notes check if required properties exist
-- Remove ability to moderate users that don't have valid nickname
+- Remove ability to moderate users that don't have valid nicknames
+- Displays both labels and description in the header of group of settiings
+- Ability to add custom values in Pleroma.Upload.Filter.Mogrify setting in the following format: '{"implode", "1"}'
+- Change types of the following settings: ':groups', ':replace', ':federated_timeline_removal', ':reject', ':match_actor'. Update functions that parses and wraps settings data according to this change.
+- Move rendering Crontab setting from a separate component to EditableKeyword component
+- Show only those MRF settings that have been enabled in MRF Policies setting
+- Move Auto Linker settings to Link Formatter Tab as its configuration was moved to :pleroma, Pleroma.Formatter
+- Active and Local filters are applied by default on the Users tab
 
 ### Fixed
 
 - Send `true` and `false` as booleans if they are values of single selects on the Settings page
 - Fix sorting users on Users page if there is an acount with missing nickname or ID
+- Add new type of settings: `['string', 'image']`. Render Image upload Input depending on the type of setting, not its key
+- Fix displaying `Pending` tag and filtering by Pending Approval status
 
 ## [2.0.3] - 2020-04-29
 
 ### Added
 
 - Link settings that enable registrations and invites
+- Ability to upload logo, background, default user avatar, instance thumbnail, and NSFW hiding images
 
 ### Changed
 

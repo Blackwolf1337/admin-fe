@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="autoLinker" :model="autoLinkerData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="autoLinker" :data="autoLinkerData"/>
+    <el-form :model="linkFormatterData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="linkFormatter" :data="linkFormatterData"/>
     </el-form>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
@@ -16,17 +16,17 @@ import Setting from './Setting'
 import _ from 'lodash'
 
 export default {
-  name: 'AutoLinker',
+  name: 'LinkFormatter',
   components: { Setting },
   computed: {
     ...mapGetters([
       'settings'
     ]),
-    autoLinker() {
-      return this.settings.description.find(setting => setting.key === ':opts')
+    linkFormatter() {
+      return this.settings.description.find(setting => setting.key === 'Pleroma.Formatter')
     },
-    autoLinkerData() {
-      return _.get(this.settings.settings, [':auto_linker', ':opts']) || {}
+    linkFormatterData() {
+      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Formatter']) || {}
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'

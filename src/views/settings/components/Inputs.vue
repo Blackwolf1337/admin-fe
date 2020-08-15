@@ -33,8 +33,16 @@
         </el-tooltip>
       </span>
       <div class="input-row">
+        <image-upload-input
+          v-if="isImageUrl"
+          :data="data"
+          :setting-group="settingGroup"
+          :setting="setting"
+          :input-value="inputValue"
+          @change="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"
+        />
         <el-input
-          v-if="setting.type === 'string' || (setting.type.includes('string') && setting.type.includes('atom'))"
+          v-else-if="setting.type === 'string' || (setting.type.includes('string') && setting.type.includes('atom'))"
           :value="inputValue"
           :placeholder="setting.suggestions ? setting.suggestions[0] : null"
           :data-search="setting.key || setting.group"
@@ -87,17 +95,16 @@
         <el-input
           v-if="setting.type === 'atom'"
           :value="inputValue"
-          :placeholder="setting.suggestions[0] ? setting.suggestions[0].substr(1) : ''"
+          :placeholder="setting.suggestions && setting.suggestions[0] ? setting.suggestions[0].substr(1) : ''"
           :data-search="setting.key || setting.group"
           class="input"
           @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)">
           <template slot="prepend">:</template>
         </el-input>
         <!-- special inputs -->
-        <auto-linker-input v-if="settingGroup.group === ':auto_linker'" :data="data" :setting-group="settingGroup" :setting="setting"/>
-        <crontab-input v-if="setting.key === ':crontab'" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting"/>
-        <editable-keyword-input v-if="editableKeyword(setting.key, setting.type)" :data="keywordData" :setting-group="settingGroup" :setting="setting"/>
+        <editable-keyword-input v-if="editableKeyword(setting.key, setting.type)" :data="keywordData" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
         <icons-input v-if="setting.key === ':icons'" :data="iconsData" :setting-group="settingGroup" :setting="setting"/>
+        <link-formatter-input v-if="booleanCombinedInput" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <mascots-input v-if="setting.key === ':mascots'" :data="keywordData" :setting-group="settingGroup" :setting="setting"/>
         <proxy-url-input v-if="setting.key === ':proxy_url'" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
         <prune-input v-if="setting.key === ':prune'" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting"/>
@@ -105,6 +112,7 @@
         <reg-invites-input v-if="[':registrations_open', ':invites_enabled'].includes(setting.key)" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <select-input-with-reduced-labels v-if="reducedSelects" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <specific-multiple-select v-if="setting.key === ':backends' || setting.key === ':args'" :data="data" :setting-group="settingGroup" :setting="setting"/>
+        <sender-input v-if="senderInput(setting)" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
         <!-------------------->
         <el-tooltip v-if="canBeDeleted && isTablet" :content="$t('settings.removeFromDB')" placement="bottom-end" class="delete-setting-button-container">
           <el-button icon="el-icon-delete" circle size="mini" class="delete-setting-button" @click="removeSetting"/>
@@ -121,16 +129,17 @@
 <script>
 import i18n from '@/lang'
 import {
-  AutoLinkerInput,
-  CrontabInput,
   EditableKeywordInput,
   IconsInput,
+  ImageUploadInput,
+  LinkFormatterInput,
   MascotsInput,
   ProxyUrlInput,
   PruneInput,
   RateLimitInput,
   RegInvitesInput,
   SelectInputWithReducedLabels,
+  SenderInput,
   SpecificMultipleSelect } from './inputComponents'
 import { getBooleanValue, processNested } from '@/store/modules/normalizers'
 import _ from 'lodash'
@@ -139,16 +148,17 @@ import marked from 'marked'
 export default {
   name: 'Inputs',
   components: {
-    AutoLinkerInput,
-    CrontabInput,
     EditableKeywordInput,
     IconsInput,
+    ImageUploadInput,
+    LinkFormatterInput,
     MascotsInput,
     ProxyUrlInput,
     PruneInput,
     RateLimitInput,
     RegInvitesInput,
     SelectInputWithReducedLabels,
+    SenderInput,
     SpecificMultipleSelect
   },
   props: {
@@ -206,13 +216,16 @@ export default {
     }
   },
   computed: {
+    booleanCombinedInput() {
+      return Array.isArray(this.setting.type) && this.setting.type.includes('boolean')
+    },
     canBeDeleted() {
       const { group, key } = this.settingGroup
       return _.get(this.$store.state.settings.db, [group, key]) &&
         this.$store.state.settings.db[group][key].includes(this.setting.key)
     },
     iconsData() {
-      return Array.isArray(this.data[':icons']) ? this.data[':icons'] : []
+      return Array.isArray(this.data) ? this.data : []
     },
     inputValue() {
       if ([':esshd', ':cors_plug', ':quack', ':tesla', ':swoosh'].includes(this.settingGroup.group) &&
@@ -228,6 +241,9 @@ export default {
         return this.data.value ? this.data.value[this.setting.key] : []
       } else if (this.setting.type === 'atom') {
         return this.data[this.setting.key] && this.data[this.setting.key][0] === ':' ? this.data[this.setting.key].substr(1) : this.data[this.setting.key]
+      } else if (Array.isArray(this.setting.type) &&
+          this.setting.type.find(el => Array.isArray(el) && el.includes('list'))) {
+        return typeof this.data[this.setting.key] === 'string' ? [this.data[this.setting.key]] : this.data[this.setting.key]
       } else {
         return this.data[this.setting.key]
       }
@@ -251,6 +267,10 @@ export default {
       }
     },
     keywordData() {
+      if (this.settingParent.length > 0 ||
+        (Array.isArray(this.setting.type) && this.setting.type.includes('tuple') && this.setting.type.includes('list'))) {
+        return Array.isArray(this.data[this.setting.key]) ? this.data[this.setting.key] : []
+      }
       return Array.isArray(this.data) ? this.data : []
     },
     reducedSelects() {
@@ -263,7 +283,7 @@ export default {
         ':parsers',
         ':providers',
         ':method',
-        ':rewrite_policy',
+        ':policies',
         'Pleroma.Web.Auth.Authenticator'
       ].includes(this.setting.key) ||
         (this.settingGroup.key === 'Pleroma.Emails.Mailer' && this.setting.key === ':adapter')
@@ -273,14 +293,21 @@ export default {
     },
     updatedSettings() {
       return this.$store.state.settings.updatedSettings
+    },
+    isImageUrl() {
+      return Array.isArray(this.setting.type) && this.setting.type.includes('image')
     }
   },
   methods: {
     editableKeyword(key, type) {
-      return key === ':replace' ||
-        type === 'map' ||
-        (Array.isArray(type) && type.includes('keyword') && type.includes('integer')) ||
-        (Array.isArray(type) && type.includes('keyword') && type.findIndex(el => el.includes('list') && el.includes('string')) !== -1)
+      return Array.isArray(type) && (
+        (type.includes('map') && type.includes('string')) ||
+        (type.includes('map') && type.findIndex(el => el.includes('list') && el.includes('string')) !== -1) ||
+        (type.includes('keyword') && type.includes('integer')) ||
+        (type.includes('keyword') && type.includes('string')) ||
+        (type.includes('tuple') && type.includes('list')) ||
+        (type.includes('keyword') && type.findIndex(el => el.includes('list') && el.includes('string')) !== -1)
+      )
     },
     getFormattedDescription(desc) {
       return marked(desc)
@@ -327,12 +354,14 @@ export default {
         type.includes('module') ||
         (type.includes('list') && type.includes('string')) ||
         (type.includes('list') && type.includes('atom')) ||
-        (type.includes('regex') && type.includes('string')) ||
-        this.setting.key === ':args'
+        (!type.includes('keyword') && type.includes('regex') && type.includes('string'))
       )
     },
     renderSingleSelect(type) {
       return !this.reducedSelects && (type === 'module' || (type.includes('atom') && type.includes('dropdown')))
+    },
+    senderInput({ key, type }) {
+      return Array.isArray(type) && type.includes('string') && type.includes('tuple') && key === ':sender'
     },
     update(value, group, key, parents, input, type, nested) {
       const updatedValue = this.renderSingleSelect(type) ? getBooleanValue(value) : value

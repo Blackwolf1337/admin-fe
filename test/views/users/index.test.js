@@ -34,7 +34,7 @@ describe('Search and filter users', () => {
     })
 
     await flushPromises()
-    expect(wrapper.vm.usersCount).toEqual(3)
+    expect(wrapper.vm.usersCount).toEqual(4)
     done()
   })
 
@@ -51,7 +51,7 @@ describe('Search and filter users', () => {
     }
 
     await flushPromises()
-    expect(wrapper.vm.usersCount).toEqual(3)
+    expect(wrapper.vm.usersCount).toEqual(4)
     const input = wrapper.find('.search input.el-input__inner')
     input.element.value = 'bob'
     input.trigger('input')
@@ -61,7 +61,7 @@ describe('Search and filter users', () => {
     input.element.value = ''
     input.trigger('input')
     await flushPromises()
-    expect(wrapper.vm.usersCount).toEqual(3)
+    expect(wrapper.vm.usersCount).toEqual(4)
 
     done()
   })
@@ -156,11 +156,13 @@ describe('Users actions', () => {
       stubs: ['router-link']
     })
     await flushPromises()
-    expect(store.state.users.fetchedUsers.length).toEqual(3)
+    expect(store.state.users.fetchedUsers[1].deactivated).toBe(false)
 
     wrapper.find(htmlElement(2, 2)).trigger('click')
+    store.dispatch('DeleteUsers', { users: [{ active: true, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'] }] })
+
     await flushPromises()
-    expect(store.state.users.fetchedUsers.length).toEqual(2)
+    expect(store.state.users.fetchedUsers[1].deactivated).toBe(true)
     done()
   })
 
@@ -302,7 +304,7 @@ describe('Creates new account', () => {
       stubs: ['router-link']
     })
     await flushPromises()
-    expect(wrapper.vm.usersCount).toEqual(3)
+    expect(wrapper.vm.usersCount).toEqual(4)
 
     const openDialogButton = wrapper.find('button.actions-button')
     openDialogButton.trigger('click')
@@ -324,7 +326,7 @@ describe('Creates new account', () => {
     createButton.trigger('click')
     await flushPromises()
 
-    expect(wrapper.vm.usersCount).toEqual(4)
+    expect(wrapper.vm.usersCount).toEqual(5)
     done()
   })
 

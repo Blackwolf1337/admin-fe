@@ -1,13 +1,27 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="obanQueuesData" :model="obanQueuesData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="obanQueuesData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="obanQueues" :data="obanQueuesData"/>
     </el-form>
-    <el-form ref="workersData" :model="workersData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-divider v-if="obanQueues" class="divider thick-line"/>
+    <el-form :model="workersData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="workers" :data="workersData"/>
     </el-form>
-    <el-form ref="activityExpiration" :model="activityExpirationData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-divider v-if="workers" class="divider thick-line"/>
+    <el-form :model="activityExpirationData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="activityExpiration" :data="activityExpirationData"/>
+    </el-form>
+    <el-divider v-if="activityExpiration" class="divider thick-line"/>
+    <el-form :model="connectionsPoolsData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="connectionsPools" :data="connectionsPoolsData"/>
+    </el-form>
+    <el-divider v-if="connectionsPools" class="divider thick-line"/>
+    <el-form :model="poolsData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="pools" :data="poolsData"/>
+    </el-form>
+    <el-divider v-if="pools" class="divider thick-line"/>
+    <el-form :model="hackneyPoolsData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="hackneyPools" :data="hackneyPoolsData"/>
     </el-form>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
@@ -33,6 +47,18 @@ export default {
     },
     activityExpirationData() {
       return _.get(this.settings.settings, [':pleroma', 'Pleroma.ActivityExpiration']) || {}
+    },
+    connectionsPools() {
+      return this.settings.description.find(setting => setting.key === ':connections_pool')
+    },
+    connectionsPoolsData() {
+      return _.get(this.settings.settings, [':pleroma', ':connections_pool']) || {}
+    },
+    hackneyPools() {
+      return this.settings.description.find(setting => setting.key === ':hackney_pools')
+    },
+    hackneyPoolsData() {
+      return _.get(this.settings.settings, [':pleroma', ':hackney_pools']) || {}
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -63,6 +89,12 @@ export default {
     },
     obanQueuesData() {
       return _.get(this.settings.settings, [':pleroma', 'Oban']) || {}
+    },
+    pools() {
+      return this.settings.description.find(setting => setting.key === ':pools')
+    },
+    poolsData() {
+      return _.get(this.settings.settings, [':pleroma', ':pools']) || {}
     },
     workers() {
       return this.settings.description.find(setting => setting.key === ':workers')

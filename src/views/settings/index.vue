@@ -69,7 +69,7 @@
       <div class="settings-search-input-container"/>
       <activity-pub v-if="activeTab === 'activityPub'"/>
       <authentication v-if="activeTab === 'auth'"/>
-      <auto-linker v-if="activeTab === 'autoLinker'"/>
+      <link-formatter v-if="activeTab === 'linkFormatter'"/>
       <esshd v-if="activeTab === 'esshd'"/>
       <captcha v-if="activeTab === 'captcha'"/>
       <frontend v-if="activeTab === 'frontend'"/>
@@ -97,7 +97,6 @@ import { tabs } from './components/tabs'
 import {
   ActivityPub,
   Authentication,
-  AutoLinker,
   Captcha,
   Esshd,
   Frontend,
@@ -105,6 +104,7 @@ import {
   Http,
   Instance,
   JobQueue,
+  LinkFormatter,
   Logger,
   Mailer,
   MediaProxy,
@@ -122,7 +122,6 @@ export default {
   components: {
     ActivityPub,
     Authentication,
-    AutoLinker,
     Captcha,
     Esshd,
     Frontend,
@@ -130,6 +129,7 @@ export default {
     Http,
     Instance,
     JobQueue,
+    LinkFormatter,
     Logger,
     Mailer,
     MediaProxy,
@@ -147,7 +147,7 @@ export default {
       options: [
         { value: 'activityPub', label: i18n.t('settings.activityPub') },
         { value: 'auth', label: i18n.t('settings.auth') },
-        { value: 'autoLinker', label: i18n.t('settings.autoLinker') },
+        { value: 'linkFormatter', label: i18n.t('settings.linkFormatter') },
         { value: 'esshd', label: i18n.t('settings.esshd') },
         { value: 'captcha', label: i18n.t('settings.captcha') },
         { value: 'frontend', label: i18n.t('settings.frontend') },
@@ -200,7 +200,7 @@ export default {
       return this.$store.state.settings.searchData
     },
     tabs() {
-      return tabs
+      return tabs(this.$store.state.settings.description)
     }
   },
   mounted: function() {
@@ -222,9 +222,7 @@ export default {
     querySearch(queryString, cb) {
       const results = this.searchData.filter(searchObj => searchObj.search.find(el => el.includes(queryString.toLowerCase())))
         .map(searchObj => {
-          return searchObj.groupKey === ':opts'
-            ? { value: `${searchObj.label} in Auto Linker`, group: searchObj.groupKey, key: searchObj.key }
-            : { value: `${searchObj.label} in ${searchObj.groupLabel}`, group: searchObj.groupKey, key: searchObj.key }
+          return { value: `${searchObj.label} in ${searchObj.groupLabel}`, group: searchObj.groupKey, key: searchObj.key }
         })
       cb(results)
     },

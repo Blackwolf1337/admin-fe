@@ -1,18 +1,18 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="loggerData" :model="loggerData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="loggerData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="logger" :data="loggerData"/>
     </el-form>
     <el-divider v-if="logger" class="divider thick-line"/>
-    <el-form ref="consoleData" :model="consoleData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="consoleData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="console" :data="consoleData"/>
     </el-form>
     <el-divider v-if="console" class="divider thick-line"/>
-    <el-form ref="exsysloggerData" :model="exsysloggerData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="exsysloggerData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="exsyslogger" :data="exsysloggerData"/>
     </el-form>
     <el-divider v-if="exsyslogger" class="divider thick-line"/>
-    <el-form ref="quackData" :model="quackData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="quackData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="quack" :data="quackData"/>
     </el-form>
     <div class="submit-button-container">

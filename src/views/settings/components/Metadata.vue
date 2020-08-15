@@ -1,10 +1,10 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="metadata" :model="metadataData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="metadataData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="metadata" :data="metadataData"/>
     </el-form>
     <el-divider v-if="metadata" class="divider thick-line"/>
-    <el-form ref="richMedia" :model="richMediaData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="richMediaData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="richMedia" :data="richMediaData"/>
     </el-form>
     <div class="submit-button-container">

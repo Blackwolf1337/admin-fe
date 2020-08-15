@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form v-if="!loading" ref="vapidDetailsData" :model="vapidDetailsData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form v-if="!loading" :model="vapidDetailsData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="vapidDetails" :data="vapidDetailsData"/>
     </el-form>
     <div class="submit-button-container">

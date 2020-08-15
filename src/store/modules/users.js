@@ -7,12 +7,14 @@ import {
   deactivateUsers,
   deleteRight,
   deleteUsers,
+  disableMfa,
   fetchUsers,
   getPasswordResetToken,
   searchUsers,
   tagUser,
   untagUser,
   forcePasswordReset,
+  approveUserAccount,
   confirmUserEmail,
   resendConfirmationEmail
 } from '@/api/users'
@@ -29,6 +31,7 @@ const users = {
       local: false,
       external: false,
       active: false,
+      need_approval: false,
       deactivated: false
     },
     passwordResetToken: {
@@ -123,13 +126,31 @@ const users = {
 
       dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
     },
+    async ApproveUsersAccount({ dispatch, getters }, { users, _userId, _statusId }) {
+      const updatedUsers = users.map(user => {
+        return { ...user, approval_pending: false }
+      })
+      const nicknames = users.map(user => user.nickname)
+      const callApiFn = async() => await approveUserAccount(nicknames, getters.authHost, getters.token)
+
+      dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
+    },
     ClearUsersState({ commit }) {
       commit('SET_SEARCH_QUERY', '')
-      commit('SET_USERS_FILTERS', { local: false, external: false, active: false, deactivated: false })
+      commit('SET_USERS_FILTERS', { local: false, external: false, active: false, need_approval: false, deactivated: false })
     },
     async ClearFilters({ commit, dispatch, state }) {
       commit('CLEAR_USERS_FILTERS')
       dispatch('SearchUsers', { query: state.searchQuery, page: 1 })
+    },
+    async ConfirmUsersEmail({ dispatch, getters }, { users, _userId, _statusId }) {
+      const updatedUsers = users.map(user => {
+        return { ...user, confirmation_pending: false }
+      })
+      const nicknames = users.map(user => user.nickname)
+      const callApiFn = async() => await confirmUserEmail(nicknames, getters.authHost, getters.token)
+
+      dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
     },
     async CreateNewAccount({ dispatch, getters, state }, { nickname, email, password }) {
       try {
@@ -150,19 +171,9 @@ const users = {
 
       dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId })
     },
-    async ConfirmUsersEmail({ dispatch, getters }, { users, _userId, _statusId }) {
-      const updatedUsers = users.map(user => {
-        return { ...user, confirmation_pending: false }
-      })
-      const nicknames = users.map(user => user.nickname)
-      const callApiFn = async() => await confirmUserEmail(nicknames, getters.authHost, getters.token)
-
-      dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
-    },
-    async ResendConfirmationEmail({ dispatch, getters }, users) {
-      const usersNicknames = users.map(user => user.nickname)
+    async DisableMfa({ dispatch, getters }, nickname) {
       try {
-        await resendConfirmationEmail(usersNicknames, getters.authHost, getters.token)
+        await disableMfa(nickname, getters.authHost, getters.token)
       } catch (_e) {
         return
       }
@@ -184,11 +195,14 @@ const users = {
       } catch (_e) {
         return
       }
-      const deletedUsersIds = users.map(deletedUser => deletedUser.id)
-      const updatedUsers = state.fetchedUsers.filter(user => !deletedUsersIds.includes(user.id))
-      commit('SET_USERS', updatedUsers)
+      const updatedUsers = users.map(user => {
+        return { ...user, deactivated: true }
+      })
+      commit('SWAP_USERS', updatedUsers)
 
-      dispatch('FetchUserProfile', { userId: _userId, godmode: false })
+      if (_userId) {
+        dispatch('FetchUserProfile', { userId: _userId, godmode: false })
+      }
       dispatch('SuccessMessage')
     },
     async FetchUsers({ commit, dispatch, getters, state }, { page }) {
@@ -223,6 +237,15 @@ const users = {
       }
       dispatch('SuccessMessage')
     },
+    async ResendConfirmationEmail({ dispatch, getters }, users) {
+      const usersNicknames = users.map(user => user.nickname)
+      try {
+        await resendConfirmationEmail(usersNicknames, getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      }
+      dispatch('SuccessMessage')
+    },
     async SearchUsers({ commit, dispatch, state, getters }, { query, page }) {
       if (query.length === 0) {
         commit('SET_SEARCH_QUERY', query)
@@ -248,6 +271,7 @@ const users = {
         local: false,
         external: false,
         active: false,
+        need_approval: false,
         deactivated: false
       }
       const currentFilters = { ...defaultFilters, ...filters }

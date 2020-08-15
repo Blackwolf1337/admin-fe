@@ -1,19 +1,23 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="pleromaAuthenticatorData" :model="pleromaAuthenticatorData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="pleromaAuthenticatorData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="pleromaAuthenticator" :data="pleromaAuthenticatorData"/>
     </el-form>
     <el-divider v-if="pleromaAuthenticator" class="divider thick-line"/>
-    <el-form ref="authData" :model="authData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="authData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="auth" :data="authData"/>
     </el-form>
     <el-divider v-if="auth" class="divider thick-line"/>
-    <el-form ref="ldapData" :model="ldapData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="ldapData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="ldap" :data="ldapData"/>
     </el-form>
-    <el-divider v-if="oauth2" class="divider thick-line"/>
-    <el-form ref="oauth2" :model="oauth2Data" :label-position="labelPosition" :label-width="labelWidth">
+    <el-divider v-if="ldap" class="divider thick-line"/>
+    <el-form :model="oauth2Data" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="oauth2" :data="oauth2Data"/>
+    </el-form>
+    <el-divider v-if="oauth2" class="divider thick-line"/>
+    <el-form :model="restrictUnauthenticatedData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="restrictUnauthenticated" :data="restrictUnauthenticatedData"/>
     </el-form>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
@@ -81,6 +85,12 @@ export default {
     },
     pleromaAuthenticatorData() {
       return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.Auth.Authenticator']) || {}
+    },
+    restrictUnauthenticated() {
+      return this.settings.description.find(setting => setting.key === ':restrict_unauthenticated')
+    },
+    restrictUnauthenticatedData() {
+      return _.get(this.settings.settings, [':pleroma', ':restrict_unauthenticated']) || {}
     }
   },
   methods: {

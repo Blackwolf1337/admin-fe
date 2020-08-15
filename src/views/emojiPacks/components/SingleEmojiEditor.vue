@@ -103,7 +103,7 @@ export default {
       return this.$store.state.emojiPacks.localPacks
     },
     remoteInstance() {
-      return new URL(this.$store.state.emojiPacks.remoteInstance).host
+      return this.$store.state.emojiPacks.remoteInstance
     }
   },
   methods: {

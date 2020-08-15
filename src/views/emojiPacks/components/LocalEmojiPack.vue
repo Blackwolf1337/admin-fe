@@ -38,19 +38,32 @@
         </el-link>
       </div>
     </div>
-    <el-collapse v-model="showPackContent" class="contents-collapse">
+    <el-collapse v-model="showPackContent" class="contents-collapse" @change="handleChange($event, name)">
       <el-collapse-item v-if="isLocal" :title=" $t('emoji.addNewEmoji')" name="addEmoji" class="no-background">
         <new-emoji-uploader :pack-name="name"/>
       </el-collapse-item>
-      <el-collapse-item v-if="pack.files.length > 0" :title=" $t('emoji.manageEmoji')" name="manageEmoji" class="no-background">
-        <single-emoji-editor
-          v-for="[shortcode, file] in pack.files"
-          :key="shortcode"
-          :host="host"
-          :pack-name="name"
-          :shortcode="shortcode"
-          :file="file"
-          :is-local="isLocal" />
+      <el-collapse-item :title=" $t('emoji.manageEmoji')" name="manageEmoji" class="no-background">
+        <div v-if="pack.files && Object.keys(pack.files).length > 0">
+          <single-emoji-editor
+            v-for="(file, shortcode) in pack.files"
+            :key="shortcode"
+            :host="host"
+            :pack-name="name"
+            :shortcode="shortcode"
+            :file="file"
+            :is-local="isLocal" />
+        </div>
+        <span v-else class="expl">{{ $t('emoji.emptyPack') }}</span>
+        <div class="files-pagination">
+          <el-pagination
+            :total="localPackFilesCount"
+            :current-page="currentFilesPage"
+            :page-size="pageSize"
+            hide-on-single-page
+            layout="prev, pager, next"
+            @current-change="handleFilesPageChange"
+          />
+        </div>
       </el-collapse-item>
     </el-collapse>
   </el-collapse-item>
@@ -86,6 +99,12 @@ export default {
     }
   },
   computed: {
+    currentFilesPage() {
+      return this.$store.state.emojiPacks.currentFilesPage
+    },
+    currentPage() {
+      return this.$store.state.emojiPacks.currentPage
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -100,6 +119,12 @@ export default {
       } else {
         return '155px'
       }
+    },
+    localPackFilesCount() {
+      return this.$store.state.emojiPacks.localPackFilesCount
+    },
+    pageSize() {
+      return this.$store.state.emojiPacks.filesPageSize
     },
     share: {
       get() { return this.pack.pack['share-files'] },
@@ -159,6 +184,9 @@ export default {
     }
   },
   methods: {
+    collapse() {
+      this.showPackContent = []
+    },
     deletePack() {
       this.$confirm('This will delete the pack, are you sure?', 'Warning', {
         confirmButtonText: 'Yes, delete the pack',
@@ -167,8 +195,23 @@ export default {
       }).then(() => {
         this.$store.dispatch('DeletePack', { name: this.name })
           .then(() => this.$store.dispatch('ReloadEmoji'))
-          .then(() => this.$store.dispatch('SetLocalEmojiPacks'))
+          .then(() => {
+            const { [this.name]: value, ...updatedPacks } = this.$store.state.emojiPacks.localPacks
+            if (Object.keys(updatedPacks).length === 0 && this.currentPage > 1) {
+              this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage - 1)
+            } else {
+              this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
+            }
+          })
       }).catch(() => {})
+    },
+    handleChange(openTabs, name) {
+      if (openTabs.includes('manageEmoji')) {
+        this.$store.dispatch('FetchSinglePack', { name, page: 1 })
+      }
+    },
+    handleFilesPageChange(page) {
+      this.$store.dispatch('FetchSinglePack', { name: this.name, page })
     },
     savePackMetadata() {
       this.$store.dispatch('SavePackMetadata', { packName: this.name })
@@ -216,6 +259,10 @@ export default {
   .el-form-item {
     margin-bottom: 10px;
   }
+}
+.files-pagination {
+  margin: 25px 0;
+  text-align: center;
 }
 .has-background .el-collapse-item__header {
   background: #f6f6f6;

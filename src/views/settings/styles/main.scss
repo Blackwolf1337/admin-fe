@@ -17,22 +17,11 @@
   .delete-setting-button {
     margin-left: 5px;
   }
-  .description > p {
-    font-size: 14px;
-    color: #606266;
-    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei";
-    font-weight: 700;
-    line-height: 20px;
-    margin: 0 0 14px 0;
-    code {
-      display: inline;
-      padding: 2px 3px;
-      font-size: 14px;
-    }
-  }
   .description-container {
     overflow-wrap: break-word;
-    margin-bottom: 0;
+    .el-form-item__content {
+      line-height: 20px;
+    }
   }
   .divider {
     margin: 0 0 18px 0;
@@ -56,6 +45,10 @@
   }
   .el-tabs__header {
     z-index: 2002;
+  }
+  .email-address-input {
+    width: 50%;
+    margin-right: 10px;
   }
   .esshd-list {
     margin: 0;
@@ -186,6 +179,15 @@
     width: 30%;
     margin-right: 8px
   }
+  .nickname-input {
+    width: 50%;
+  }
+  .no-top-margin {
+    margin-top: 0;
+    p {
+      margin-right: 30px;
+    }
+  }
   .pattern-input {
     width: 20%;
     margin-right: 8px
@@ -223,7 +225,7 @@
     width: 100%;
   }
   .rate-limit-content {
-    width: 100%;
+    width: 70%;
   }
   .rate-limit-label {
     float: right;
@@ -233,8 +235,8 @@
     color: #606266;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei";
     font-weight: 700;
-    height: 36px;
-    width: 100%;
+    height: fit-content;
+    width: 30%;
     margin-right: 10px;
   }
   .reboot-button {
@@ -259,6 +261,12 @@
     margin-left: 8px;
     margin-right: 10px
   }
+  .sender-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+  }
   .scale-input {
     width: 47%;
     margin: 0 1% 5px 0
@@ -266,6 +274,14 @@
   .setting-input {
     display: flex;
     margin-bottom: 10px;
+  }
+  .setting-label {
+    font-size: 14px;
+    color: #606266;
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei";
+    font-weight: 700;
+    line-height: 20px;
+    margin: 0 0 14px 0;
   }
   .settings-container {
     max-width: 1824px;
@@ -278,7 +294,7 @@
     margin-left: 5px;
   }
   .settings-docs-button {
-    width: 163px;
+    min-width: 163px;
     text-align: left;
     padding: 10px;
   }
@@ -405,6 +421,9 @@
         font-size: 14px;
       }
     }
+    .description-container {
+      margin: 0 15px 22px 15px;
+    }
     .divider {
       margin: 0 0 10px 0;
     }
@@ -488,8 +507,14 @@
         flex-direction: column;
       }
     }
+    .rate-limit-content {
+      width: 100%;
+    }
     .rate-limit-label {
       float: left;
+    }
+    .rate-limit-label-container {
+      width: 100%;
     }
     .reboot-button {
       margin: 0 15px 0 0;
@@ -499,10 +524,6 @@
     }
     .scale-input {
       width: 45%;
-    }
-    .setting-label {
-      display: flex;
-      justify-content: space-between;
     }
     .settings-header {
       width: fit-content;
@@ -537,15 +558,22 @@
       line-height: 22px;
       margin-top: 7px;
       width: 100%;
+      pointer-events: none;
       span {
         width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: baseline;
       }
+      button {
+        pointer-events: auto;
+      }
     }
     .el-message {
       min-width: 80%;
+    }
+    .el-message-box {
+      width: 80%;
     }
     .el-select__tags {
       overflow: hidden;
@@ -650,8 +678,11 @@
       align-items: center;
       margin: 15px 30px 15px 15px;
     }
+    .rate-limit-content {
+      width: 65%;
+    }
     .rate-limit-label-container {
-      width: 250px;
+      width: 35%;
     }
     .settings-delete-button {
       float: right;

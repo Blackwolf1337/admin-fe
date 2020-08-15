@@ -35,7 +35,7 @@
       </header>
       <moderation-dropdown
         :user="user"
-        :page="'userPage'"
+        :page="'statusPage'"
         @open-reset-token-dialog="openResetPasswordDialog"/>
     </div>
     <reset-password-dialog

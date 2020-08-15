@@ -58,8 +58,6 @@ describe('Settings search', () => {
     wrapper.vm.handleSearchSelect({ group: ':media_proxy', key: ':ssl_options' })
     expect(store.state.settings.activeTab).toBe('media-proxy')
 
-    wrapper.vm.handleSearchSelect({ group: ':opts', key: ':opts' })
-    expect(store.state.settings.activeTab).toBe('auto-linker')
     done()
   })
 })

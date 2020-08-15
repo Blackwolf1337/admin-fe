@@ -31,6 +31,9 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
+  },
+  mounted() {
+    this.$store.dispatch('FetchOpenReportsCount')
   }
 }
 </script>

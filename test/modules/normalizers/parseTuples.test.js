@@ -198,11 +198,35 @@ describe('Parse tuples', () => {
     expect(_.isEqual(expectedResult, result)).toBeTruthy()
   })
 
+  it('parses crontab setting', () => {
+    const tuples = [{ tuple: [':crontab', [
+      { tuple: ['0 0 * * *', 'Pleroma.Workers.Cron.ClearOauthTokenWorker'] },
+      { tuple: ['0 * * * *', 'Pleroma.Workers.Cron.StatsWorker'] },
+      { tuple: ['* * * * *', 'Pleroma.Workers.Cron.PurgeExpiredActivitiesWorker']}
+    ]]}]
+    const expectedResult = { ':crontab': [
+      { 'Pleroma.Workers.Cron.ClearOauthTokenWorker': { value: '0 0 * * *'}},
+      { 'Pleroma.Workers.Cron.StatsWorker': { value: '0 * * * *'}},
+      { 'Pleroma.Workers.Cron.PurgeExpiredActivitiesWorker': { value: '* * * * *'}}
+    ]}
+
+    const parsed = parseTuples(tuples, 'Oban')
+
+    expect(typeof parsed).toBe('object')
+    expect(':crontab' in parsed).toBeTruthy()
+    const result = { ...parsed, ':crontab': parsed[':crontab'].map(el => {
+      const key = Object.keys(el)[0]
+      const { id, ...rest } = el[key]
+      return { [key]: rest }
+    })}
+    expect(_.isEqual(expectedResult, result)).toBeTruthy()
+  })
+
   it('parses match_actor setting in mrf_subchain group', () => {
-    const tuples = [{ tuple: [":match_actor",
-      { '~r/https:\/\/example.com/s': ["Elixir.Pleroma.Web.ActivityPub.MRF.DropPolicy"]}]}]
-    const expectedResult = { ":match_actor":
-      [{ '~r/https:\/\/example.com/s': { value: ["Elixir.Pleroma.Web.ActivityPub.MRF.DropPolicy"] }}]}
+    const tuples = [{ tuple: [':match_actor',
+      { '~r/https:\/\/example.com/s': ['Elixir.Pleroma.Web.ActivityPub.MRF.DropPolicy']}]}]
+    const expectedResult = { ':match_actor':
+      [{ '~r/https:\/\/example.com/s': { value: ['Elixir.Pleroma.Web.ActivityPub.MRF.DropPolicy'] }}]}
 
     const parsed = parseTuples(tuples, ':mrf_subchain')
 
@@ -216,14 +240,48 @@ describe('Parse tuples', () => {
     expect(_.isEqual(expectedResult, result)).toBeTruthy()
   })
 
-  it('parses proxy_url', () => {
-    const proxyUrlNull = [{ tuple: [":proxy_url", null] }]
-    const proxyUrlTuple = [{ tuple: [":proxy_url", { tuple: [":socks5", ":localhost", 3090] }]}]
-    const proxyUrlString = [{ tuple: [":proxy_url", 'localhost:9020'] }]
+  it('parses options setting in MediaProxy.Invalidation.Http group', () => {
+    const tuples = [{ tuple: [':options', [{ tuple: [':params', { xxx: 'zzz', aaa: 'bbb' }]}]]}]
+    const expectedResult = { ':options': { ':params': 
+      [ { xxx: { value: 'zzz' }}, { aaa: { value: 'bbb' }}]
+    }}
 
-    const expectedProxyUrlNull = { ":proxy_url": { socks5: false, host: null, port: null }}
-    const expectedProxyUrlTuple = { ":proxy_url": { socks5: true, host: ":localhost", port: 3090 }}
-    const expectedProxyUrlString = { ":proxy_url": { socks5: false, host: 'localhost', port: '9020' }}
+    const parsed = parseTuples(tuples, 'Pleroma.Web.MediaProxy.Invalidation.Http')
+
+    expect(typeof parsed).toBe('object')
+    expect(':options' in parsed).toBeTruthy()
+    
+    const idRemoved = parsed[':options'][':params'].map(el => {
+      const key = Object.keys(el)[0]
+      const { id, ...rest } = el[key]
+      return { [key]: rest }
+    })
+    parsed[':options'][':params'] = idRemoved
+    expect(_.isEqual(expectedResult, parsed)).toBeTruthy()
+  })
+
+  it('parses sender setting in :welcome', () => {
+    const senderEmpty = [{ tuple: [':sender', ''] }]
+    const senderTuple = [{ tuple: [':sender', { tuple: ['test', 'test@email.com'] }]}]
+    const senderString = [{ tuple: [':sender', 'test@email.com'] }]
+
+    const expectedSenderEmpty = { ':sender': { email: '' }}
+    const expectedSenderTuple = { ':sender': { email: 'test@email.com', nickname: 'test' }}
+    const expectedSenderString = { ':sender': { email: 'test@email.com' }}
+
+    expect(_.isEqual(expectedSenderEmpty, parseTuples(senderEmpty, ':welcome'))).toBeTruthy()
+    expect(_.isEqual(expectedSenderTuple, parseTuples(senderTuple, ':welcome'))).toBeTruthy()
+    expect(_.isEqual(expectedSenderString, parseTuples(senderString, ':welcome'))).toBeTruthy()
+  })
+
+  it('parses proxy_url', () => {
+    const proxyUrlNull = [{ tuple: [':proxy_url', null] }]
+    const proxyUrlTuple = [{ tuple: [':proxy_url', { tuple: [':socks5', ':localhost', 3090] }]}]
+    const proxyUrlString = [{ tuple: [':proxy_url', 'localhost:9020'] }]
+
+    const expectedProxyUrlNull = { ':proxy_url': { socks5: false, host: null, port: null }}
+    const expectedProxyUrlTuple = { ':proxy_url': { socks5: true, host: ':localhost', port: 3090 }}
+    const expectedProxyUrlString = { ':proxy_url': { socks5: false, host: 'localhost', port: '9020' }}
 
     expect(_.isEqual(expectedProxyUrlNull, parseTuples(proxyUrlNull, ':http'))).toBeTruthy()
     expect(_.isEqual(expectedProxyUrlTuple, parseTuples(proxyUrlTuple, ':http'))).toBeTruthy()
@@ -231,8 +289,8 @@ describe('Parse tuples', () => {
   })
 
   it('parses args setting in Pleroma.Upload.Filter.Mogrify', () => {
-    const tuples = [{ tuple: [":args", ["strip", { tuple: ["implode", "1"] }]]}]
-    const expectedResult = { ":args": ["strip", "implode"] }
+    const tuples = [{ tuple: [':args', ['strip', '{ "implode", "1" }']]}]
+    const expectedResult = { ':args': ['strip', '{ "implode", "1" }'] }
 
     const result = parseTuples(tuples, 'Pleroma.Upload.Filter.Mogrify')
     expect(_.isEqual(expectedResult, result)).toBeTruthy()
@@ -240,19 +298,19 @@ describe('Parse tuples', () => {
 
   it('parses nested tuples', () => {
     const tuples = [{ tuple: [':proxy_opts', [
-      { tuple: [":redirect_on_failure", false] },
-      { tuple: [":max_body_length", 26214400] },
-      { tuple: [":http", [
-        { tuple: [":follow_redirect", true] },
-        { tuple: [":pool", ":media"] }
+      { tuple: [':redirect_on_failure', false] },
+      { tuple: [':max_body_length', 26214400] },
+      { tuple: [':http', [
+        { tuple: [':follow_redirect', true] },
+        { tuple: [':pool', ':media'] }
       ]]},
     ]]}]
     const expectedResult = { ':proxy_opts': {
-      ":redirect_on_failure": false,
-      ":max_body_length": 26214400,
-      ":http": {
-        ":follow_redirect": true,
-        ":pool": ":media"
+      ':redirect_on_failure': false,
+      ':max_body_length': 26214400,
+      ':http': {
+        ':follow_redirect': true,
+        ':pool': ':media'
       }
     }}
     const result = parseTuples(tuples, ':media_proxy')
@@ -260,8 +318,8 @@ describe('Parse tuples', () => {
   })
 
   it('parses tuples with arrays', () => {
-    const tuples = [{ tuple: [":ignore_hosts", []]}, { tuple: [":ignore_tld", ["local", "localdomain", "lan"]]}]
-    const expectedResult = { ":ignore_hosts": [], ":ignore_tld": ["local", "localdomain", "lan"] }
+    const tuples = [{ tuple: [':ignore_hosts', []]}, { tuple: [':ignore_tld', ['local', 'localdomain', 'lan']]}]
+    const expectedResult = { ':ignore_hosts': [], ':ignore_tld': ['local', 'localdomain', 'lan'] }
 
     const result = parseTuples(tuples, ':rich_media')
     expect(_.isEqual(expectedResult, result)).toBeTruthy()

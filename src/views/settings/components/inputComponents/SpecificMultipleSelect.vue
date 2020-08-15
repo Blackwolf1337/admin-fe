@@ -16,11 +16,15 @@
       :value="data[setting.key]"
       :data-search="setting.key || setting.group"
       multiple
+      filterable
+      allow-create
       class="input"
       @change="updateSetting($event, settingGroup.group, settingGroup.key, setting.key, setting.type)">
-      <el-option value="strip" label="strip"/>
-      <el-option value="auto-orient" label="auto-orient"/>
-      <el-option value="implode" label="implode"/>
+      <el-option value="strip"/>
+      <el-option value="auto-orient"/>
+      <!-- eslint-disable -->
+      <el-option value='{"implode", "1"}'/>
+      <!-- eslint-enable -->
     </el-select>
   </div>
 </template>

@@ -65,8 +65,11 @@ export default {
     externalLink: 'External Link',
     users: 'Users',
     reports: 'Reports',
+    invites: 'Invites',
+    statuses: 'Statuses',
     settings: 'Settings',
     moderationLog: 'Moderation Log',
+    mediaProxyCache: 'MediaProxy Cache',
     'emoji-packs': 'Emoji packs'
   },
   errLog: {
@@ -98,6 +101,19 @@ export default {
     thirdparty: 'Or connect with',
     pleromaFELoginFailed: 'Failed to login via PleromaFE, please login with username/password',
     pleromaFELoginSucceed: 'Logged in via PleromaFE'
+  },
+  mediaProxyCache: {
+    mediaProxyCache: 'MediaProxy Cache',
+    ban: 'Ban',
+    url: 'URL',
+    evict: 'Evict',
+    evictedMessage: 'This URL was evicted',
+    actions: 'Actions',
+    remove: 'Remove from Cachex',
+    evictObjectsHeader: 'Evict object from the MediaProxy cache',
+    listBannedUrlsHeader: 'List of all banned MediaProxy URLs',
+    multipleInput: 'You can enter a single URL or several comma separated links',
+    removeSelected: 'Remove Selected'
   },
   documentation: {
     documentation: 'Documentation',
@@ -180,6 +196,7 @@ export default {
     external: 'External',
     deactivated: 'Deactivated',
     active: 'Active',
+    unapproved: 'Pending',
     unconfirmed: 'Unconfirmed',
     actions: 'Actions',
     activate: 'Activate',
@@ -206,6 +223,7 @@ export default {
     disableAnySubscription: 'Disallow following user at all',
     disableAnySubscriptionForMultiple: 'Disallow following users at all',
     requirePasswordReset: 'Require password reset on next login',
+    disableMfa: 'Disable multi-factor authentication',
     selectUsers: 'Select users to apply actions to multiple users',
     moderateUser: 'Moderate user',
     moderateUsers: 'Moderate multiple users',
@@ -216,10 +234,14 @@ export default {
     revokeRightConfirmation: 'Are you sure you want to revoke {right} rights from all selected users?',
     activateMultipleUsersConfirmation: 'Are you sure you want to activate accounts of all selected users?',
     deactivateMultipleUsersConfirmation: 'Are you sure you want to deactivate accounts of all selected users?',
-    deleteMultipleUsersConfirmation: 'Are you sure you want to delete accounts of all selected users?',
+    deleteUserConfirmation: 'Are you sure you want to delete this account? This action cannot be undone.',
+    rejectAccountConfirmation: 'Are you sure you want to reject this account? This account will be deleted and it cannot be undone.',
+    deleteMultipleUsersConfirmation: 'Are you sure you want to delete accounts of all selected users? This action cannot be undone.',
     addTagForMultipleUsersConfirmation: 'Are you sure you want to apply tag to all selected users?',
     removeTagFromMultipleUsersConfirmation: 'Are you sure you want to remove tag from all selected users?',
     requirePasswordResetConfirmation: 'Are you sure you want to require password reset for all selected users?',
+    approveAccountsConfirmation: 'Are you sure you want to approve accounts for all selected users?',
+    rejectAccountsConfirmation: 'Are you sure you want to reject accounts for all selected users? These accounts will be deleted and it cannot be undone.',
     confirmAccountsConfirmation: 'Are you sure you want to confirm emails for all selected users?',
     resendEmailConfirmation: 'Are you sure you want to resend confirmation email for all selected users?',
     mailerMustBeEnabled: 'To require user\'s password reset you must enable mailer.',
@@ -240,14 +262,20 @@ export default {
     getPasswordResetToken: 'Get password reset token',
     passwordResetTokenCreated: 'Password reset token was created',
     accountCreated: 'New account was created!',
+    approveAccount: 'Approve account',
+    approveAccounts: 'Approve accounts',
+    unapprovedAccount: 'User account is pending approval',
     unconfirmedEmail: 'User didn\'t confirm the email',
     confirmAccount: 'Confirm account',
     confirmAccounts: 'Confirm accounts',
+    rejectAccount: 'Reject account',
+    rejectAccounts: 'Reject accounts',
     resendConfirmation: 'Resend confirmation email',
     invalidAccount: 'This account has invalid nickname and can\'t be modified',
     invalidNickname: 'invalid nickname',
     passwordResetTokenGenerated: 'Password reset token was generated:',
-    linkToResetPassword: 'You can also use this link to reset password:'
+    linkToResetPassword: 'You can also use this link to reset password:',
+    registrationReason: 'Registration Reason'
   },
   statuses: {
     statuses: 'Statuses',
@@ -274,7 +302,9 @@ export default {
     roles: 'Roles',
     active: 'Active',
     status: 'Status',
+    reason: 'Registration Reason',
     deactivated: 'Deactivated',
+    pending: 'Pending',
     noStatuses: 'No statuses to show',
     openAccountInInstance: 'Open account in instance',
     securitySettings: {
@@ -300,6 +330,7 @@ export default {
     external: 'External',
     byStatus: 'By status',
     active: 'Active',
+    pending: 'Pending Approval',
     deactivated: 'Deactivated'
   },
   reports: {
@@ -361,10 +392,10 @@ export default {
     instance: 'Instance',
     upload: 'Upload',
     mailer: 'Mailer',
+    linkFormatter: 'Link Formatter',
     logger: 'Logger',
     activityPub: 'ActivityPub',
     auth: 'Authentication',
-    autoLinker: 'Auto Linker',
     captcha: 'Captcha',
     frontend: 'Frontend',
     http: 'HTTP',
@@ -392,14 +423,13 @@ export default {
     files: 'files',
     successfullyRemoved: 'Setting removed successfully!',
     seeDocs: 'See Documentation',
-    assets: 'Assets',
-    emoji: 'Emoji',
-    markup: 'Markup settings',
-    corsPlug: 'CORS plug config',
     instanceReboot: 'Reboot Instance',
     restartApp: 'You must restart the instance to apply settings',
     restartSuccess: 'Instance rebooted successfully!',
-    removeSettingConfirmation: 'Are you sure you want to remove this setting\'s value from the database?'
+    removeSettingConfirmation: 'Are you sure you want to remove this setting\'s value from the database?',
+    changeImage: 'Change image',
+    uploadImage: 'Upload image',
+    remove: 'Remove'
   },
   invites: {
     inviteTokens: 'Invite tokens',
@@ -482,6 +512,7 @@ export default {
     specifyShortcode: 'Specify a custom shortcode',
     specifyFilename: 'Specify a custom filename',
     copy: 'Copy',
-    copyToLocalPack: 'Copy to local pack'
+    copyToLocalPack: 'Copy to local pack',
+    emptyPack: 'This emoji pack is empty'
   }
 }

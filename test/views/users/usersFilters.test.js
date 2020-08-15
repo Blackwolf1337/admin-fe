@@ -31,18 +31,18 @@ describe('Filters users', () => {
       localVue
     })
 
-    expect(store.state.users.totalUsersCount).toEqual(3)
+    expect(store.state.users.totalUsersCount).toEqual(4)
 
     const filter = wrapper.find(`li.el-select-dropdown__item:nth-child(${1})`)
     filter.trigger('click')
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(2)
+    expect(store.state.users.totalUsersCount).toEqual(3)
 
     done()
   })
 
   it('shows users with applied filter and search query', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(3)
+    expect(store.state.users.totalUsersCount).toEqual(4)
 
     store.dispatch('ToggleUsersFilter', { active: true })
     await flushPromises()
@@ -56,17 +56,17 @@ describe('Filters users', () => {
 
     store.dispatch('SearchUsers', { query: '', page: 1 })
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(2)
+    expect(store.state.users.totalUsersCount).toEqual(3)
 
     done()
   })
 
   it('applies two filters', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(3)
+    expect(store.state.users.totalUsersCount).toEqual(4)
 
     store.dispatch('ToggleUsersFilter', { active: true, local: true })
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(1)
+    expect(store.state.users.totalUsersCount).toEqual(2)
     expect(store.state.users.fetchedUsers[0].nickname).toEqual('allis')
 
     store.dispatch('ToggleUsersFilter', { deactivated: true, external: true })
@@ -77,7 +77,7 @@ describe('Filters users', () => {
   })
 
   it('shows all users after removing filters', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(3)
+    expect(store.state.users.totalUsersCount).toEqual(4)
 
     store.dispatch('ToggleUsersFilter', { deactivated: true })
     await flushPromises()
@@ -85,7 +85,7 @@ describe('Filters users', () => {
 
     store.dispatch('ToggleUsersFilter', {})
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(3)
+    expect(store.state.users.totalUsersCount).toEqual(4)
 
     done()
   })

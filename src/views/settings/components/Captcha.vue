@@ -1,10 +1,10 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="captchaData" :model="captchaData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="captchaData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="captcha" :data="captchaData"/>
     </el-form>
     <el-divider v-if="captcha" class="divider thick-line"/>
-    <el-form ref="kocaptchaData" :model="kocaptchaData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="kocaptchaData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="kocaptcha" :data="kocaptchaData"/>
     </el-form>
     <div class="submit-button-container">

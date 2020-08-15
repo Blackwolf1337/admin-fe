@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="esshdData" :model="esshdData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :model="esshdData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="esshd" :data="esshdData"/>
     </el-form>
     <div class="submit-button-container">

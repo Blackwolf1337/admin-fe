@@ -6,56 +6,72 @@
     </div>
     <div class="emoji-header-container">
       <div class="emoji-packs-header-button-container">
-        <el-button type="primary" class="reload-emoji-button" @click="reloadEmoji">{{ $t('emoji.reloadEmoji') }}</el-button>
+        <el-button class="reload-emoji-button" @click="reloadEmoji">{{ $t('emoji.reloadEmoji') }}</el-button>
         <el-tooltip :content="$t('emoji.importEmojiTooltip')" effects="dark" placement="bottom" popper-class="import-pack-button">
-          <el-button type="primary" @click="importFromFS">
+          <el-button @click="importFromFS">
             {{ $t('emoji.importPacks') }}
           </el-button>
         </el-tooltip>
       </div>
     </div>
-    <el-divider class="divider"/>
-    <el-form :label-width="labelWidth" class="emoji-packs-form">
-      <el-form-item :label="$t('emoji.localPacks')">
-        <el-button type="primary" @click="refreshLocalPacks">{{ $t('emoji.refreshLocalPacks') }}</el-button>
-      </el-form-item>
-      <el-form-item :label="$t('emoji.createLocalPack')">
-        <div class="create-pack">
-          <el-input v-model="newPackName" :placeholder="$t('users.name')" />
-          <el-button
-            :disabled="newPackName.trim() === ''"
-            class="create-pack-button"
-            @click="createLocalPack">
-            {{ $t('users.create') }}
-          </el-button>
+    <el-tabs v-model="activeTab" type="card" class="emoji-packs-tabs">
+      <el-tab-pane :label="$t('emoji.localPacks')" name="local">
+        <el-form :label-width="labelWidth" class="emoji-packs-form">
+          <el-form-item :label="$t('emoji.localPacks')">
+            <el-button @click="refreshLocalPacks">{{ $t('emoji.refreshLocalPacks') }}</el-button>
+          </el-form-item>
+          <el-form-item :label="$t('emoji.createLocalPack')">
+            <div class="create-pack">
+              <el-input v-model="newPackName" :placeholder="$t('users.name')" />
+              <el-button
+                :disabled="newPackName.trim() === ''"
+                class="create-pack-button"
+                @click="createLocalPack">
+                {{ $t('users.create') }}
+              </el-button>
+            </div>
+          </el-form-item>
+          <el-form-item v-if="Object.keys(localPacks).length > 0" :label="$t('emoji.packs')">
+            <el-collapse v-for="(pack, name) in localPacks" :key="name" v-model="activeLocalPack" accordion @change="setActiveTab">
+              <local-emoji-pack ref="localEmojiPack" :name="name" :pack="pack" :host="$store.getters.authHost" :is-local="true" />
+            </el-collapse>
+          </el-form-item>
+        </el-form>
+        <div class="pagination">
+          <el-pagination
+            :total="localPacksCount"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            hide-on-single-page
+            layout="prev, pager, next"
+            @current-change="handlePageChange"
+          />
         </div>
-      </el-form-item>
-      <el-form-item v-if="Object.keys(localPacks).length > 0" :label="$t('emoji.packs')">
-        <el-collapse v-for="(pack, name) in localPacks" :key="name" v-model="activeLocalPack">
-          <local-emoji-pack :name="name" :pack="sortPack(pack)" :host="$store.getters.authHost" :is-local="true" />
-        </el-collapse>
-      </el-form-item>
-      <el-divider class="divider"/>
-      <el-form-item :label="$t('emoji.remotePacks')">
-        <div class="create-pack">
-          <el-input
-            v-model="remoteInstanceAddress"
-            :placeholder="$t('emoji.remoteInstanceAddress')" />
-          <el-button
-            v-loading.fullscreen.lock="fullscreenLoading"
-            :disabled="remoteInstanceAddress.trim() === ''"
-            class="create-pack-button"
-            @click="refreshRemotePacks">
-            {{ $t('emoji.refreshRemote') }}
-          </el-button>
-        </div>
-      </el-form-item>
-      <el-form-item v-if="Object.keys(remotePacks).length > 0" :label="$t('emoji.packs')">
-        <el-collapse v-for="(pack, name) in remotePacks" :key="name" v-model="activeRemotePack" @change="setActiveCollapseItems">
-          <remote-emoji-pack :name="name" :pack="sortPack(pack)" :host="$store.getters.authHost" :is-local="false" />
-        </el-collapse>
-      </el-form-item>
-    </el-form>
+      </el-tab-pane>
+      <el-tab-pane :label="$t('emoji.remotePacks')" name="remote">
+        <el-form :label-width="labelWidth" class="emoji-packs-form">
+          <el-form-item :label="$t('emoji.remotePacks')">
+            <div class="create-pack">
+              <el-input
+                v-model="remoteInstanceAddress"
+                :placeholder="$t('emoji.remoteInstanceAddress')" />
+              <el-button
+                v-loading.fullscreen.lock="fullscreenLoading"
+                :disabled="remoteInstanceAddress.trim() === ''"
+                class="create-pack-button"
+                @click="refreshRemotePacks">
+                {{ $t('emoji.refreshRemote') }}
+              </el-button>
+            </div>
+          </el-form-item>
+          <el-form-item v-if="Object.keys(remotePacks).length > 0" :label="$t('emoji.packs')">
+            <el-collapse v-for="(pack, name) in remotePacks" :key="name" v-model="activeRemotePack" accordion @change="setActiveTab">
+              <remote-emoji-pack :name="name" :pack="pack" :host="$store.getters.authHost" :is-local="false" />
+            </el-collapse>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -69,6 +85,7 @@ export default {
   components: { LocalEmojiPack, RebootButton, RemoteEmojiPack },
   data() {
     return {
+      activeTab: 'local',
       newPackName: '',
       activeLocalPack: [],
       activeRemotePack: [],
@@ -76,6 +93,9 @@ export default {
     }
   },
   computed: {
+    currentPage() {
+      return this.$store.state.emojiPacks.currentPage
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -93,6 +113,12 @@ export default {
     },
     localPacks() {
       return this.$store.state.emojiPacks.localPacks
+    },
+    localPacksCount() {
+      return this.$store.state.emojiPacks.localPacksCount
+    },
+    pageSize() {
+      return this.$store.state.emojiPacks.pageSize
     },
     remoteInstanceAddress: {
       get() {
@@ -117,25 +143,23 @@ export default {
         .then(() => {
           this.newPackName = ''
 
-          this.$store.dispatch('SetLocalEmojiPacks')
+          this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
           this.$store.dispatch('ReloadEmoji')
         })
+    },
+    handlePageChange(page) {
+      this.$store.dispatch('FetchLocalEmojiPacks', page)
     },
     importFromFS() {
       this.$store.dispatch('ImportFromFS')
         .then(() => {
-          this.$store.dispatch('SetLocalEmojiPacks')
+          this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
           this.$store.dispatch('ReloadEmoji')
         })
     },
-    sortPack(pack) {
-      const orderedFiles = Object.keys(pack.files).sort((a, b) => a.localeCompare(b))
-        .map(key => [key, pack.files[key]])
-      return { ...pack, files: orderedFiles }
-    },
     refreshLocalPacks() {
       try {
-        this.$store.dispatch('SetLocalEmojiPacks')
+        this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
       } catch (e) {
         return
       }
@@ -160,15 +184,22 @@ export default {
         message: i18n.t('emoji.reloaded')
       })
     },
-    setActiveCollapseItems(activeItems) {
-      const items = Array.isArray(activeItems) ? activeItems : [activeItems]
-      this.$store.dispatch('SetActiveCollapseItems', items)
+    setActiveTab(activeTab) {
+      this.$refs.localEmojiPack.forEach(el => el.collapse())
+      this.$store.dispatch('SetActiveTab', activeTab)
     }
   }
 }
 </script>
 
 <style rel='stylesheet/scss' lang='scss'>
+.create-pack {
+  display: flex;
+  justify-content: space-between
+}
+.create-pack-button {
+  margin-left: 10px;
+}
 .emoji-header-container {
   display: flex;
   align-items: center;
@@ -193,6 +224,9 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
+.emoji-packs-tabs {
+  margin: 0 15px 15px 15px;
+}
 .import-pack-button {
   margin-left: 1rem;
   width: 30%;
@@ -206,6 +240,10 @@ h1 {
   height: 0;
   border: 1px solid #eee;
   margin-bottom: 2.2rem;
+}
+.pagination {
+  margin: 25px 0;
+  text-align: center;
 }
 .reboot-button {
   padding: 1rem;

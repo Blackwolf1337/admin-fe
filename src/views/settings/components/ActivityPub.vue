@@ -1,10 +1,10 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form ref="activitypubData" :model="activitypubData" :label-position="labelPosition" :label-width="labelWidth" data-search=":activitypub">
+    <el-form :model="activitypubData" :label-position="labelPosition" :label-width="labelWidth" data-search=":activitypub">
       <setting :setting-group="activitypub" :data="activitypubData"/>
     </el-form>
-    <el-divider v-if="activitypub" class="divider thick-line"/>
-    <el-form ref="userData" :model="userData" :label-position="labelPosition" :label-width="labelWidth" data-search=":user">
+    <el-divider v-if="user" class="divider thick-line"/>
+    <el-form :model="userData" :label-position="labelPosition" :label-width="labelWidth" data-search=":user">
       <setting :setting-group="user" :data="userData"/>
     </el-form>
     <div class="submit-button-container">

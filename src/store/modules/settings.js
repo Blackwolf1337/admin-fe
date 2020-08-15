@@ -1,5 +1,5 @@
 import { fetchDescription, fetchSettings, removeSettings, updateSettings } from '@/api/settings'
-import { checkPartialUpdate, formSearchObject, parseNonTuples, parseTuples, valueHasTuples, wrapUpdatedSettings } from './normalizers'
+import { formSearchObject, parseNonTuples, parseTuples, valueHasTuples, wrapUpdatedSettings } from './normalizers'
 import _ from 'lodash'
 
 const settings = {
@@ -101,9 +101,8 @@ const settings = {
       commit('SET_ACTIVE_TAB', tab)
     },
     async SubmitChanges({ getters, commit, state }) {
-      const updatedData = checkPartialUpdate(state.settings, state.updatedSettings, state.description)
-      const configs = Object.keys(updatedData).reduce((acc, group) => {
-        return [...acc, ...wrapUpdatedSettings(group, updatedData[group], state.settings)]
+      const configs = Object.keys(state.updatedSettings).reduce((acc, group) => {
+        return [...acc, ...wrapUpdatedSettings(group, state.updatedSettings[group], state.settings)]
       }, [])
 
       await updateSettings(configs, getters.authHost, getters.token)

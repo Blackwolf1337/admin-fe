@@ -1,7 +1,15 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form v-if="!loading" ref="mediaProxy" :model="mediaProxyData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form v-if="!loading" :model="mediaProxyData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="mediaProxy" :data="mediaProxyData"/>
+    </el-form>
+    <el-divider v-if="mediaProxy" class="divider thick-line"/>
+    <el-form v-if="!loading" :model="httpInvalidationData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="httpInvalidation" :data="httpInvalidationData"/>
+    </el-form>
+    <el-divider v-if="httpInvalidation" class="divider thick-line"/>
+    <el-form v-if="!loading" :model="scriptInvalidationData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="scriptInvalidation" :data="scriptInvalidationData"/>
     </el-form>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
@@ -22,6 +30,12 @@ export default {
     ...mapGetters([
       'settings'
     ]),
+    httpInvalidation() {
+      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.MediaProxy.Invalidation.Http')
+    },
+    httpInvalidationData() {
+      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.MediaProxy.Invalidation.Http']) || {}
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -51,6 +65,12 @@ export default {
     },
     mediaProxyData() {
       return _.get(this.settings.settings, [':pleroma', ':media_proxy']) || {}
+    },
+    scriptInvalidation() {
+      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.MediaProxy.Invalidation.Script')
+    },
+    scriptInvalidationData() {
+      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.MediaProxy.Invalidation.Script']) || {}
     }
   },
   methods: {
