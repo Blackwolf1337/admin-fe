@@ -40,7 +40,7 @@
         <div class="pagination">
           <el-pagination
             :total="localPacksCount"
-            :current-page="currentPage"
+            :current-page="currentLocalPacksPage"
             :page-size="pageSize"
             hide-on-single-page
             layout="prev, pager, next"
@@ -93,8 +93,8 @@ export default {
     }
   },
   computed: {
-    currentPage() {
-      return this.$store.state.emojiPacks.currentPage
+    currentLocalPacksPage() {
+      return this.$store.state.emojiPacks.currentLocalPacksPage
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -143,7 +143,7 @@ export default {
         .then(() => {
           this.newPackName = ''
 
-          this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
+          this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage)
           this.$store.dispatch('ReloadEmoji')
         })
     },
@@ -153,13 +153,13 @@ export default {
     importFromFS() {
       this.$store.dispatch('ImportFromFS')
         .then(() => {
-          this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
+          this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage)
           this.$store.dispatch('ReloadEmoji')
         })
     },
     refreshLocalPacks() {
       try {
-        this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
+        this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage)
       } catch (e) {
         return
       }

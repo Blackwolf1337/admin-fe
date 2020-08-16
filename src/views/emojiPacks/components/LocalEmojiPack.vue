@@ -100,10 +100,10 @@ export default {
   },
   computed: {
     currentFilesPage() {
-      return this.$store.state.emojiPacks.currentFilesPage
+      return this.$store.state.emojiPacks.currentLocalFilesPage
     },
-    currentPage() {
-      return this.$store.state.emojiPacks.currentPage
+    currentLocalPacksPage() {
+      return this.$store.state.emojiPacks.currentLocalPacksPage
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -197,21 +197,21 @@ export default {
           .then(() => this.$store.dispatch('ReloadEmoji'))
           .then(() => {
             const { [this.name]: value, ...updatedPacks } = this.$store.state.emojiPacks.localPacks
-            if (Object.keys(updatedPacks).length === 0 && this.currentPage > 1) {
-              this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage - 1)
+            if (Object.keys(updatedPacks).length === 0 && this.currentLocalPacksPage > 1) {
+              this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage - 1)
             } else {
-              this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
+              this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage)
             }
           })
       }).catch(() => {})
     },
     handleChange(openTabs, name) {
       if (openTabs.includes('manageEmoji')) {
-        this.$store.dispatch('FetchSinglePack', { name, page: 1 })
+        this.$store.dispatch('FetchLocalSinglePack', { name, page: 1 })
       }
     },
     handleFilesPageChange(page) {
-      this.$store.dispatch('FetchSinglePack', { name: this.name, page })
+      this.$store.dispatch('FetchLocalSinglePack', { name: this.name, page })
     },
     savePackMetadata() {
       this.$store.dispatch('SavePackMetadata', { packName: this.name })
