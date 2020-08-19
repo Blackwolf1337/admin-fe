@@ -431,7 +431,7 @@
       height: 2px;
     }
     .follow-relay {
-      width: 70%;
+      width: 75%;
       margin-right: 5px;
       input {
         width: 100%;
@@ -440,6 +440,7 @@
     .follow-relay-container {
       display: flex;
       justify-content: space-between;
+      margin: 0 5px;
     }
     h1 {
       font-size: 24px;

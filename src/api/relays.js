@@ -11,23 +11,23 @@ export async function fetchRelays(authHost, token) {
   })
 }
 
-export async function addRelay(relay, authHost, token) {
+export async function addRelay(relay_url, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
     url: '/api/pleroma/admin/relay',
     method: 'post',
     headers: authHeaders(token),
-    data: { relay_url: relay }
+    data: { relay_url }
   })
 }
 
-export async function deleteRelay(relay, authHost, token) {
+export async function deleteRelay(relay_url, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
     url: '/api/pleroma/admin/relay',
     method: 'delete',
     headers: authHeaders(token),
-    data: { relay_url: `https://${relay}/actor` }
+    data: { relay_url }
   })
 }
 

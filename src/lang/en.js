@@ -150,7 +150,8 @@ export default {
     draft: 'Draft',
     delete: 'Delete',
     cancel: 'Cancel',
-    confirm: 'Confirm'
+    confirm: 'Confirm',
+    unfollow: 'Unfollow'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
@@ -406,6 +407,7 @@ export default {
     relays: 'Relays',
     follow: 'Follow',
     followRelay: 'Follow new relay',
+    followedBack: 'Followed Back',
     instanceUrl: 'Instance URL',
     success: 'Settings changed successfully!',
     description: 'Description',

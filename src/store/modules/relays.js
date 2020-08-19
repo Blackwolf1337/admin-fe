@@ -13,19 +13,18 @@ const relays = {
       state.fetchedRelays = relays
     },
     ADD_RELAY: (state, relay) => {
-      state.fetchedRelays = [...state.fetchedRelays, relay]
+      state.fetchedRelays = [...state.fetchedRelays, { actor: relay }]
     },
     DELETE_RELAY: (state, relay) => {
-      state.fetchedRelays = state.fetchedRelays.filter(fetchedRelay => fetchedRelay !== relay)
+      state.fetchedRelays = state.fetchedRelays.filter(fetchedRelay => fetchedRelay.actor !== relay)
     }
   },
   actions: {
     async FetchRelays({ commit, getters }) {
       commit('SET_LOADING', true)
 
-      const response = await fetchRelays(getters.authHost, getters.token)
-
-      commit('SET_RELAYS', response.data.relays)
+      const { data } = await fetchRelays(getters.authHost, getters.token)
+      commit('SET_RELAYS', data.relays)
       commit('SET_LOADING', false)
     },
     async AddRelay({ commit, dispatch, getters }, relay) {

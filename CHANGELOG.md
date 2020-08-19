@@ -7,10 +7,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased
 
 ### Added
+
 - Implement pagination for emoji files from remote packs
 
 ### Changed
+
 - Update Emoji Packs API to support special chars in pack names
+
+### Fixed
+
+- Fix following and unfollowing relays from Admin-FE, update mobile UI
 
 ## [2.1] - 2020-08-14
 
