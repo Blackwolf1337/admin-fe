@@ -55,11 +55,11 @@ export async function fetchStatusesByInstance({ instance, authHost, token, pageS
           'nickname': 'sky',
           'url': 'http://localhost:4000/users/sky'
         },
-        'content': 'A nice young couple contacted us from Brazil to decorate their newly acquired apartment.',
-        'created_at': '2020-01-31T18:20:01.000Z',
-        'id': '9rZIr0Jzao5Gjgfmro',
+        'content': 'i love parks&rec',
+        'created_at': '2020-04-12T18:20:01.000Z',
+        'id': 'o5Gjgfmro9rZIr0Jza',
         'sensitive': false,
-        'url': 'http://localhost:4000/objects/7af9abbd-fb6c-4318-aeb7-6636c138ac98',
+        'url': 'http://localhost:4000/objects/7af9abbd-aeb7-6636c138ac98-fb6c-4318',
         'visibility': 'unlisted'
       },
       {

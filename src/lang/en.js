@@ -271,7 +271,9 @@ export default {
     invalidNickname: 'invalid nickname',
     passwordResetTokenGenerated: 'Password reset token was generated:',
     linkToResetPassword: 'You can also use this link to reset password:',
-    registrationReason: 'Registration Reason'
+    registrationReason: 'Registration Reason',
+    service: 'Service',
+    person: 'Person'
   },
   statuses: {
     statuses: 'Statuses',
@@ -292,7 +294,8 @@ export default {
     admin: 'Admin',
     local: 'Local',
     external: 'External',
-    accountType: 'Account type',
+    accountType: 'Account Type',
+    actorType: 'Actor Type',
     nickname: 'Nickname',
     recentStatuses: 'Recent Statuses',
     roles: 'Roles',

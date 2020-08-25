@@ -46,8 +46,17 @@
             <tbody>
               <tr class="el-table__row">
                 <td class="name-col">ID</td>
-                <td class="value-col">
+                <td>
                   {{ user.id }}
+                </td>
+              </tr>
+              <tr class="el-table__row">
+                <td>{{ $t('userProfile.actorType') }}</td>
+                <td>
+                  <el-tag
+                    :type="userCredentials.actor_type === 'Person' ? 'success' : 'warning'">
+                    {{ userCredentials.actor_type }}
+                  </el-tag>
                 </td>
               </tr>
               <tr class="el-table__row">

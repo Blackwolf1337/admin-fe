@@ -1,8 +1,8 @@
 export let users = [
-  { active: true, approval_pending: false, deactivated: false, id: '2', nickname: 'allis', local: true, external: false, roles: { admin: true, moderator: false }, tags: [] },
-  { active: true, approval_pending: false, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'] },
-  { active: false, approval_pending: false, deactivated: true, id: 'abc', nickname: 'john', local: true, external: false, roles: { admin: false, moderator: false }, tags: ['mrf_tag:media-strip'] },
-  { active: true, approval_pending: true, deactivated: false, id: '100', nickname: 'sally', local: true, external: false, roles: { admin: false, moderator: false }, tags: [] }
+  { active: true, approval_pending: false, deactivated: false, id: '2', nickname: 'allis', local: true, external: false, roles: { admin: true, moderator: false }, tags: [], actor_type: 'Person' },
+  { active: true, approval_pending: false, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'], actor_type: 'Person' },
+  { active: false, approval_pending: false, deactivated: true, id: 'abc', nickname: 'john', local: true, external: false, roles: { admin: false, moderator: false }, tags: ['mrf_tag:media-strip'], actor_type: 'Person' },
+  { active: true, approval_pending: true, deactivated: false, id: '100', nickname: 'sally', local: true, external: false, roles: { admin: false, moderator: false }, tags: [], actor_type: 'Service' }
 ]
 
 const userProfile = { avatar: 'avatar.jpg', nickname: 'allis', id: '2', tags: [], roles: { admin: true, moderator: false }, local: true, external: false }
@@ -117,5 +117,9 @@ export async function untagUser(nickname, tag, authHost, token) {
 export async function createNewAccount(nickname, email, password, authHost, token) {
   const newUser = { active: true, deactivated: false, id: '15', nickname, local: true, external: false, roles: { admin: false, moderator: false }, tags: [] }
   users = [...users, newUser]
+  return Promise.resolve()
+}
+
+export async function updateUserCredentials(nickname, credentials, authHost, token) {
   return Promise.resolve()
 }

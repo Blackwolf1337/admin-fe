@@ -16,7 +16,8 @@ import {
   forcePasswordReset,
   approveUserAccount,
   confirmUserEmail,
-  resendConfirmationEmail
+  resendConfirmationEmail,
+  updateUserCredentials
 } from '@/api/users'
 
 const users = {
@@ -277,6 +278,14 @@ const users = {
       const currentFilters = { ...defaultFilters, ...filters }
       commit('SET_USERS_FILTERS', currentFilters)
       dispatch('SearchUsers', { query: state.searchQuery, page: 1 })
+    },
+    async UpdateActorType({ dispatch, getters }, { user, type, _userId, _statusId }) {
+      const updatedUsers = [{ ...user, actor_type: type }]
+      const credentials = { actor_type: type }
+
+      const callApiFn = async() => await updateUserCredentials(user.nickname, credentials, getters.authHost, getters.token)
+
+      dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
     }
   }
 }

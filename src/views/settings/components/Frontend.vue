@@ -27,6 +27,10 @@
     <el-form :model="markupData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="markup" :data="markupData"/>
     </el-form>
+    <el-divider v-if="preload" class="divider thick-line"/>
+    <el-form :model="preloadData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="preload" :data="preloadData"/>
+    </el-form>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
     </div>
@@ -105,6 +109,12 @@ export default {
     },
     markupData() {
       return _.get(this.settings.settings, [':pleroma', ':markup']) || {}
+    },
+    preload() {
+      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.Preload')
+    },
+    preloadData() {
+      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.Preload']) || {}
     },
     staticFe() {
       return this.settings.description.find(setting => setting.key === ':static_fe')

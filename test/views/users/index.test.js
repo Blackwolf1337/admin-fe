@@ -70,7 +70,7 @@ describe('Search and filter users', () => {
 describe('Users actions', () => {
   let store
   const htmlElement = (trChild, liChild) =>
-    `.el-table__fixed-body-wrapper table tr:nth-child(${trChild}) ul.el-dropdown-menu li:nth-child(${liChild})`
+    `.el-table__fixed-body-wrapper table tr:nth-child(${trChild}) ul.el-dropdown-menu > li:nth-child(${liChild})`
 
   beforeEach(() => {
     store = new Vuex.Store(cloneDeep(storeConfig))
@@ -88,7 +88,7 @@ describe('Users actions', () => {
     const user = store.state.users.fetchedUsers[2]
     expect(user.roles.admin).toBe(false)
     expect(user.roles.moderator).toBe(false)
-    wrapper.find(htmlElement(3, 1)).trigger('click')
+    wrapper.find(htmlElement(3, 2)).trigger('click')
 
     const updatedUser = store.state.users.fetchedUsers[2]
     expect(updatedUser.roles.admin).toBe(true)
@@ -107,7 +107,7 @@ describe('Users actions', () => {
     const user = store.state.users.fetchedUsers[2]
     expect(user.roles.admin).toBe(false)
     expect(user.roles.moderator).toBe(false)
-    wrapper.find(htmlElement(3, 2)).trigger('click')
+    wrapper.find(htmlElement(3, 3)).trigger('click')
 
     const updatedUser = store.state.users.fetchedUsers[2]
     expect(updatedUser.roles.moderator).toBe(true)
@@ -124,9 +124,9 @@ describe('Users actions', () => {
     await flushPromises()
 
     const dropdownMenuItems = wrapper.findAll(
-      `.el-table__fixed-body-wrapper table tr:nth-child(2) ul.el-dropdown-menu li`
+      `.el-table__fixed-body-wrapper table tr:nth-child(2) ul.el-dropdown-menu > li`
     )
-    expect(dropdownMenuItems.length).toBe(6)
+    expect(dropdownMenuItems.length).toBe(7)
     done()
   })
 
@@ -141,7 +141,7 @@ describe('Users actions', () => {
 
     const user = store.state.users.fetchedUsers[1]
     expect(user.deactivated).toBe(false)
-    wrapper.find(htmlElement(2, 1)).trigger('click')
+    wrapper.find(htmlElement(2, 2)).trigger('click')
 
     const updatedUser = store.state.users.fetchedUsers[1]
     expect(updatedUser.deactivated).toBe(true)
@@ -158,7 +158,7 @@ describe('Users actions', () => {
     await flushPromises()
     expect(store.state.users.fetchedUsers[1].deactivated).toBe(false)
 
-    wrapper.find(htmlElement(2, 2)).trigger('click')
+    wrapper.find(htmlElement(2, 3)).trigger('click')
     store.dispatch('DeleteUsers', { users: [{ active: true, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'] }] })
 
     await flushPromises()
@@ -180,8 +180,8 @@ describe('Users actions', () => {
     expect(user1.tags.length).toBe(0)
     expect(user2.tags.length).toBe(1)
 
-    wrapper.find(htmlElement(1, 5)).trigger('click')
-    wrapper.find(htmlElement(2, 5)).trigger('click')
+    wrapper.find(htmlElement(1, 6)).trigger('click')
+    wrapper.find(htmlElement(2, 6)).trigger('click')
 
     const updatedUser1 = store.state.users.fetchedUsers[0]
     const updatedUser2 = store.state.users.fetchedUsers[1]
@@ -201,7 +201,7 @@ describe('Users actions', () => {
 
     const user = store.state.users.fetchedUsers[1]
     expect(user.tags.length).toBe(1)
-    wrapper.find(htmlElement(2, 6)).trigger('click')
+    wrapper.find(htmlElement(2, 7)).trigger('click')
 
     const updatedUser = store.state.users.fetchedUsers[1]
     expect(updatedUser.tags.length).toBe(0)
@@ -247,7 +247,7 @@ describe('Users actions', () => {
     expect(wrapper.vm.resetPasswordDialogOpen).toBe(false)
     expect(store.state.users.passwordResetToken.token).toBe('')
 
-    wrapper.find(htmlElement(1, 11)).trigger('click')
+    wrapper.find(htmlElement(1, 12)).trigger('click')
     await flushPromises()
 
     expect(wrapper.vm.resetPasswordDialogOpen).toBe(true)
@@ -353,7 +353,26 @@ describe('Creates new account', () => {
 
     expect(wrapper.vm.validatePassword(validatePasswordRule, '', identity)).toBeInstanceOf(Error)
     expect(wrapper.vm.validatePassword(validatePasswordRule, '1234', identity)).toBeUndefined()
+  })
 
+  it('updates actor type', async (done) => {
+    const wrapper = mount(Users, {
+      store,
+      localVue,
+      sync: false,
+      stubs: ['router-link']
+    })
+    await flushPromises()
 
+    const user = store.state.users.fetchedUsers[0]
+    expect(user.actor_type).toBe('Person')
+
+    const findWrapper = (trChild, liChild1, liChild2) =>
+    `.el-table__fixed-body-wrapper table tr:nth-child(${trChild}) ul.el-dropdown-menu > li:nth-child(${liChild1}) ul li:nth-child(${liChild2})`
+    wrapper.find(findWrapper(1, 1, 1)).trigger('click')
+
+    const updatedUser = store.state.users.fetchedUsers[0]
+    expect(updatedUser.actor_type).toBe('Service')
+    done()
   })
 })
