@@ -276,6 +276,11 @@ export default {
     margin: 7px 0 0 15px;
   }
 }
+.active-tag.is-disabled {
+  .el-icon-check {
+    color: #bbb;
+  }
+}
 .el-dropdown-link:hover {
     cursor: pointer;
     color: #409EFF;

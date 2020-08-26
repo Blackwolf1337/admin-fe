@@ -26,7 +26,7 @@ const users = {
     fetchedUsers: [],
     loading: true,
     searchQuery: '',
-    tagPolicyEnabled: true,
+    tagPolicyDisabled: false,
     totalUsersCount: 0,
     currentPage: 1,
     pageSize: 50,
@@ -80,8 +80,8 @@ const users = {
     SET_SEARCH_QUERY: (state, query) => {
       state.searchQuery = query
     },
-    SET_TAG_POLICY: (state, policyEnabled) => {
-      state.tagPolicyEnabled = policyEnabled
+    SET_TAG_POLICY: (state, policyDisabled) => {
+      state.tagPolicyDisabled = policyDisabled
     },
     SET_USERS_FILTERS: (state, filters) => {
       state.filters = filters
@@ -213,12 +213,12 @@ const users = {
     },
     async FetchTagPolicySetting({ commit, getters }) {
       const { data } = await fetchSettings(getters.authHost, getters.token)
-      const tagPolicyEnabled = data.configs
+      const tagPolicyDisabled = !data.configs
         .find(el => el.key === ':mrf').value
         .find(el => el.tuple[0] === ':policies').tuple[1]
         .includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
 
-      commit('SET_TAG_POLICY', tagPolicyEnabled)
+      commit('SET_TAG_POLICY', tagPolicyDisabled)
     },
     async FetchUsers({ commit, dispatch, getters, state }, { page }) {
       commit('SET_LOADING', true)

@@ -68,6 +68,7 @@
         {{ $t('users.resendConfirmation') }}
       </el-dropdown-item>
       <el-dropdown-item
+        :disabled="tagPolicyDisabled"
         :divided="showAdminAction(user)"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:media-force-nsfw') }"
         @click.native="toggleTag(user, 'mrf_tag:media-force-nsfw')">
@@ -75,18 +76,21 @@
         <i v-if="user.tags.includes('mrf_tag:media-force-nsfw')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
+        :disabled="tagPolicyDisabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:media-strip') }"
         @click.native="toggleTag(user, 'mrf_tag:media-strip')">
         {{ $t('users.stripMedia') }}
         <i v-if="user.tags.includes('mrf_tag:media-strip')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
+        :disabled="tagPolicyDisabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:force-unlisted') }"
         @click.native="toggleTag(user, 'mrf_tag:force-unlisted')">
         {{ $t('users.forceUnlisted') }}
         <i v-if="user.tags.includes('mrf_tag:force-unlisted')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
+        :disabled="tagPolicyDisabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:sandbox') }"
         @click.native="toggleTag(user, 'mrf_tag:sandbox')">
         {{ $t('users.sandbox') }}
@@ -94,6 +98,7 @@
       </el-dropdown-item>
       <el-dropdown-item
         v-if="user.local"
+        :disabled="tagPolicyDisabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-remote-subscription') }"
         @click.native="toggleTag(user, 'mrf_tag:disable-remote-subscription')">
         {{ $t('users.disableRemoteSubscription') }}
@@ -101,6 +106,7 @@
       </el-dropdown-item>
       <el-dropdown-item
         v-if="user.local"
+        :disabled="tagPolicyDisabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-any-subscription') }"
         @click.native="toggleTag(user, 'mrf_tag:disable-any-subscription')">
         {{ $t('users.disableAnySubscription') }}
@@ -161,6 +167,9 @@ export default {
     },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
+    },
+    tagPolicyDisabled() {
+      return this.$store.state.users.tagPolicyDisabled
     }
   },
   methods: {
