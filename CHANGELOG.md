@@ -47,6 +47,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add new type of settings: `['string', 'image']`. Render Image upload Input depending on the type of setting, not its key
 - Fix displaying `Pending` tag and filtering by Pending Approval status
 - Fix following and unfollowing relays from Admin-FE, update mobile UI
+- Support special chars in Emoji packs names
 
 ## [2.0.3] - 2020-04-29
 
