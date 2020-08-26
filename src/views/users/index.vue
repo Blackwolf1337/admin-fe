@@ -198,6 +198,7 @@ export default {
   },
   mounted: function() {
     this.$store.dispatch('NeedReboot')
+    this.$store.dispatch('FetchTagPolicySetting')
     this.$store.dispatch('FetchUsers', { page: 1 })
   },
   destroyed() {

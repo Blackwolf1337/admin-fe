@@ -19,12 +19,14 @@ import {
   resendConfirmationEmail,
   updateUserCredentials
 } from '@/api/users'
+import { fetchSettings } from '@/api/settings'
 
 const users = {
   state: {
     fetchedUsers: [],
     loading: true,
     searchQuery: '',
+    tagPolicyEnabled: true,
     totalUsersCount: 0,
     currentPage: 1,
     pageSize: 50,
@@ -77,6 +79,9 @@ const users = {
     },
     SET_SEARCH_QUERY: (state, query) => {
       state.searchQuery = query
+    },
+    SET_TAG_POLICY: (state, policyEnabled) => {
+      state.tagPolicyEnabled = policyEnabled
     },
     SET_USERS_FILTERS: (state, filters) => {
       state.filters = filters
@@ -205,6 +210,15 @@ const users = {
         dispatch('FetchUserProfile', { userId: _userId, godmode: false })
       }
       dispatch('SuccessMessage')
+    },
+    async FetchTagPolicySetting({ commit, getters }) {
+      const { data } = await fetchSettings(getters.authHost, getters.token)
+      const tagPolicyEnabled = data.configs
+        .find(el => el.key === ':mrf').value
+        .find(el => el.tuple[0] === ':policies').tuple[1]
+        .includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
+
+      commit('SET_TAG_POLICY', tagPolicyEnabled)
     },
     async FetchUsers({ commit, dispatch, getters, state }, { page }) {
       commit('SET_LOADING', true)
