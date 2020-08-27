@@ -19,14 +19,14 @@ import {
   resendConfirmationEmail,
   updateUserCredentials
 } from '@/api/users'
-import { fetchSettings } from '@/api/settings'
+import { fetchSettings, updateSettings } from '@/api/settings'
 
 const users = {
   state: {
     fetchedUsers: [],
     loading: true,
     searchQuery: '',
-    tagPolicyDisabled: false,
+    tagPolicies: [],
     totalUsersCount: 0,
     currentPage: 1,
     pageSize: 50,
@@ -80,8 +80,8 @@ const users = {
     SET_SEARCH_QUERY: (state, query) => {
       state.searchQuery = query
     },
-    SET_TAG_POLICY: (state, policyDisabled) => {
-      state.tagPolicyDisabled = policyDisabled
+    SET_TAG_POLICY: (state, tagPolicies) => {
+      state.tagPolicies = tagPolicies
     },
     SET_USERS_FILTERS: (state, filters) => {
       state.filters = filters
@@ -211,14 +211,23 @@ const users = {
       }
       dispatch('SuccessMessage')
     },
+    async EnableTagPolicy({ dispatch, getters, state }) {
+      const configs = [{
+        group: ':pleroma',
+        key: ':mrf',
+        value: [{ tuple: [':policies', [...state.tagPolicies, 'Pleroma.Web.ActivityPub.MRF.TagPolicy']] }]
+      }]
+      await updateSettings(configs, getters.authHost, getters.token)
+
+      dispatch('FetchTagPolicySetting')
+    },
     async FetchTagPolicySetting({ commit, getters }) {
       const { data } = await fetchSettings(getters.authHost, getters.token)
-      const tagPolicyDisabled = !data.configs
+      const tagPolicies = data.configs
         .find(el => el.key === ':mrf').value
-        .find(el => el.tuple[0] === ':policies').tuple[1]
-        .includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
+        .find(el => el.tuple[0] === ':policies').tuple[1] || []
 
-      commit('SET_TAG_POLICY', tagPolicyDisabled)
+      commit('SET_TAG_POLICY', Array.isArray(tagPolicies) ? tagPolicies : [tagPolicies])
     },
     async FetchUsers({ commit, dispatch, getters, state }, { page }) {
       commit('SET_LOADING', true)
