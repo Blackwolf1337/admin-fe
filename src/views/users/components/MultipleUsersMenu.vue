@@ -258,7 +258,20 @@ export default {
       }
     },
     enableTagPolicy() {
-      this.$store.dispatch('EnableTagPolicy')
+      this.$confirm(
+        this.$t('users.confirmEnablingTagPolicy'),
+        {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        this.$store.dispatch('EnableTagPolicy')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        })
+      })
     },
     isLocalUser(user) {
       return user.nickname && user.local

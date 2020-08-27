@@ -182,7 +182,20 @@ export default {
       this.$store.dispatch('DisableMfa', nickname)
     },
     enableTagPolicy() {
-      this.$store.dispatch('EnableTagPolicy')
+      this.$confirm(
+        this.$t('users.confirmEnablingTagPolicy'),
+        {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        this.$store.dispatch('EnableTagPolicy')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        })
+      })
     },
     getPasswordResetToken(nickname) {
       this.$emit('open-reset-token-dialog')
