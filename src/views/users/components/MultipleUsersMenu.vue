@@ -140,7 +140,7 @@
         </div>
       </el-dropdown-item>
       <el-dropdown-item
-        v-if="tagPolicyDisabled"
+        v-if="!tagPolicyEnabled"
         divided
         @click.native="enableTagPolicy">
         {{ $t('users.enableTagPolicy') }}

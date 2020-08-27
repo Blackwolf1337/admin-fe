@@ -68,7 +68,7 @@
         {{ $t('users.resendConfirmation') }}
       </el-dropdown-item>
       <el-dropdown-item
-        :disabled="tagPolicyDisabled"
+        v-if="tagPolicyEnabled"
         :divided="showAdminAction(user)"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:media-force-nsfw') }"
         @click.native="toggleTag(user, 'mrf_tag:media-force-nsfw')">
@@ -76,41 +76,46 @@
         <i v-if="user.tags.includes('mrf_tag:media-force-nsfw')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
-        :disabled="tagPolicyDisabled"
+        v-if="tagPolicyEnabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:media-strip') }"
         @click.native="toggleTag(user, 'mrf_tag:media-strip')">
         {{ $t('users.stripMedia') }}
         <i v-if="user.tags.includes('mrf_tag:media-strip')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
-        :disabled="tagPolicyDisabled"
+        v-if="tagPolicyEnabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:force-unlisted') }"
         @click.native="toggleTag(user, 'mrf_tag:force-unlisted')">
         {{ $t('users.forceUnlisted') }}
         <i v-if="user.tags.includes('mrf_tag:force-unlisted')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
-        :disabled="tagPolicyDisabled"
+        v-if="tagPolicyEnabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:sandbox') }"
         @click.native="toggleTag(user, 'mrf_tag:sandbox')">
         {{ $t('users.sandbox') }}
         <i v-if="user.tags.includes('mrf_tag:sandbox')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
-        v-if="user.local"
-        :disabled="tagPolicyDisabled"
+        v-if="user.local && tagPolicyEnabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-remote-subscription') }"
         @click.native="toggleTag(user, 'mrf_tag:disable-remote-subscription')">
         {{ $t('users.disableRemoteSubscription') }}
         <i v-if="user.tags.includes('mrf_tag:disable-remote-subscription')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
-        v-if="user.local"
-        :disabled="tagPolicyDisabled"
+        v-if="user.local && tagPolicyEnabled"
         :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-any-subscription') }"
         @click.native="toggleTag(user, 'mrf_tag:disable-any-subscription')">
         {{ $t('users.disableAnySubscription') }}
         <i v-if="user.tags.includes('mrf_tag:disable-any-subscription')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="!tagPolicyEnabled"
+        divided
+        class="no-hover"
+        @click.native="enableTagPolicy">
+        {{ $t('users.enableTagPolicy') }}
       </el-dropdown-item>
       <el-dropdown-item
         v-if="user.local"
@@ -168,13 +173,16 @@ export default {
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
-    tagPolicyDisabled() {
-      return this.$store.state.users.tagPolicyDisabled
+    tagPolicyEnabled() {
+      return this.$store.state.users.tagPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
     }
   },
   methods: {
     disableMfa(nickname) {
       this.$store.dispatch('DisableMfa', nickname)
+    },
+    enableTagPolicy() {
+      this.$store.dispatch('EnableTagPolicy')
     },
     getPasswordResetToken(nickname) {
       this.$emit('open-reset-token-dialog')
