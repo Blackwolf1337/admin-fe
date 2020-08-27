@@ -61,83 +61,89 @@
         @click.native="requirePasswordReset">
         {{ $t('users.requirePasswordReset') }}
       </el-dropdown-item>
-      <el-dropdown-item :disabled="tagPolicyDisabled" divided class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" divided class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.forceNsfw') }}</span>
           <el-button-group class="tag-button-group">
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="addTagForMultipleUsers('mrf_tag:media-force-nsfw')">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:media-force-nsfw')">
               {{ $t('users.apply') }}
             </el-button>
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:media-force-nsfw')">
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:media-force-nsfw')">
               {{ $t('users.remove') }}
             </el-button>
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item :disabled="tagPolicyDisabled" class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.stripMedia') }}</span>
           <el-button-group class="tag-button-group">
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="addTagForMultipleUsers('mrf_tag:media-strip')">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:media-strip')">
               {{ $t('users.apply') }}
             </el-button>
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:media-strip')">
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:media-strip')">
               {{ $t('users.remove') }}
             </el-button>
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item :disabled="tagPolicyDisabled" class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.forceUnlisted') }}</span>
           <el-button-group class="tag-button-group">
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="addTagForMultipleUsers('mrf_tag:force-unlisted')">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:force-unlisted')">
               {{ $t('users.apply') }}
             </el-button>
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:force-unlisted')">
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:force-unlisted')">
               {{ $t('users.remove') }}
             </el-button>
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item :disabled="tagPolicyDisabled" class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.sandbox') }}</span>
           <el-button-group class="tag-button-group">
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="addTagForMultipleUsers('mrf_tag:sandbox')">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:sandbox')">
               {{ $t('users.apply') }}
             </el-button>
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:sandbox')">
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:sandbox')">
               {{ $t('users.remove') }}
             </el-button>
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item :disabled="tagPolicyDisabled" class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.disableRemoteSubscriptionForMultiple') }}</span>
           <el-button-group class="tag-button-group">
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="addTagForMultipleUsers('mrf_tag:disable-remote-subscription')">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:disable-remote-subscription')">
               {{ $t('users.apply') }}
             </el-button>
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:disable-remote-subscription')">
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:disable-remote-subscription')">
               {{ $t('users.remove') }}
             </el-button>
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item :disabled="tagPolicyDisabled" class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.disableAnySubscriptionForMultiple') }}</span>
           <el-button-group class="tag-button-group">
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="addTagForMultipleUsers('mrf_tag:disable-any-subscription')">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:disable-any-subscription')">
               {{ $t('users.apply') }}
             </el-button>
-            <el-button :disabled="tagPolicyDisabled" size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:disable-any-subscription')">
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:disable-any-subscription')">
               {{ $t('users.remove') }}
             </el-button>
           </el-button-group>
         </div>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="tagPolicyDisabled"
+        divided
+        @click.native="enableTagPolicy">
+        {{ $t('users.enableTagPolicy') }}
       </el-dropdown-item>
     </el-dropdown-menu>
     <el-dropdown-menu v-else slot="dropdown">
@@ -165,8 +171,8 @@ export default {
     showDropdownForMultipleUsers() {
       return this.$props.selectedUsers.length > 0
     },
-    tagPolicyDisabled() {
-      return this.$store.state.users.tagPolicyDisabled
+    tagPolicyEnabled() {
+      return this.$store.state.users.tagPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
     }
   },
   methods: {
@@ -250,6 +256,9 @@ export default {
           applyAction(filtered, resendConfirmationFn)
         }
       }
+    },
+    enableTagPolicy() {
+      this.$store.dispatch('EnableTagPolicy')
     },
     isLocalUser(user) {
       return user.nickname && user.local
