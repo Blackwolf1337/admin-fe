@@ -17,6 +17,7 @@ localVue.use(Element)
 jest.mock('@/api/app')
 jest.mock('@/api/nodeInfo')
 jest.mock('@/api/users')
+jest.mock('@/api/settings')
 
 describe('Search and filter users', () => {
   let store
