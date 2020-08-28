@@ -4,7 +4,7 @@ import flushPromises from 'flush-promises'
 import Element from 'element-ui'
 import Users from '@/views/users/index'
 import NewAccountDialog from '@/views/users/components/NewAccountDialog'
-import storeConfig from './store.conf'
+import { storeConfig } from './store.conf'
 import { cloneDeep } from 'lodash'
 
 config.mocks["$t"] = () => {}

@@ -5,13 +5,24 @@ import userProfile from '@/store/modules/userProfile'
 import users from '@/store/modules/users'
 import getters from '@/store/getters'
 
-export default {
+export const storeConfig = {
   modules: {
     app,
     settings,
     user,
     userProfile,
     users
+  },
+  getters
+}
+
+export const storeWithTagPolicy = {
+  modules: {
+    app,
+    settings,
+    user,
+    userProfile,
+    users: { ...users, state: { ...users.state, tagPolicies: ['Pleroma.Web.ActivityPub.MRF.TagPolicy'] }}
   },
   getters
 }
