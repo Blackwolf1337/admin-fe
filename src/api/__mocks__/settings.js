@@ -1,9 +1,9 @@
-const configsWithoutTagPolicy = {
+const configsWithTagPolicy = {
   configs: [{
     group: ':pleroma',
     key: ':mrf',
     value: [
-      { tuple: [':policies', 'Pleroma.Web.ActivityPub.MRF.ObjectAgePolicy'] },
+      { tuple: [':policies', ['Pleroma.Web.ActivityPub.MRF.ObjectAgePolicy', 'Pleroma.Web.ActivityPub.MRF.TagPolicy']] },
       { tuple: [':transparency', true] },
       { tuple: [':transparency_exclusions', []] }
     ] }],
@@ -21,7 +21,7 @@ const configAfterUpdate = {
 }
 
 export async function fetchSettings(authHost, token) {
-  return Promise.resolve({ data: configsWithoutTagPolicy })
+  return Promise.resolve({ data: configsWithTagPolicy })
 }
 
 export async function updateSettings(configs, authHost, token) {
