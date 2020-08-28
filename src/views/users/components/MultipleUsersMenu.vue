@@ -172,7 +172,7 @@ export default {
       return this.$props.selectedUsers.length > 0
     },
     tagPolicyEnabled() {
-      return this.$store.state.users.tagPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
+      return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
     }
   },
   methods: {

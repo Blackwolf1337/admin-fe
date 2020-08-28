@@ -174,7 +174,7 @@ export default {
       return this.$store.state.app.device === 'desktop'
     },
     tagPolicyEnabled() {
-      return this.$store.state.users.tagPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
+      return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
     }
   },
   methods: {

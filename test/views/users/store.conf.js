@@ -22,7 +22,7 @@ export const storeWithTagPolicy = {
     settings,
     user,
     userProfile,
-    users: { ...users, state: { ...users.state, tagPolicies: ['Pleroma.Web.ActivityPub.MRF.TagPolicy'] }}
+    users: { ...users, state: { ...users.state, mrfPolicies: ['Pleroma.Web.ActivityPub.MRF.TagPolicy'] }}
   },
   getters
 }
