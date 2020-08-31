@@ -265,6 +265,10 @@ export default {
           cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(() => {
+        this.$message({
+          type: 'success',
+          message: this.$t('users.enableTagPolicySuccessMessage')
+        })
         this.$store.dispatch('EnableTagPolicy')
       }).catch(() => {
         this.$message({
