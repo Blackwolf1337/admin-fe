@@ -15,7 +15,7 @@
         </span>
       </el-button>
     </div>
-    <el-dropdown-menu slot="dropdown">
+    <el-dropdown-menu slot="dropdown" class="moderation-dropdown-menu">
       <el-dropdown-item
         class="actor-type-dropdown">
         <el-select v-model="actorType" :placeholder="$t('userProfile.actorType')" class="actor-type-select">
@@ -318,9 +318,15 @@ export default {
     display: flex;
     justify-content: space-between;
   }
+  .moderation-dropdown-menu {
+    width: 350px;
+  }
   @media only screen and (max-width:480px) {
     .moderate-user-button {
       width: 100%
+    }
+    .moderation-dropdown-menu {
+      width: auto;
     }
   }
 </style>
