@@ -4,7 +4,7 @@ import flushPromises from 'flush-promises'
 import Element from 'element-ui'
 import Users from '@/views/users/index'
 import NewAccountDialog from '@/views/users/components/NewAccountDialog'
-import storeConfig from './store.conf'
+import { storeConfig } from './store.conf'
 import { cloneDeep } from 'lodash'
 
 config.mocks["$t"] = () => {}
@@ -17,6 +17,7 @@ localVue.use(Element)
 jest.mock('@/api/app')
 jest.mock('@/api/nodeInfo')
 jest.mock('@/api/users')
+jest.mock('@/api/settings')
 
 describe('Search and filter users', () => {
   let store

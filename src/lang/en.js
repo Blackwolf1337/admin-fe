@@ -273,7 +273,10 @@ export default {
     linkToResetPassword: 'You can also use this link to reset password:',
     registrationReason: 'Registration Reason',
     service: 'Service',
-    person: 'Person'
+    person: 'Person',
+    enableTagPolicy: 'Enable MRF TagPolicy to manage user tags',
+    confirmEnablingTagPolicy: 'Are you sure you want to add TagPolicy to the list of enabled MRF policies?',
+    enableTagPolicySuccessMessage: 'MRF TagPolicy was enabled'
   },
   statuses: {
     statuses: 'Statuses',

@@ -198,6 +198,7 @@ export default {
   },
   mounted: function() {
     this.$store.dispatch('NeedReboot')
+    this.$store.dispatch('FetchTagPolicySetting')
     this.$store.dispatch('FetchUsers', { page: 1 })
   },
   destroyed() {
@@ -273,6 +274,11 @@ export default {
     color: #409EFF;
     float: right;
     margin: 7px 0 0 15px;
+  }
+}
+.active-tag.is-disabled {
+  .el-icon-check {
+    color: #bbb;
   }
 }
 .el-dropdown-link:hover {
