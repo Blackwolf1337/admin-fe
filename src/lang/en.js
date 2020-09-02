@@ -276,7 +276,8 @@ export default {
     person: 'Person',
     enableTagPolicy: 'Enable MRF TagPolicy to manage user tags',
     confirmEnablingTagPolicy: 'Are you sure you want to add TagPolicy to the list of enabled MRF policies?',
-    enableTagPolicySuccessMessage: 'MRF TagPolicy was enabled'
+    enableTagPolicySuccessMessage: 'MRF TagPolicy was enabled',
+    createCustomTag: 'Create custom tag'
   },
   statuses: {
     statuses: 'Statuses',

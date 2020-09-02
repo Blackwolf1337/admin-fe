@@ -25,7 +25,8 @@
       </el-button>
       <multiple-users-menu
         :selected-users="selectedUsers"
-        @apply-action="clearSelection"/>
+        @apply-action="clearSelection"
+        @open-custom-tag-dialog="openCustomTagDialog"/>
     </div>
     <new-account-dialog
       :dialog-form-visible="createAccountDialogOpen"
@@ -102,7 +103,8 @@
             v-if="propertyExists(scope.row, 'nickname')"
             :user="scope.row"
             :page="'users'"
-            @open-reset-token-dialog="openResetPasswordDialog"/>
+            @open-reset-token-dialog="openResetPasswordDialog"
+            @open-custom-tag-dialog="openCustomTagDialog"/>
           <el-button v-else type="text" disabled>
             {{ $t('users.moderation') }}
             <i v-if="isDesktop" class="el-icon-arrow-down el-icon--right"/>
@@ -113,6 +115,13 @@
     <reset-password-dialog
       :reset-password-dialog-open="resetPasswordDialogOpen"
       @close-reset-token-dialog="closeResetPasswordDialog"/>
+    <el-dialog
+      :visible.sync="createCustomTagDialogOpen"
+      :show-close="false"
+      :title="$t('users.createCustomTag')"
+      @open="resetForm">
+      <span/>
+    </el-dialog>
     <div v-if="!loading" class="pagination">
       <el-pagination
         :total="usersCount"
@@ -156,7 +165,8 @@ export default {
       search: '',
       selectedUsers: [],
       createAccountDialogOpen: false,
-      resetPasswordDialogOpen: false
+      resetPasswordDialogOpen: false,
+      createCustomTagDialogOpen: false
     }
   },
   computed: {
@@ -235,6 +245,9 @@ export default {
     handleSelectionChange(value) {
       this.$data.selectedUsers = value
     },
+    openCustomTagDialog() {
+      this.createCustomTagDialogOpen = true
+    },
     openResetPasswordDialog() {
       this.resetPasswordDialogOpen = true
     },
@@ -244,6 +257,7 @@ export default {
     regReason(reason) {
       return reason && reason.length > 0
     },
+    resetForm() {},
     showDeactivatedButton(id) {
       return this.$store.state.user.id !== id
     }

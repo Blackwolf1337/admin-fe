@@ -111,6 +111,12 @@
         <i v-if="user.tags.includes('mrf_tag:disable-any-subscription')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
+        v-if="user.local && tagPolicyEnabled"
+        icon="el-icon-plus"
+        @click.native="$emit('open-custom-tag-dialog')">
+        {{ $t('users.createCustomTag') }}
+      </el-dropdown-item>
+      <el-dropdown-item
         v-if="!tagPolicyEnabled"
         divided
         class="no-hover"

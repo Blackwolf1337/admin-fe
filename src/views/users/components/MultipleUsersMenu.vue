@@ -140,6 +140,12 @@
         </div>
       </el-dropdown-item>
       <el-dropdown-item
+        v-if="tagPolicyEnabled"
+        icon="el-icon-plus"
+        @click.native="$emit('open-custom-tag-dialog')">
+        {{ $t('users.createCustomTag') }}
+      </el-dropdown-item>
+      <el-dropdown-item
         v-if="!tagPolicyEnabled"
         divided
         @click.native="enableTagPolicy">
