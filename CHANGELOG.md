@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Hide Tag actions on Users tab if MRF TagPolicy is disabled. Add ability to enable TagPolicy from Moderation menu
+- Move `:restrict_unauthenticated` settings from Authentication tab to Instance tab
 
 
 ## [2.1] - 2020-08-26
