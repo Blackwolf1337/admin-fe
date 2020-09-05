@@ -187,6 +187,7 @@ export default {
     search: 'Search',
     id: 'ID',
     name: 'Name',
+    label: 'Label',
     status: 'Status',
     local: 'Local',
     external: 'External',

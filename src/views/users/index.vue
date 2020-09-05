@@ -120,7 +120,18 @@
       :show-close="false"
       :title="$t('users.createCustomTag')"
       @open="resetForm">
-      <span/>
+      <el-form ref="customTagForm" :model="customTagForm" :label-width="isDesktop ? '120px' : '85px'">
+        <el-form-item :label="$t('users.name')" prop="name">
+          <el-input v-model="customTagForm.name" name="name" autofocus/>
+        </el-form-item>
+        <el-form-item :label="$t('users.label')" prop="label">
+          <el-input v-model="customTagForm.label" name="label"/>
+        </el-form-item>
+        <span slot="footer">
+          <el-button @click="closeCustomTagDialog">{{ $t('users.cancel') }}</el-button>
+          <el-button type="primary" @click="addCustomTag('customTagForm')">{{ $t('users.create') }}</el-button>
+        </span>
+      </el-form>
     </el-dialog>
     <div v-if="!loading" class="pagination">
       <el-pagination
@@ -166,7 +177,11 @@ export default {
       selectedUsers: [],
       createAccountDialogOpen: false,
       resetPasswordDialogOpen: false,
-      createCustomTagDialogOpen: false
+      createCustomTagDialogOpen: false,
+      customTagForm: {
+        name: '',
+        label: ''
+      }
     }
   },
   computed: {
@@ -217,6 +232,9 @@ export default {
   methods: {
     clearSelection() {
       this.$refs.usersTable.clearSelection()
+    },
+    closeCustomTagDialog() {
+      this.createCustomTagDialogOpen = false
     },
     closeResetPasswordDialog() {
       this.resetPasswordDialogOpen = false
