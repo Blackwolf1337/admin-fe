@@ -6,7 +6,7 @@ export const tabs = description => {
     },
     'authentication': {
       label: 'settings.auth',
-      settings: [':auth', ':ldap', ':oauth2', 'Pleroma.Web.Auth.Authenticator', ':restrict_unauthenticated']
+      settings: [':auth', ':ldap', ':oauth2', 'Pleroma.Web.Auth.Authenticator']
     },
     'esshd': {
       label: 'settings.esshd',
@@ -30,7 +30,7 @@ export const tabs = description => {
     },
     'instance': {
       label: 'settings.instance',
-      settings: [':admin_token', ':instance', ':instances_favicons', ':welcome', ':manifest', 'Pleroma.User', 'Pleroma.ScheduledActivity', ':uri_schemes', ':feed', ':streamer']
+      settings: [':admin_token', ':instance', ':instances_favicons', ':welcome', ':manifest', 'Pleroma.User', 'Pleroma.ScheduledActivity', ':uri_schemes', ':feed', ':streamer', ':restrict_unauthenticated']
     },
     'job-queue': {
       label: 'settings.jobQueue',
