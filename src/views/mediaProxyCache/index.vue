@@ -1,67 +1,69 @@
 <template>
   <div class="media-proxy-cache-container">
-    <div class="media-proxy-cache-header-container">
-      <h1>{{ $t('mediaProxyCache.mediaProxyCache') }}</h1>
-      <reboot-button/>
-    </div>
-    <p class="media-proxy-cache-header">{{ $t('mediaProxyCache.evictObjectsHeader') }}</p>
-    <div class="url-input-container">
-      <el-input
-        :placeholder="$t('mediaProxyCache.url')"
-        v-model="urls"
-        type="textarea"
-        autosize
-        clearable
-        class="url-input"/>
-      <el-checkbox v-model="ban">{{ $t('mediaProxyCache.ban') }}</el-checkbox>
-      <el-button class="evict-button" @click="evictURL">{{ $t('mediaProxyCache.evict') }}</el-button>
-    </div>
-    <span class="expl url-input-expl">{{ $t('mediaProxyCache.multipleInput') }}</span>
-    <p class="media-proxy-cache-header">{{ $t('mediaProxyCache.listBannedUrlsHeader') }}</p>
-    <el-table
-      v-loading="loading"
-      :data="bannedUrls"
-      class="banned-urls-table"
-      @selection-change="handleSelectionChange">>
-      <el-table-column
-        type="selection"
-        align="center"
-        width="55"/>
-      <el-table-column :min-width="isDesktop ? 320 : 120" prop="url">
-        <template slot="header" slot-scope="scope">
-          <el-input
-            :placeholder="$t('users.search')"
-            v-model="search"
-            size="mini"
-            prefix-icon="el-icon-search"
-            @input="handleDebounceSearchInput"/>
-        </template>
-      </el-table-column>
-      <el-table-column>
-        <template slot="header">
-          <el-button
-            :disabled="removeSelectedDisabled"
-            size="mini"
-            class="remove-url-button"
-            @click="removeSelected()">{{ $t('mediaProxyCache.removeSelected') }}</el-button>
-        </template>
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            class="remove-url-button"
-            @click="removeUrl(scope.row.url)">{{ $t('mediaProxyCache.remove') }}</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div v-if="!loading" class="pagination">
-      <el-pagination
-        :total="urlsCount"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        hide-on-single-page
-        layout="prev, pager, next"
-        @current-change="handlePageChange"
-      />
+    <div v-if="mediaProxyEnabled">
+      <div class="media-proxy-cache-header-container">
+        <h1>{{ $t('mediaProxyCache.mediaProxyCache') }}</h1>
+        <reboot-button/>
+      </div>
+      <p class="media-proxy-cache-header">{{ $t('mediaProxyCache.evictObjectsHeader') }}</p>
+      <div class="url-input-container">
+        <el-input
+          :placeholder="$t('mediaProxyCache.url')"
+          v-model="urls"
+          type="textarea"
+          autosize
+          clearable
+          class="url-input"/>
+        <el-checkbox v-model="ban">{{ $t('mediaProxyCache.ban') }}</el-checkbox>
+        <el-button class="evict-button" @click="evictURL">{{ $t('mediaProxyCache.evict') }}</el-button>
+      </div>
+      <span class="expl url-input-expl">{{ $t('mediaProxyCache.multipleInput') }}</span>
+      <p class="media-proxy-cache-header">{{ $t('mediaProxyCache.listBannedUrlsHeader') }}</p>
+      <el-table
+        v-loading="loading"
+        :data="bannedUrls"
+        class="banned-urls-table"
+        @selection-change="handleSelectionChange">>
+        <el-table-column
+          type="selection"
+          align="center"
+          width="55"/>
+        <el-table-column :min-width="isDesktop ? 320 : 120" prop="url">
+          <template slot="header" slot-scope="scope">
+            <el-input
+              :placeholder="$t('users.search')"
+              v-model="search"
+              size="mini"
+              prefix-icon="el-icon-search"
+              @input="handleDebounceSearchInput"/>
+          </template>
+        </el-table-column>
+        <el-table-column>
+          <template slot="header">
+            <el-button
+              :disabled="removeSelectedDisabled"
+              size="mini"
+              class="remove-url-button"
+              @click="removeSelected()">{{ $t('mediaProxyCache.removeSelected') }}</el-button>
+          </template>
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              class="remove-url-button"
+              @click="removeUrl(scope.row.url)">{{ $t('mediaProxyCache.remove') }}</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div v-if="!loading" class="pagination">
+        <el-pagination
+          :total="urlsCount"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          hide-on-single-page
+          layout="prev, pager, next"
+          @current-change="handlePageChange"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -94,6 +96,9 @@ export default {
     loading() {
       return this.$store.state.mediaProxyCache.loading
     },
+    mediaProxyEnabled() {
+      return this.$store.state.mediaProxyCache.mediaProxyEnabled
+    },
     pageSize() {
       return this.$store.state.mediaProxyCache.pageSize
     },
@@ -112,6 +117,7 @@ export default {
   mounted() {
     this.$store.dispatch('GetNodeInfo')
     this.$store.dispatch('NeedReboot')
+    this.$store.dispatch('FetchMediaProxySetting')
     this.$store.dispatch('ListBannedUrls', { page: 1 })
   },
   methods: {
