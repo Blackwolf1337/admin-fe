@@ -1,5 +1,5 @@
 import { listBannedUrls, purgeUrls, removeBannedUrls, searchBannedUrls } from '@/api/mediaProxyCache'
-import { fetchSettings } from '@/api/settings'
+import { fetchSettings, updateSettings } from '@/api/settings'
 import { Message } from 'element-ui'
 import i18n from '@/lang'
 
@@ -30,6 +30,19 @@ const mediaProxyCache = {
     }
   },
   actions: {
+    async EnableMediaProxy({ dispatch, getters, state }) {
+      const configs = [{
+        group: ':pleroma',
+        key: ':media_proxy',
+        value: [
+          { tuple: [':enabled', true] },
+          { tuple: [':invalidation', [{ tuple: [':enabled', true] }]] }
+        ]
+      }]
+      await updateSettings(configs, getters.authHost, getters.token)
+
+      dispatch('FetchMediaProxySetting')
+    },
     async FetchMediaProxySetting({ commit, getters }) {
       const { data } = await fetchSettings(getters.authHost, getters.token)
       const mediaProxySettings = data.configs.find(el => el.key === ':media_proxy')

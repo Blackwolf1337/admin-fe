@@ -1,10 +1,10 @@
 <template>
   <div class="media-proxy-cache-container">
+    <div class="media-proxy-cache-header-container">
+      <h1>{{ $t('mediaProxyCache.mediaProxyCache') }}</h1>
+      <reboot-button/>
+    </div>
     <div v-if="mediaProxyEnabled">
-      <div class="media-proxy-cache-header-container">
-        <h1>{{ $t('mediaProxyCache.mediaProxyCache') }}</h1>
-        <reboot-button/>
-      </div>
       <p class="media-proxy-cache-header">{{ $t('mediaProxyCache.evictObjectsHeader') }}</p>
       <div class="url-input-container">
         <el-input
@@ -65,6 +65,10 @@
         />
       </div>
     </div>
+    <div v-else class="enable-mediaproxy-container">
+      <el-button type="text" @click="enableMediaProxy">{{ $t('mediaProxyCache.enable') }}</el-button>
+      {{ $t('mediaProxyCache.invalidationAndMediaProxy') }}
+    </div>
   </div>
 </template>
 
@@ -121,6 +125,26 @@ export default {
     this.$store.dispatch('ListBannedUrls', { page: 1 })
   },
   methods: {
+    enableMediaProxy() {
+      this.$confirm(
+        this.$t('mediaProxyCache.confirmEnablingMediaProxy'),
+        {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        this.$message({
+          type: 'success',
+          message: this.$t('mediaProxyCache.enableMediaProxySuccessMessage')
+        })
+        this.$store.dispatch('EnableMediaProxy')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        })
+      })
+    },
     evictURL() {
       const urls = this.urls.split(',').map(url => url.trim()).filter(el => el.length > 0)
       this.$store.dispatch('PurgeUrls', { urls, ban: this.ban })
@@ -147,6 +171,12 @@ export default {
 <style rel='stylesheet/scss' lang='scss' scoped>
 h1 {
   margin: 0;
+}
+.enable-mediaproxy-container {
+  margin: 10px 15px;
+  button {
+    font-size: 16px;
+  }
 }
 .expl {
   color: #666666;
