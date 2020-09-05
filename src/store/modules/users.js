@@ -223,9 +223,12 @@ const users = {
     },
     async FetchTagPolicySetting({ commit, getters }) {
       const { data } = await fetchSettings(getters.authHost, getters.token)
-      const mrfPolicies = data.configs
-        .find(el => el.key === ':mrf').value
-        .find(el => el.tuple[0] === ':policies').tuple[1] || []
+      const mrfSettings = data.configs.find(el => el.key === ':mrf')
+        ? data.configs.find(el => el.key === ':mrf').value
+        : []
+      const mrfPolicies = mrfSettings.find(el => el.tuple[0] === ':policies')
+        ? mrfSettings.find(el => el.tuple[0] === ':policies').tuple[1]
+        : []
 
       commit('SET_TAG_POLICY', Array.isArray(mrfPolicies) ? mrfPolicies : [mrfPolicies])
     },
