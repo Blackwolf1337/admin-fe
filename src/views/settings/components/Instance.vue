@@ -4,6 +4,10 @@
       <setting :setting-group="instance" :data="instanceData"/>
     </el-form>
     <el-divider v-if="instance" class="divider thick-line"/>
+    <el-form :model="restrictUnauthenticatedData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="restrictUnauthenticated" :data="restrictUnauthenticatedData"/>
+    </el-form>
+    <el-divider v-if="restrictUnauthenticated" class="divider thick-line"/>
     <el-form :model="adminTokenData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="adminToken" :data="adminTokenData"/>
     </el-form>
@@ -119,6 +123,12 @@ export default {
     },
     pleromaUserData() {
       return _.get(this.settings.settings, [':pleroma', 'Pleroma.User']) || {}
+    },
+    restrictUnauthenticated() {
+      return this.settings.description.find(setting => setting.key === ':restrict_unauthenticated')
+    },
+    restrictUnauthenticatedData() {
+      return _.get(this.settings.settings, [':pleroma', ':restrict_unauthenticated']) || {}
     },
     scheduledActivity() {
       return this.$store.state.settings.description.find(setting => setting.key === 'Pleroma.ScheduledActivity')
