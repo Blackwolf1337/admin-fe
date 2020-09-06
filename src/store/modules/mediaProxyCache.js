@@ -10,6 +10,7 @@ const mediaProxyCache = {
     loading: false,
     mediaProxyEnabled: false,
     pageSize: 50,
+    searchQuery: '',
     totalUrlsCount: 0
   },
   mutations: {
@@ -27,6 +28,9 @@ const mediaProxyCache = {
     },
     SET_PAGE: (state, page) => {
       state.currentPage = page
+    },
+    SET_SEARCH_QUERY: (state, query) => {
+      state.searchQuery = query
     }
   },
   actions: {
@@ -69,13 +73,19 @@ const mediaProxyCache = {
         type: 'success',
         duration: 5 * 1000
       })
-      if (ban) {
+      if (ban && state.searchQuery.length === 0) {
         dispatch('ListBannedUrls', { page: state.currentPage })
+      } else if (ban) {
+        dispatch('SearchUrls', { query: state.searchQuery, page: state.currentPage })
       }
     },
     async RemoveBannedUrls({ dispatch, getters, state }, urls) {
       await removeBannedUrls(urls, getters.authHost, getters.token)
-      dispatch('ListBannedUrls', { page: state.currentPage })
+      if (state.searchQuery.length === 0) {
+        dispatch('ListBannedUrls', { page: state.currentPage })
+      } else {
+        dispatch('SearchUrls', { query: state.searchQuery, page: state.currentPage })
+      }
     },
     async SearchUrls({ commit, dispatch, getters, state }, { query, page }) {
       if (query.length === 0) {
