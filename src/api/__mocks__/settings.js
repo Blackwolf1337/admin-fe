@@ -6,6 +6,16 @@ const configsWithTagPolicy = {
       { tuple: [':policies', ['Pleroma.Web.ActivityPub.MRF.ObjectAgePolicy', 'Pleroma.Web.ActivityPub.MRF.TagPolicy']] },
       { tuple: [':transparency', true] },
       { tuple: [':transparency_exclusions', []] }
+    ] },
+  {
+    group: ':pleroma',
+    key: ':media_proxy',
+    value: [
+      { tuple: [':enabled', true] },
+      { tuple: [':invalidation', [
+        { tuple: [':provider', 'Pleroma.Web.MediaProxy.Invalidation.Script'] },
+        { tuple: [':enabled', true] }
+      ]] }
     ] }],
   need_reboot: false
 }

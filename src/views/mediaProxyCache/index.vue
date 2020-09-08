@@ -146,7 +146,7 @@ export default {
       })
     },
     evictURL() {
-      const urls = this.urls.split(',').map(url => url.trim()).filter(el => el.length > 0)
+      const urls = this.splitUrls(this.urls)
       this.$store.dispatch('PurgeUrls', { urls, ban: this.ban })
       this.urls = ''
     },
@@ -163,6 +163,9 @@ export default {
     },
     removeUrl(url) {
       this.$store.dispatch('RemoveBannedUrls', [url])
+    },
+    splitUrls(urls) {
+      return urls.split(',').map(url => url.trim()).filter(el => el.length > 0)
     }
   }
 }
