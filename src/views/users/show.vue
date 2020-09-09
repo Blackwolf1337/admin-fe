@@ -37,78 +37,97 @@
       :reset-password-dialog-open="resetPasswordDialogOpen"
       @close-reset-token-dialog="closeResetPasswordDialog"/>
     <div class="user-profile-container">
-      <el-card class="user-profile-card">
-        <div class="el-table el-table--fit el-table--enable-row-hover el-table--enable-row-transition el-table--medium">
-          <el-tag v-if="!propertyExists(user, 'nickname')" type="info" class="invalid-user-tag">
-            {{ $t('users.invalidAccount') }}
-          </el-tag>
-          <table class="user-profile-table">
-            <tbody>
-              <tr class="el-table__row">
-                <td class="name-col">ID</td>
-                <td>
-                  {{ user.id }}
-                </td>
-              </tr>
-              <tr class="el-table__row">
-                <td>{{ $t('userProfile.actorType') }}</td>
-                <td>
-                  <el-tag
-                    :type="userCredentials.actor_type === 'Person' ? 'success' : 'warning'">
-                    {{ userCredentials.actor_type }}
-                  </el-tag>
-                </td>
-              </tr>
-              <tr class="el-table__row">
-                <td>{{ $t('userProfile.tags') }}</td>
-                <td>
-                  <span v-if="user.tags.length === 0 || !propertyExists(user, 'tags')">—</span>
-                  <el-tag v-for="tag in user.tags" v-else :key="tag" class="user-profile-tag">{{ humanizeTag(tag) }}</el-tag>
-                </td>
-              </tr>
-              <tr class="el-table__row">
-                <td>{{ $t('userProfile.roles') }}</td>
-                <td>
-                  <el-tag v-if="user.roles.admin" class="user-profile-tag">
-                    {{ $t('users.admin') }}
-                  </el-tag>
-                  <el-tag v-if="user.roles.moderator" class="user-profile-tag">
-                    {{ $t('users.moderator') }}
-                  </el-tag>
-                  <span v-if="!propertyExists(user, 'roles') || (!user.roles.moderator && !user.roles.admin)">—</span>
-                </td>
-              </tr>
-              <tr class="el-table__row">
-                <td>{{ $t('userProfile.accountType') }}</td>
-                <td>
-                  <el-tag v-if="user.local" type="info">{{ $t('userProfile.local') }}</el-tag>
-                  <el-tag v-if="!user.local" type="info">{{ $t('userProfile.external') }}</el-tag>
-                </td>
-              </tr>
-              <tr class="el-table__row">
-                <td>{{ $t('userProfile.status') }}</td>
-                <td>
-                  <el-tag v-if="user.approval_pending" type="info">{{ $t('userProfile.pending') }}</el-tag>
-                  <el-tag v-if="!user.deactivated & !user.approval_pending" type="success">{{ $t('userProfile.active') }}</el-tag>
-                  <el-tag v-if="user.deactivated" type="danger">{{ $t('userProfile.deactivated') }}</el-tag>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div v-if="user.registration_reason">
-            <div class="reason-label">{{ $t('userProfile.reason') }}</div>
-            "{{ user.registration_reason }}"
+      <div class="user-cards-container">
+        <el-card class="user-profile-card">
+          <div class="el-table el-table--fit el-table--enable-row-hover el-table--enable-row-transition el-table--medium">
+            <el-tag v-if="!propertyExists(user, 'nickname')" type="info" class="invalid-user-tag">
+              {{ $t('users.invalidAccount') }}
+            </el-tag>
+            <table class="user-profile-table">
+              <tbody>
+                <tr class="el-table__row">
+                  <td class="name-col">ID</td>
+                  <td>
+                    {{ user.id }}
+                  </td>
+                </tr>
+                <tr class="el-table__row">
+                  <td>{{ $t('userProfile.actorType') }}</td>
+                  <td>
+                    <el-tag
+                      :type="userCredentials.actor_type === 'Person' ? 'success' : 'warning'">
+                      {{ userCredentials.actor_type }}
+                    </el-tag>
+                  </td>
+                </tr>
+                <tr class="el-table__row">
+                  <td>{{ $t('userProfile.tags') }}</td>
+                  <td>
+                    <span v-if="user.tags.length === 0 || !propertyExists(user, 'tags')">—</span>
+                    <el-tag v-for="tag in user.tags" v-else :key="tag" class="user-profile-tag">{{ humanizeTag(tag) }}</el-tag>
+                  </td>
+                </tr>
+                <tr class="el-table__row">
+                  <td>{{ $t('userProfile.roles') }}</td>
+                  <td>
+                    <el-tag v-if="user.roles.admin" class="user-profile-tag">
+                      {{ $t('users.admin') }}
+                    </el-tag>
+                    <el-tag v-if="user.roles.moderator" class="user-profile-tag">
+                      {{ $t('users.moderator') }}
+                    </el-tag>
+                    <span v-if="!propertyExists(user, 'roles') || (!user.roles.moderator && !user.roles.admin)">—</span>
+                  </td>
+                </tr>
+                <tr class="el-table__row">
+                  <td>{{ $t('userProfile.accountType') }}</td>
+                  <td>
+                    <el-tag v-if="user.local" type="info">{{ $t('userProfile.local') }}</el-tag>
+                    <el-tag v-if="!user.local" type="info">{{ $t('userProfile.external') }}</el-tag>
+                  </td>
+                </tr>
+                <tr class="el-table__row">
+                  <td>{{ $t('userProfile.status') }}</td>
+                  <td>
+                    <el-tag v-if="user.approval_pending" type="info">{{ $t('userProfile.pending') }}</el-tag>
+                    <el-tag v-if="!user.deactivated & !user.approval_pending" type="success">{{ $t('userProfile.active') }}</el-tag>
+                    <el-tag v-if="user.deactivated" type="danger">{{ $t('userProfile.deactivated') }}</el-tag>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div v-if="user.registration_reason">
+              <div class="reason-label">{{ $t('userProfile.reason') }}</div>
+              "{{ user.registration_reason }}"
+            </div>
           </div>
-        </div>
-        <el-button v-if="propertyExists(user, 'nickname')" icon="el-icon-lock" class="security-setting-button" @click="securitySettingsModalVisible = true">
-          {{ $t('userProfile.securitySettings.securitySettings') }}
-        </el-button>
-        <SecuritySettingsModal
-          v-if="propertyExists(user, 'nickname')"
-          :user="user"
-          :visible="securitySettingsModalVisible"
-          @close="securitySettingsModalVisible = false" />
-      </el-card>
+          <el-button v-if="propertyExists(user, 'nickname')" icon="el-icon-lock" class="security-setting-button" @click="securitySettingsModalVisible = true">
+            {{ $t('userProfile.securitySettings.securitySettings') }}
+          </el-button>
+          <SecuritySettingsModal
+            v-if="propertyExists(user, 'nickname')"
+            :user="user"
+            :visible="securitySettingsModalVisible"
+            @close="securitySettingsModalVisible = false" />
+        </el-card>
+        <el-card class="user-chats-card">
+          <h2 class="chats">{{ $t('userProfile.chats') }}</h2>
+          <div class="el-table el-table--fit el-table--enable-row-hover el-table--enable-row-transition el-table--medium">
+            <table class="user-chats-table">
+              <tbody v-if="!chatsLoading" class="chats">
+                <tr v-if="statuses.length === 0" class="no-statuses">>
+                  {{ $t('userProfile.noChats') }}
+                </tr>
+                <tr v-for="chat in chats" :key="chat.id" class="el-table__row">
+                  <td class="chat-item">
+                    {{ chat.account.acct }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </el-card>
+      </div>
       <div class="recent-statuses-container">
         <h2 class="recent-statuses">{{ $t('userProfile.recentStatuses') }}</h2>
         <el-checkbox v-model="showPrivate" class="show-private-statuses" @change="onTogglePrivate">
@@ -160,6 +179,12 @@ export default {
     },
     statusesLoading() {
       return this.$store.state.userProfile.statusesLoading
+    },
+    chats() {
+      return this.$store.state.userProfile.chats
+    },
+    chatsLoading() {
+      return this.$store.state.userProfile.chatsLoading
     },
     user() {
       return this.$store.state.userProfile.user
@@ -315,8 +340,18 @@ table {
     display: inline
   }
 }
+.user-cards-container{
+  display: flex;
+  flex-direction: column;
+}
 .user-profile-card {
   margin: 0 20px;
+  width: 30%;
+  min-width: 300px;
+  height: fit-content;
+}
+.user-chats-card {
+  margin: 20px 20px;
   width: 30%;
   min-width: 300px;
   height: fit-content;
