@@ -118,9 +118,21 @@
                 <tr v-if="statuses.length === 0" class="no-statuses">>
                   {{ $t('userProfile.noChats') }}
                 </tr>
-                <tr v-for="chat in chats" :key="chat.id" class="el-table__row">
-                  <td class="chat-item">
-                    {{ chat.account.acct }}
+                <tr v-for="chat in chats" :key="chat.id" class="el-table__row chat-item">
+                  <td>
+                    <div class="chat-card-header">
+                      <img v-if="propertyExists(chat.account, 'avatar')" :src="chat.account.avatar" class="chat-avatar-img">
+                      <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">{{ chat.account.username }}</span>
+                      <span v-else>
+                        <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">
+                          {{ chat.account.username }}
+                        </span>
+                        <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
+                      </span>
+                    </div>
+                    <div class="chat-card-preview">
+                      <span v-if="propertyExists(chat, 'last_message')" class="chat-preview">{{ chat.last_message.content }}</span>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -343,17 +355,18 @@ table {
 .user-cards-container{
   display: flex;
   flex-direction: column;
+  width: 30%;
+  min-width: 300px;
+  margin: 0 20px;
+
 }
 .user-profile-card {
-  margin: 0 20px;
-  width: 30%;
-  min-width: 300px;
   height: fit-content;
+  width: auto;
+  margin-bottom: 20px;
 }
 .user-chats-card {
-  margin: 20px 20px;
-  width: 30%;
-  min-width: 300px;
+  width: auto;
   height: fit-content;
 }
 .user-profile-container {
@@ -363,6 +376,9 @@ table {
   margin: 0;
   width: inherit;
 }
+.user-chats-table {
+  width: 100%;
+}
 .user-profile-tag {
   margin: 0 4px 4px 0;
 }
@@ -370,6 +386,27 @@ table {
   color: #878d99;
   font-weight: bold;
   margin: 5px 0;
+}
+.chat-card-header {
+  display: flex;
+  align-items: center;
+}
+.chat-avatar-img {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+.chat-account-name {
+  display: inline-block;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+.chat-card-preview {
+  color: gray;
+  font-style: italic;
+  margin: 5px 0 0 20px;
 }
 
 @media only screen and (max-width:480px) {
