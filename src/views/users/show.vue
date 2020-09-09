@@ -120,19 +120,21 @@
                 </tr>
                 <tr v-for="chat in chats" :key="chat.id" class="el-table__row chat-item">
                   <td>
-                    <div class="chat-card-header">
-                      <img v-if="propertyExists(chat.account, 'avatar')" :src="chat.account.avatar" class="chat-avatar-img">
-                      <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">{{ chat.account.username }}</span>
-                      <span v-else>
-                        <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">
-                          {{ chat.account.username }}
+                    <a v-if="propertyExists(chat, 'id')" :href="`/#/chats/${chat.id}/`">
+                      <div class="chat-card-header">
+                        <img v-if="propertyExists(chat.account, 'avatar')" :src="chat.account.avatar" class="chat-avatar-img">
+                        <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">{{ chat.account.username }}</span>
+                        <span v-else>
+                          <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">
+                            {{ chat.account.username }}
+                          </span>
+                          <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
                         </span>
-                        <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
-                      </span>
-                    </div>
-                    <div class="chat-card-preview">
-                      <span v-if="propertyExists(chat, 'last_message')" class="chat-preview">{{ chat.last_message.content }}</span>
-                    </div>
+                      </div>
+                      <div class="chat-card-preview">
+                        <span v-if="propertyExists(chat, 'last_message')" class="chat-preview">{{ chat.last_message.content }}</span>
+                      </div>
+                    </a>
                   </td>
                 </tr>
               </tbody>

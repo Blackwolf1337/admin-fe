@@ -35,6 +35,21 @@ const statuses = {
   ]
 }
 
+const chatsDisabled = disabledFeatures.includes('chats')
+const chats = {
+  path: '/chats',
+  component: Layout,
+  children: [
+    {
+      path: 'index',
+      component: () => import('@/views/chats/index'),
+      name: 'Chats',
+      meta: { title: 'chats', icon: 'form', noCache: true }
+    }
+  ],
+  hidden: true
+}
+
 const reportsDisabled = disabledFeatures.includes('reports')
 const reports = {
   path: '/reports',
@@ -169,6 +184,7 @@ export const asyncRouterMap = [
     ]
   },
   ...(statusesDisabled ? [] : [statuses]),
+  ...(chatsDisabled ? [] : [chats]),
   ...(reportsDisabled ? [] : [reports]),
   ...(invitesDisabled ? [] : [invites]),
   ...(emojiPacksDisabled ? [] : [emojiPacks]),
@@ -195,6 +211,18 @@ export const asyncRouterMap = [
         path: '',
         name: 'StatusShow',
         component: () => import('@/views/statuses/show')
+      }
+    ],
+    hidden: true
+  },
+  {
+    path: '/chats/:id',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'ChatsShow',
+        component: () => import('@/views/chats/show')
       }
     ],
     hidden: true

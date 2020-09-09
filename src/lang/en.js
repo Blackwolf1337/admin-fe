@@ -67,6 +67,7 @@ export default {
     reports: 'Reports',
     invites: 'Invites',
     statuses: 'Statuses',
+    chats: 'Chats',
     settings: 'Settings',
     moderationLog: 'Moderation Log',
     mediaProxyCache: 'MediaProxy Cache',
@@ -294,6 +295,11 @@ export default {
     public: 'Public',
     unlisted: 'Unlisted',
     openStatusInInstance: 'Open status in instance'
+  },
+  chats: {
+    chats: 'Chats',
+    loadMore: 'Load more',
+    chatHistory: 'Chat History'
   },
   userProfile: {
     tags: 'Tags',
