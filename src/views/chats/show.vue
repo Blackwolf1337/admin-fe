@@ -40,7 +40,11 @@
         <el-timeline-item v-for="message in chatMessages" :key="message.id">
           <chat-message :message="message" :author="getAuthor(message.account_id)"/>
         </el-timeline-item>
-        <p v-if="chatMessages.length === 0" class="no-statuses">{{ $t('userProfile.noStatuses') }}</p>
+        <p v-if="chatMessages.length === 0" class="no-messages">{{ $t('userProfile.noMessages') }}</p>
+        <div v-if="chatMessages.length === 20" class="statuses-pagination">
+          <el-button v-if="!allLoaded" :loading="buttonLoading" @click="handleLoadMore">{{ $t('statuses.loadMore') }}</el-button>
+          <el-button v-else icon="el-icon-check" circle/>
+        </div>
       </el-timeline>
     </div>
 
@@ -54,11 +58,6 @@ import RebootButton from '@/components/RebootButton'
 export default {
   name: 'ChatShow',
   components: { RebootButton, ChatMessage },
-  data() {
-    return {
-
-    }
-  },
   computed: {
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
@@ -68,6 +67,12 @@ export default {
     },
     isTablet() {
       return this.$store.state.app.device === 'tablet'
+    },
+    allLoaded() {
+      return this.$store.state.chat.allLoaded
+    },
+    buttonLoading() {
+      return this.$store.state.chat.buttonLoading
     },
     loading() {
       return this.$store.state.chat.loading
@@ -80,6 +85,7 @@ export default {
     }
   },
   beforeMount: function() {
+    this.$store.dispatch('HandlePageChange', null)
     this.$store.dispatch('NeedReboot')
     this.$store.dispatch('GetNodeInfo')
     this.$store.dispatch('FetchChat', this.$route.params.id)
@@ -93,6 +99,11 @@ export default {
       const sender = this.chat.sender
       const receiver = this.chat.receiver
       return account_id === sender.id ? sender : receiver
+    },
+    handleLoadMore() {
+      const max_id = this.chatMessages.pop().id
+      this.$store.dispatch('HandlePageChange', max_id)
+      this.$store.dispatch('FetchChatMessages', this.$route.params.id)
     }
   }
 }
@@ -151,6 +162,10 @@ export default {
 }
 .chats {
   padding: 0 20px 0 0;
+}
+.statuses-pagination {
+  padding: 15px 0;
+  text-align: center;
 }
 
 @media only screen and (min-width: 1824px) {

@@ -320,6 +320,7 @@ export default {
     pending: 'Pending',
     noStatuses: 'No statuses to show',
     noChats: 'No chats to show',
+    noMessages: 'No messages to show',
     openAccountInInstance: 'Open account in instance',
     securitySettings: {
       email: 'Email',
