@@ -1,49 +1,47 @@
 <template>
   <div v-if="!loading" class="chat-show-container">
-    <header v-if="isDesktop || isTablet" class="user-page-header">
-      <div class="avatar-name-container"/>
+    <header v-if="isDesktop || isTablet" class="chat-page-header">
+      <h1>
+        {{ $t('chats.chatHistory') }}:
+      </h1>
+      <div class="chat-card-participants">
+        <div class="chat-particiants-sender">
+          <div class="avatar-name-container">
+            <el-avatar v-if="propertyExists(chat.sender, 'avatar')" :src="chat.sender.avatar" size="large" />
+            <h1 v-if="propertyExists(chat.sender, 'display_name')" class="particiant-display-name">{{ chat.sender.display_name }}</h1>
+            <h1 v-else class="particiant-display-name invalid">({{ $t('users.invalidNickname') }})</h1>
+            <a v-if="propertyExists(chat.sender, 'url')" :href="chat.sender.url" target="_blank">
+              <i :title="$t('userProfile.openAccountInInstance')" class="el-icon-top-right"/>
+            </a>
+          </div>
+        </div>
+        <div class="chat-particiants-receiver">
+          <div class="avatar-name-container">
+            <el-avatar v-if="propertyExists(chat.receiver, 'avatar')" :src="chat.receiver.avatar" size="large" />
+            <h1 v-if="propertyExists(chat.receiver, 'display_name')" class="particiant-display-name">{{ chat.receiver.display_name }}</h1>
+            <h1 v-else class="particiant-display-name invalid">({{ $t('users.invalidNickname') }})</h1>
+            <a v-if="propertyExists(chat.receiver, 'url')" :href="chat.receiver.url" target="_blank">
+              <i :title="$t('userProfile.openAccountInInstance')" class="el-icon-top-right"/>
+            </a>
+          </div>
+        </div>
+      </div>
     </header>
     <div v-if="isMobile" class="chat-page-header-container">
-      <header class="user-page-header">
+      <header class="chat-page-header">
         <div class="avatar-name-container"/>
         <reboot-button/>
       </header>
     </div>
 
-    <div class="chat-container">
-      <div class="chat-card-header">
-        <h1>
-          {{ $t('chats.chatHistory') }}
-        </h1>
-        <div class="chat-card-participants">
-          <div class="chat-particiants-sender">
-            <img v-if="propertyExists(chat.sender, 'avatar')" :src="chat.sender.avatar" class="chat-avatar-img">
-            <span v-if="propertyExists(chat.sender, 'username')" class="chat-account-name">{{ chat.sender.username }}</span>
-            <span v-else>
-              <span v-if="propertyExists(chat.sender, 'username')" class="chat-account-name">
-                {{ chat.sender.username }}
-              </span>
-              <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
-            </span>
-          </div>
-          <div class="chat-particiants-receiver">
-            <img v-if="propertyExists(chat.receiver, 'avatar')" :src="chat.receiver.avatar" class="chat-avatar-img">
-            <span v-if="propertyExists(chat.receiver, 'username')" class="chat-account-name">{{ chat.receiver.username }}</span>
-            <span v-else>
-              <span v-if="propertyExists(chat.receiver, 'username')" class="chat-account-name">
-                {{ chat.receiver.username }}
-              </span>
-              <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
-            </span>
-          </div>
-        </div>
-      </div>
+    <div class="chat-messages-container">
 
-      <div class="chat-messages">
-        <div v-for="message in chatMessages" :key="message.id" class="">
+      <el-timeline v-if="!loading" class="messages">
+        <el-timeline-item v-for="message in chatMessages" :key="message.id">
           <chat-message :message="message" :author="getAuthor(message.account_id)"/>
-        </div>
-      </div>
+        </el-timeline-item>
+        <p v-if="chatMessages.length === 0" class="no-statuses">{{ $t('userProfile.noStatuses') }}</p>
+      </el-timeline>
     </div>
 
   </div>
@@ -101,7 +99,20 @@ export default {
 </script>
 
 <style rel='stylesheet/scss' lang='scss'>
+.chat-page-header {
+  display: flex;
+  margin: 22px 15px 22px 20px;
+  padding: 0;
+  h1 {
+    display: inline
+  }
+}
+.chat-card-participants {
+  display: flex;
+  margin: 0 20px;
+}
 .avatar-name-container {
+  padding-right: 20px;
   display: flex;
   align-items: center;
   .el-icon-top-right {
@@ -109,46 +120,28 @@ export default {
     line-height: 36px;
     color: #606266;
   }
+  .particiant-display-name {
+    padding-left: 5px;
+  }
 }
-.avatar-name-header {
+.el-avatar h1 {
+  padding-right: 5px;
+}
+.chat-messages-container {
   display: flex;
-  height: 40px;
-  align-items: center;
-}
-.invalid {
-  color: gray;
+  flex-direction: column;
+  max-width: 1000px;
+  .el-timeline-item {
+    margin-left: 20px;
+  }
 }
 .no-chats {
   margin-left: 28px;
   color: #606266;
 }
-.password-reset-token {
-  margin: 0 0 14px 0;
-}
-.password-reset-token-dialog {
-  width: 50%
-}
 .reboot-button {
   padding: 10px;
   margin-left: 6px;
-}
-
-.recent-chats-container-show {
-  display: flex;
-  flex-direction: column;
-  .el-timeline-item {
-    margin-left: 20px;
-  }
-  .recent-chats {
-    margin-left: 20px;
-  }
-  .show-private-chats {
-    margin-left: 20px;
-    margin-bottom: 20px;
-  }
-}
-.reset-password-link {
-  text-decoration: underline;
 }
 .router-link {
   text-decoration: none;
@@ -159,103 +152,25 @@ export default {
 .chats {
   padding: 0 20px 0 0;
 }
-.user-page-header {
-  display: flex;
-  justify-content: space-between;
-  margin: 22px 15px 22px 20px;
-  padding: 0;
-  align-items: center;
-  h1 {
-    display: inline;
-    margin: 0 0 0 10px;
-  }
-}
 
 @media only screen and (min-width: 1824px) {
-  .chat-show-container {
-    max-width: 1824px;
-    margin: auto;
-  }
+
 }
 
 @media only screen and (max-width:480px) {
+  .chat-page-header {
+    padding: 0;
+    margin: 7px 15px 15px 10px;
+  }
   .avatar-name-container {
     margin-bottom: 10px;
   }
+
   .el-timeline-item__wrapper {
     padding-left: 18px;
   }
-  .left-header-container {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-  }
-  .password-reset-token-dialog {
-    width: 85%
-  }
-  .recent-chats {
-    margin: 20px 10px 15px 10px;
-  }
-  .recent-chats-container-show {
-    width: 100%;
-    margin: 0 0 0 10px;
-    .el-timeline-item {
-      margin-left: 0;
-    }
-    .recent-chats {
-      margin-left: 0;
-    }
-    .show-private-chats {
-      margin: 0 10px 20px 0;
-    }
-  }
-  .chat-card {
-    .el-card__body {
-      padding: 15px;
-    }
-  }
-  .chat-container {
-    margin: 0 10px;
-  }
-  .chats {
-    padding-right: 10px;
-    margin-left: 0;
-    .el-timeline-item__wrapper {
-      margin-right: 10px;
-    }
-  }
-  .user-page-header {
-    padding: 0;
-    margin: 7px 15px 5px 10px;
-  }
-  .chat-page-header-container {
-    width: 100%;
-    .el-dropdown {
-      width: stretch;
-      margin: 0 10px 15px 10px;
-    }
-  }
 }
 @media only screen and (max-width:801px) and (min-width: 481px) {
-  .recent-chats-container-show {
-    width: 97%;
-    margin: 0 20px;
-    .el-timeline-item {
-      margin-left: 2px;
-    }
-    .recent-chats {
-      margin: 20px 10px 15px 0;
-    }
-    .show-private-chats {
-      margin: 0 10px 20px 0;
-    }
-  }
-  .show-private-chats {
-    margin: 0 10px 20px 0;
-  }
-  .user-page-header {
-    padding: 0;
-    margin: 7px 15px 20px 20px;
-  }
+
 }
 </style>

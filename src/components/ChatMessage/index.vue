@@ -1,28 +1,57 @@
 <template>
-  <el-card v-if="!message.deleted" class="message-card" @click.native="handleRouteChange()">
+  <el-card v-if="!message.deleted" class="message-card">
     <div slot="header">
       <div class="message-header">
-        <div class="chat-particiants-sender">
-          <img v-if="propertyExists(author, 'avatar')" :src="author.avatar" class="chat-avatar-img">
-          <span v-if="propertyExists(author, 'username')" class="chat-account-name">{{ author.username }}</span>
-          <span v-else>
-            <span v-if="propertyExists(author, 'username')" class="chat-account-name">
-              {{ author.username }}
-            </span>
-            <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
-          </span>
+        <div class="message-meta">
+          <router-link
+            v-if="propertyExists(author, 'id')"
+            :to="{ name: 'UsersShow', params: { id: author.id }}"
+            class="router-link"
+            @click.native.stop>
+            <div class="message-author">
+              <img v-if="propertyExists(author, 'avatar')" :src="author.avatar" class="message-author-avatar-img">
+              <span v-if="propertyExists(author, 'username')" class="message-author-name">{{ author.username }}</span>
+              <span v-else>
+                <span v-if="propertyExists(author, 'username')" class="message-author-name">
+                  {{ author.username }}
+                </span>
+                <span v-else class="message-author-name deactivated">({{ $t('users.invalidNickname') }})</span>
+              </span>
+            </div>
+          </router-link>
+          <span class="message-timestamp">{{ parseTimestamp(message.created_at) }}</span>
         </div>
-        {{ message.created_at }}
+        <div class="message-actions">
+          <el-dropdown trigger="click" @click.native.stop>
+            <el-button plain size="small" icon="el-icon-edit" class="status-actions-button">
+              {{ $t('reports.messageModeration') }}<i class="el-icon-arrow-down el-icon--right"/>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                @click.native="deleteMessage()">
+                {{ $t('reports.deleteMessage') }}
+              </el-dropdown-item>
+              <el-dropdown-item
+                @click.native="handleRouteChange()">
+                {{ $t('users.moderateUser') }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
     </div>
     <div class="message-body">
-      {{ message.content }}
+      <span class="message-content" v-html="message.content"/>
+      <div v-if="message.attachment" class="image">
+        <img :src="message.attachment.preview_url">
+      </div>
     </div>
   </el-card>
 
 </template>
 
 <script>
+import moment from 'moment'
 
 export default {
   name: 'ChatMessage',
@@ -48,15 +77,41 @@ export default {
   methods: {
     propertyExists(account, property) {
       return account[property]
+    },
+    parseTimestamp(timestamp) {
+      return moment(timestamp).format('YYYY-MM-DD HH:mm')
+    },
+    deleteMessage() {
+      this.$confirm('Are you sure you want to delete this message?', 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        this.$store.dispatch('DeleteMessage', {
+          chat_id: this.message.chat_id,
+          message_id: this.message.id
+        })
+        this.$message({
+          type: 'success',
+          message: 'Delete completed'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Delete canceled'
+        })
+      })
+    },
+    handleRouteChange() {
+      this.$router.push({ name: 'UsersShow', params: { id: this.author.id }})
     }
   }
 }
 </script>
 
 <style rel='stylesheet/scss' lang='scss'>
-.chat-card {
+.message-card {
   margin-bottom: 10px;
-  cursor: pointer;
   .account {
     line-height: 26px;
     font-size: 13px;
@@ -82,61 +137,55 @@ export default {
   .show-more-button {
     margin-left: 5px;
   }
-  .chat-account {
+  .message-author {
     display: flex;
     align-items: center;
   }
-  .chat-avatar-img {
+  .message-author-avatar-img {
     display: inline-block;
     width: 15px;
     height: 15px;
     margin-right: 5px;
   }
-  .chat-account-name {
+  .message-author-name {
     display: inline-block;
     margin: 0;
     font-size: 15px;
     font-weight: 500;
   }
-  .chat-body {
+  .message-body {
     display: flex;
     flex-direction: column;
   }
-  .chat-card-header {
+  .message-card-header {
     display: flex;
     align-items: center;
   }
-  .chat-checkbox {
-    margin-right: 7px;
-  }
+
   .chat-content {
     font-size: 15px;
     line-height: 26px;
   }
-  .chat-created-at {
+  .message-timestamp {
     font-size: 13px;
     color: #606266;
+    margin-left: 20px;
   }
-  .chat-deleted {
+  .message-deleted {
     font-style: italic;
     margin-top: 3px;
   }
-  .chat-footer {
+  .message-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    .message-meta {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+    }
   }
-  .chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .chat-tags {
-    display: inline;
-  }
-  .chat-without-content {
-    font-style: italic;
-  }
+
 }
 
 @media only screen and (max-width:480px) {
@@ -146,35 +195,39 @@ export default {
   .el-message-box {
     width: 80%;
   }
-  .chat-card {
+  .message-card {
     .el-card__header {
       padding: 10px 17px;
     }
     .el-tag {
       margin: 3px 0;
     }
-    .chat-account-container {
+    .message-author-container {
       margin-bottom: 5px;
     }
-    .chat-actions-button {
+    .message-action-buttons {
       margin: 3px 0 3px;
     }
-    .chat-actions {
+    .message-actions {
       width: 100%;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
     }
-    .chat-footer {
-      flex-direction: column;
-      align-items: flex-start;
-      margin-top: 10px;
-    }
-    .chat-header {
+    .message-header {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
     }
+  }
+  .message-actions-button {
+    margin: 3px 0 3px;
+  }
+  .message-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 }
 </style>

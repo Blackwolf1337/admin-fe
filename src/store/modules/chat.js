@@ -1,4 +1,4 @@
-import { fetchChat, fetchChatMessages } from '@/api/chat'
+import { fetchChat, fetchChatMessages, deleteChatMessage } from '@/api/chat'
 
 const chat = {
   state: {
@@ -30,6 +30,10 @@ const chat = {
       const chat = await fetchChatMessages(id, getters.authHost, getters.token)
       commit('SET_CHAT_MESSAGES', chat.data)
       commit('SET_LOADING', false)
+    },
+    async DeleteMessage({ commit, dispatch, getters, state }, params) {
+      await deleteChatMessage(params.chat_id, params.message_id, getters.authHost, getters.token)
+      dispatch('FetchChatMessages', params.chat_id)
     }
   }
 }
