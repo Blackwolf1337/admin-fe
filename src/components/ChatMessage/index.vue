@@ -2,6 +2,16 @@
   <el-card v-if="!message.deleted" class="message-card" @click.native="handleRouteChange()">
     <div slot="header">
       <div class="message-header">
+        <div class="chat-particiants-sender">
+          <img v-if="propertyExists(author, 'avatar')" :src="author.avatar" class="chat-avatar-img">
+          <span v-if="propertyExists(author, 'username')" class="chat-account-name">{{ author.username }}</span>
+          <span v-else>
+            <span v-if="propertyExists(author, 'username')" class="chat-account-name">
+              {{ author.username }}
+            </span>
+            <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
+          </span>
+        </div>
         {{ message.created_at }}
       </div>
     </div>
@@ -21,6 +31,10 @@ export default {
       type: Object,
       required: true
     },
+    author: {
+      type: Object,
+      required: true
+    },
     page: {
       type: Number,
       required: false,
@@ -32,6 +46,9 @@ export default {
     }
   },
   methods: {
+    propertyExists(account, property) {
+      return account[property]
+    }
   }
 }
 </script>

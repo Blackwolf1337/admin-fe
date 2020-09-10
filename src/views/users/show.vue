@@ -122,11 +122,11 @@
                   <td>
                     <a v-if="propertyExists(chat, 'id')" :href="`/#/chats/${chat.id}/`">
                       <div class="chat-card-header">
-                        <img v-if="propertyExists(chat.account, 'avatar')" :src="chat.account.avatar" class="chat-avatar-img">
-                        <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">{{ chat.account.username }}</span>
+                        <img v-if="propertyExists(chat.receiver, 'avatar')" :src="chat.receiver.avatar" class="chat-avatar-img">
+                        <span v-if="propertyExists(chat.receiver, 'username')" class="chat-account-name">{{ chat.receiver.username }}</span>
                         <span v-else>
-                          <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">
-                            {{ chat.account.username }}
+                          <span v-if="propertyExists(chat.receiver, 'username')" class="chat-account-name">
+                            {{ chat.receiver.username }}
                           </span>
                           <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
                         </span>

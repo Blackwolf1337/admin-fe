@@ -15,19 +15,33 @@
         <h1>
           {{ $t('chats.chatHistory') }}
         </h1>
-        <!-- <img v-if="propertyExists(chat.account, 'avatar')" :src="chat.account.avatar" class="chat-avatar-img">
-        <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">{{ chat.account.username }}</span>
-        <span v-else>
-          <span v-if="propertyExists(chat.account, 'username')" class="chat-account-name">
-            {{ chat.account.username }}
-          </span>
-          <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
-        </span> -->
+        <div class="chat-card-participants">
+          <div class="chat-particiants-sender">
+            <img v-if="propertyExists(chat.sender, 'avatar')" :src="chat.sender.avatar" class="chat-avatar-img">
+            <span v-if="propertyExists(chat.sender, 'username')" class="chat-account-name">{{ chat.sender.username }}</span>
+            <span v-else>
+              <span v-if="propertyExists(chat.sender, 'username')" class="chat-account-name">
+                {{ chat.sender.username }}
+              </span>
+              <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
+            </span>
+          </div>
+          <div class="chat-particiants-receiver">
+            <img v-if="propertyExists(chat.receiver, 'avatar')" :src="chat.receiver.avatar" class="chat-avatar-img">
+            <span v-if="propertyExists(chat.receiver, 'username')" class="chat-account-name">{{ chat.receiver.username }}</span>
+            <span v-else>
+              <span v-if="propertyExists(chat.receiver, 'username')" class="chat-account-name">
+                {{ chat.receiver.username }}
+              </span>
+              <span v-else class="chat-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
+            </span>
+          </div>
+        </div>
       </div>
 
       <div class="chat-messages">
         <div v-for="message in chatMessages" :key="message.id" class="">
-          <chat-message :message="message"/>
+          <chat-message :message="message" :author="getAuthor(message.account_id)"/>
         </div>
       </div>
     </div>
@@ -76,6 +90,11 @@ export default {
   methods: {
     propertyExists(account, property) {
       return account[property]
+    },
+    getAuthor(account_id) {
+      const sender = this.chat.sender
+      const receiver = this.chat.receiver
+      return account_id === sender.id ? sender : receiver
     }
   }
 }

@@ -4,8 +4,7 @@ const chat = {
   state: {
     fetchedChat: {},
     fetchedChatMessages: {},
-    loading: false,
-    chatAuthor: {}
+    loading: false
   },
   mutations: {
     SET_LOADING: (state, status) => {
@@ -29,7 +28,6 @@ const chat = {
     async FetchChatMessages({ commit, dispatch, getters, state }, id) {
       commit('SET_LOADING', true)
       const chat = await fetchChatMessages(id, getters.authHost, getters.token)
-
       commit('SET_CHAT_MESSAGES', chat.data)
       commit('SET_LOADING', false)
     }
