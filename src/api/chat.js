@@ -3,9 +3,6 @@ import { getToken } from '@/utils/auth'
 import { baseName } from './utils'
 
 export async function deleteChatMessage(chat_id, message_id, authHost, token) {
-  console.log(chat_id)
-  console.log(message_id)
-
   return await request({
     baseURL: baseName(authHost),
     url: `/api/pleroma/admin/chats/${chat_id}/messages/${message_id}`,
@@ -24,7 +21,6 @@ export async function fetchChat(id, authHost, token) {
 }
 
 export async function fetchChatMessages(id, max_id, authHost, token) {
-  console.log(max_id)
   let url
   max_id !== null ? url = `/api/pleroma/admin/chats/${id}/messages?max_id=${max_id}` : url = `/api/pleroma/admin/chats/${id}/messages`
   return await request({

@@ -354,13 +354,12 @@ table {
     display: inline
   }
 }
-.user-cards-container{
+.user-cards-container {
   display: flex;
   flex-direction: column;
   width: 30%;
   min-width: 300px;
   margin: 0 20px;
-
 }
 .user-profile-card {
   height: fit-content;
@@ -448,8 +447,8 @@ table {
       margin: 0 15px 15px 10px;
     }
   }
-  .user-profile-card {
-    margin: 0 10px;
+  .user-profile-card, .user-chats-card {
+    margin: 0 10px 20px;
     width: 95%;
     td {
       width: 80px;
@@ -457,6 +456,10 @@ table {
   }
   .user-profile-container {
     flex-direction: column;
+  }
+  .user-cards-container {
+    width: 100%;
+    margin: 0;
   }
 }
 
@@ -475,12 +478,12 @@ table {
     padding: 0;
     margin: 7px 15px 20px 20px;
   }
-  .user-profile-card {
-    margin: 0 20px;
-    width: fit-content;
-  }
   .user-profile-container {
     flex-direction: column;
+  }
+  .user-cards-container {
+    width: 66%;
+    padding-left: 28px;
   }
 }
 </style>

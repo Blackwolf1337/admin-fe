@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" class="chat-show-container">
-    <header v-if="isDesktop || isTablet" class="chat-page-header">
+    <header class="chat-page-header">
       <h1>
         {{ $t('chats.chatHistory') }}:
       </h1>
@@ -168,24 +168,83 @@ export default {
   text-align: center;
 }
 
-@media only screen and (min-width: 1824px) {
-
-}
-
 @media only screen and (max-width:480px) {
   .chat-page-header {
     padding: 0;
-    margin: 7px 15px 15px 10px;
+    margin: 7px 15px 15px 30px;
+    flex-direction: column;
+    align-items: baseline;
+    h1 {
+      margin-left: 0;
+      margin-bottom: 10px;
+    }
+  }
+  .chat-card-participants {
+    display: flex;
+    margin: 0;
+    flex-wrap: wrap;
   }
   .avatar-name-container {
     margin-bottom: 10px;
   }
-
+  .messages.el-timeline {
+    padding-left: 10px;
+    max-width: 97%;
+  }
   .el-timeline-item__wrapper {
     padding-left: 18px;
   }
+  .message-card .el-card__header .message-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    .message-actions {
+      width: auto;
+    }
+  }
+  .message-card .message-header .message-meta {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    .message-timestamp {
+      margin-left: 0;
+    }
+  }
 }
-@media only screen and (max-width:801px) and (min-width: 481px) {
 
+@media only screen and (max-width: 1051px) {
+  .messages.el-timeline {
+    max-width: 90%;
+  }
+}
+
+@media only screen and (max-width:801px) and (min-width: 481px) {
+  .chat-page-header {
+    padding: 0;
+    margin: 7px 15px 15px 30px;
+    flex-direction: column;
+    align-items: baseline;
+    h1 {
+      margin-left: 0;
+      margin-bottom: 10px;
+    }
+  }
+  .chat-card-participants {
+    display: flex;
+    margin: 0;
+    flex-wrap: wrap;
+  }
+  .avatar-name-container {
+    margin-bottom: 10px;
+  }
+  .messages.el-timeline {
+    padding-left: 10px;
+    max-width: 97%;
+  }
+  .el-timeline-item__wrapper {
+    padding-left: 18px;
+  }
 }
 </style>
