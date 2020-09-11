@@ -1,3 +1,5 @@
+import userChats from './chats'
+
 export let users = [
   { active: true, approval_pending: false, deactivated: false, id: '2', nickname: 'allis', local: true, external: false, roles: { admin: true, moderator: false }, tags: [], actor_type: 'Person' },
   { active: true, approval_pending: false, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'], actor_type: 'Person' },
@@ -48,6 +50,10 @@ export async function fetchUsers(filters, authHost, token, page = 1) {
 
 export async function fetchUserStatuses(id, authHost, godmode, token) {
   return Promise.resolve({ data: userStatuses })
+}
+
+export async function fetchUserChats(id, authHost, godmode, token) {
+  return Promise.resolve({ data: userChats })
 }
 
 export async function getPasswordResetToken(nickname, authHost, token) {
