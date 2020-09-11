@@ -1,4 +1,4 @@
-import userChats from './chats'
+import userChats from './chat'
 
 export let users = [
   { active: true, approval_pending: false, deactivated: false, id: '2', nickname: 'allis', local: true, external: false, roles: { admin: true, moderator: false }, tags: [], actor_type: 'Person' },

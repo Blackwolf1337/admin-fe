@@ -1,3 +1,15 @@
+export async function fetchChat(id, authHost, token) {
+  return Promise.resolve({ data: userChats[0] })
+}
+
+export async function fetchChatMessages(id, max_id, authHost, token) {
+  return Promise.resolve({ data: chatMessages })
+}
+
+export async function deleteChat(chat_id, message_id, authHost, token) {
+  return Promise.resolve({ data: userChats[0] })
+}
+
 export const userChats = [
   {
     id: '9y8e7ESoVUiKVMAoCW',
@@ -367,5 +379,239 @@ export const userChats = [
     },
     unread: 0,
     updated_at: '2020-08-15T06:43:29.000Z'
+  }
+]
+
+export const chatMessages = [
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'heyy',
+    created_at: '2020-09-11T00:07:13.000Z',
+    emojis: [],
+    id: '9z22Q9MzWiAk7GZnNY',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: {
+      description: null,
+      id: '-1990764178',
+      pleroma: {
+        mime_type: 'image/png'
+      },
+      preview_url: 'http://localhost:4000/media/b087b890b39aa8301f736e8b45c02213183986c8a994c2c99e921ae85afa17e4.png',
+      remote_url: 'http://localhost:4000/media/b087b890b39aa8301f736e8b45c02213183986c8a994c2c99e921ae85afa17e4.png',
+      text_url: 'http://localhost:4000/media/b087b890b39aa8301f736e8b45c02213183986c8a994c2c99e921ae85afa17e4.png',
+      type: 'image',
+      url: 'http://localhost:4000/media/b087b890b39aa8301f736e8b45c02213183986c8a994c2c99e921ae85afa17e4.png'
+    },
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: null,
+    created_at: '2020-09-10T20:35:33.000Z',
+    emojis: [],
+    id: '9z1jWuQNaq8Ef6fdOS',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'probably',
+    created_at: '2020-09-10T16:57:33.000Z',
+    emojis: [],
+    id: '9z1Q4eXb9kBYA8rNT6',
+    unread: false
+  },
+  {
+    account_id: '9xUj5WTmzSlFPN6OLg',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'That has got to be 20 by now',
+    created_at: '2020-09-10T16:57:29.000Z',
+    emojis: [],
+    id: '9z1Q4LQAF9wuraEfk8',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'I miss bars :(',
+    created_at: '2020-09-10T16:57:22.000Z',
+    emojis: [],
+    id: '9z1Q3gmlKEfEpnUdm4',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'Yeah tying to!',
+    created_at: '2020-09-10T16:57:15.000Z',
+    emojis: [],
+    id: '9z1Q307VxCiKVhs6eO',
+    unread: false
+  },
+  {
+    account_id: '9xUj5WTmzSlFPN6OLg',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'staying safe with covid and such?',
+    created_at: '2020-09-10T16:57:10.000Z',
+    emojis: [],
+    id: '9z1Q2Z56U3k6ePXIe1',
+    unread: false
+  },
+  {
+    account_id: '9xUj5WTmzSlFPN6OLg',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'how have you been?',
+    created_at: '2020-09-10T16:57:06.000Z',
+    emojis: [],
+    id: '9z1Q29XvQHLfSGowxU',
+    unread: false
+  },
+  {
+    account_id: '9xUj5WTmzSlFPN6OLg',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'so what are you doing?',
+    created_at: '2020-09-10T16:57:02.000Z',
+    emojis: [],
+    id: '9z1Q1lPb9aQYbUjxeD',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'crazy',
+    created_at: '2020-09-10T16:56:55.000Z',
+    emojis: [],
+    id: '9z1Q19zQHwVMXbD2DA',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'omg yeah same',
+    created_at: '2020-09-10T16:56:54.000Z',
+    emojis: [],
+    id: '9z1Q12zWJBQIpsCVtI',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'hahahaha',
+    created_at: '2020-09-10T16:56:51.000Z',
+    emojis: [],
+    id: '9z1Q0pyKiHkWSQXsjg',
+    unread: false
+  },
+  {
+    account_id: '9xUj5WTmzSlFPN6OLg',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'I think this is 13',
+    created_at: '2020-09-10T16:56:45.000Z',
+    emojis: [],
+    id: '9z1Q0Ft6sEBGXnpCb3',
+    unread: false
+  },
+  {
+    account_id: '9xUj5WTmzSlFPN6OLg',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'We need to keep typing until we hit 20',
+    created_at: '2020-09-10T16:56:42.000Z',
+    emojis: [],
+    id: '9z1PzywjrTyy08OMOO',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'That&#39;s nice',
+    created_at: '2020-09-10T16:56:03.000Z',
+    emojis: [],
+    id: '9z1PwOkJzs8orKsJDU',
+    unread: false
+  },
+  {
+    account_id: '9xUj5WTmzSlFPN6OLg',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'I&#39;ve been good! Keeping busy',
+    created_at: '2020-09-10T16:56:00.000Z',
+    emojis: [],
+    id: '9z1Pw7qmoaDASSljQv',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: '*been',
+    created_at: '2020-09-10T16:55:55.000Z',
+    emojis: [],
+    id: '9z1PvcWVHwZFIa2b0y',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'How have you ben?',
+    created_at: '2020-09-10T16:55:52.000Z',
+    emojis: [],
+    id: '9z1PvK4BuTE03YejNw',
+    unread: false
+  },
+  {
+    account_id: '9xUIiQfGrdPJDZe39s',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'Oh it&#39;s okay! No worries!',
+    created_at: '2020-09-10T16:55:44.000Z',
+    emojis: [],
+    id: '9z1Puc4hTDUJcOYW4O',
+    unread: false
+  },
+  {
+    account_id: '9xUj5WTmzSlFPN6OLg',
+    attachment: null,
+    card: null,
+    chat_id: '9y8e7ESoVUiKVMAoCW',
+    content: 'didn&#39;t mean to ignore you',
+    created_at: '2020-09-10T16:55:32.000Z',
+    emojis: [],
+    id: '9z1PtWGNamQTIvUspk',
+    unread: false
   }
 ]
