@@ -115,12 +115,15 @@
           <div class="el-table el-table--fit el-table--enable-row-hover el-table--enable-row-transition el-table--medium">
             <table class="user-chats-table">
               <tbody v-if="!chatsLoading" class="chats">
-                <tr v-if="statuses.length === 0" class="no-statuses">>
+                <tr v-if="chats.length === 0" class="no-statuses">>
                   {{ $t('userProfile.noChats') }}
                 </tr>
                 <tr v-for="chat in chats" :key="chat.id" class="el-table__row chat-item">
                   <td>
-                    <a v-if="propertyExists(chat, 'id')" :href="`/#/chats/${chat.id}/`">
+                    <router-link
+                      v-if="propertyExists(chat, 'id')"
+                      :to="{ name: 'ChatsShow', params: { id: chat.id }}"
+                      class="router-link">
                       <div class="chat-card-header">
                         <img v-if="propertyExists(chat.receiver, 'avatar')" :src="chat.receiver.avatar" class="chat-avatar-img">
                         <span v-if="propertyExists(chat.receiver, 'username')" class="chat-account-name">{{ chat.receiver.username }}</span>
@@ -134,7 +137,7 @@
                       <div class="chat-card-preview">
                         <span v-if="propertyExists(chat, 'last_message')" class="chat-preview">{{ chat.last_message.content }}</span>
                       </div>
-                    </a>
+                    </router-link>
                   </td>
                 </tr>
               </tbody>
