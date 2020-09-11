@@ -115,7 +115,7 @@
           <div class="el-table el-table--fit el-table--enable-row-hover el-table--enable-row-transition el-table--medium">
             <table class="user-chats-table">
               <tbody v-if="!chatsLoading" class="chats">
-                <tr v-if="chats.length === 0" class="no-statuses">>
+                <tr v-if="chats.length === 0" class="no-statuses">
                   {{ $t('userProfile.noChats') }}
                 </tr>
                 <tr v-for="chat in chats" :key="chat.id" class="el-table__row chat-item">
