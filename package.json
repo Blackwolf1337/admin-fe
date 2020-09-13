@@ -60,6 +60,8 @@
     "screenfull": "4.0.0",
     "showdown": "1.8.6",
     "sortablejs": "1.7.0",
+    "tiptap": "^1.29.6",
+    "tiptap-extensions": "^1.32.7",
     "tui-editor": "1.2.7",
     "vue": "^2.6.8",
     "vue-count-to": "1.0.13",
