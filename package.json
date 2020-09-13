@@ -31,6 +31,9 @@
     "type": "git",
     "url": "git+https://github.com/PanJiaChen/vue-element-admin.git"
   },
+  "resolutions": {
+    "prosemirror-model": "1.9.1"
+  },
   "bugs": {
     "url": "https://github.com/PanJiaChen/vue-element-admin/issues"
   },
@@ -133,7 +136,7 @@
     "webpack": "^4.29.6",
     "webpack-bundle-analyzer": "2.13.1",
     "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "3.1.14",
+    "webpack-dev-server": "3.11.0",
     "webpack-merge": "4.1.4"
   },
   "engines": {
