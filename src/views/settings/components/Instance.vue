@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <editor-input />
+    <editor-input :content="instancePanelContent" @input="handleEditorUpdate"/>
     <el-form :model="instanceData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="instance" :data="instanceData"/>
     </el-form>
@@ -63,6 +63,11 @@ export default {
     EditorInput,
     Setting
   },
+  data() {
+    return {
+      editorContent: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'settings'
@@ -72,6 +77,9 @@ export default {
     },
     adminTokenData() {
       return _.get(this.settings.settings, [':pleroma', ':admin_token']) || {}
+    },
+    instancePanelContent() {
+      return this.$store.state.settings.instancePanel
     },
     favicons() {
       return this.settings.description.find(setting => setting.key === ':instances_favicons')
@@ -158,10 +166,17 @@ export default {
       return _.get(this.settings.settings, [':pleroma', ':welcome']) || {}
     }
   },
+  mounted() {
+    this.$store.dispatch('FetchInstanceDocument', 'instance-panel')
+  },
   methods: {
+    handleEditorUpdate(content) {
+      this.editorContent = content
+    },
     async onSubmit() {
       try {
         await this.$store.dispatch('SubmitChanges')
+        await this.$store.dispatch('UpdateInstanceDocs', { name: 'instance-panel', content: this.editorContent })
       } catch (e) {
         return
       }
