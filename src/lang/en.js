@@ -437,7 +437,8 @@ export default {
     changeImage: 'Change image',
     uploadImage: 'Upload image',
     remove: 'Remove',
-    instancePanel: 'Instance Panel Document'
+    instancePanel: 'Instance Panel Document',
+    termsOfServices: 'Terms of Service'
   },
   invites: {
     inviteTokens: 'Invite tokens',

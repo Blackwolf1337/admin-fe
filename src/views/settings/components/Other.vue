@@ -1,5 +1,6 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
+    <editor-input :content="termsOfServicesContent" :name="'terms-of-service'" @input="handleEditorUpdate"/>
     <el-form :model="mimeTypesData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="mimeTypes" :data="mimeTypesData"/>
     </el-form>
@@ -25,11 +26,17 @@
 import { mapGetters } from 'vuex'
 import i18n from '@/lang'
 import Setting from './Setting'
+import { EditorInput } from './inputComponents'
 import _ from 'lodash'
 
 export default {
   name: 'Other',
-  components: { Setting },
+  components: { EditorInput, Setting },
+  data() {
+    return {
+      editorContent: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'settings'
@@ -81,12 +88,22 @@ export default {
     },
     remoteIpData() {
       return _.get(this.settings.settings, [':pleroma', 'Pleroma.Plugs.RemoteIp']) || {}
+    },
+    termsOfServicesContent() {
+      return this.$store.state.settings.termsOfServices
     }
   },
+  async mounted() {
+    await this.$store.dispatch('FetchInstanceDocument', 'terms-of-service')
+  },
   methods: {
+    handleEditorUpdate(content) {
+      this.editorContent = content
+    },
     async onSubmit() {
       try {
         await this.$store.dispatch('SubmitChanges')
+        await this.$store.dispatch('UpdateInstanceDocs', { name: 'terms-of-service', content: this.editorContent })
       } catch (e) {
         return
       }

@@ -66,6 +66,9 @@ const settings = {
       state.settings = newSettings
       state.db = newDbSettings
     },
+    SET_TERMS_OF_SERVICES: (state, data) => {
+      state.termsOfServices = data
+    },
     TOGGLE_TABS: (state, status) => {
       state.configDisabled = status
     },
@@ -85,7 +88,13 @@ const settings = {
   actions: {
     async FetchInstanceDocument({ commit, getters }, name) {
       const { data } = await getInstanceDocument(name, getters.authHost, getters.token)
-      commit('SET_INSTANCE_PANEL', data)
+      console.log(data)
+      if (name === 'instance-panel') {
+        commit('SET_INSTANCE_PANEL', data)
+      } else {
+        console.log(name)
+        commit('SET_TERMS_OF_SERVICES', data)
+      }
     },
     async FetchSettings({ commit, getters }) {
       commit('SET_LOADING', true)
@@ -107,7 +116,7 @@ const settings = {
     },
     async RemoveInstanceDocument({ dispatch, getters }, name) {
       await deleteInstanceDocument(name, getters.authHost, getters.token)
-      await dispatch('FetchInstanceDocument', 'instance-panel')
+      await dispatch('FetchInstanceDocument', name)
     },
     async RemoveSetting({ commit, getters }, configs) {
       await removeSettings(configs, getters.authHost, getters.token)
