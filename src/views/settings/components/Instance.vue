@@ -1,9 +1,9 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <editor-input :content="instancePanelContent" @input="handleEditorUpdate"/>
     <el-form :model="instanceData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="instance" :data="instanceData"/>
     </el-form>
+    <editor-input :content="instancePanelContent" @input="handleEditorUpdate"/>
     <el-divider v-if="instance" class="divider thick-line"/>
     <el-form :model="restrictUnauthenticatedData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="restrictUnauthenticated" :data="restrictUnauthenticatedData"/>

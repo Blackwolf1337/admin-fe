@@ -85,7 +85,7 @@ const settings = {
   actions: {
     async FetchInstanceDocument({ commit, getters }, name) {
       const { data } = await getInstanceDocument(name, getters.authHost, getters.token)
-      commit('SET_INSTANCE_PANEL', data.url)
+      commit('SET_INSTANCE_PANEL', data)
     },
     async FetchSettings({ commit, getters }) {
       commit('SET_LOADING', true)
@@ -105,8 +105,9 @@ const settings = {
       commit('TOGGLE_TABS', false)
       commit('SET_LOADING', false)
     },
-    async RemoveInstanceDocument({ getters }, name) {
+    async RemoveInstanceDocument({ dispatch, getters }, name) {
       await deleteInstanceDocument(name, getters.authHost, getters.token)
+      await dispatch('FetchInstanceDocument', 'instance-panel')
     },
     async RemoveSetting({ commit, getters }, configs) {
       await removeSettings(configs, getters.authHost, getters.token)
@@ -130,7 +131,8 @@ const settings = {
       commit('TOGGLE_REBOOT', response.data.need_reboot)
       commit('CLEAR_UPDATED_SETTINGS')
     },
-    async UpdateInstanceDocs({ getters }, { name, content }) {
+    async UpdateInstanceDocs({ commit, getters }, { name, content }) {
+      commit('SET_INSTANCE_PANEL', content)
       const formData = new FormData()
       const blob = new Blob([content], { type: 'text/html' })
       formData.append('file', blob)

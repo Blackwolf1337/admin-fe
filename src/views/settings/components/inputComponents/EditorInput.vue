@@ -1,6 +1,12 @@
 <template>
   <el-form :label-position="labelPosition" :label-width="labelWidth">
     <el-form-item label="Instance panel doc" class="editor-form-item">
+      <span slot="label">
+        {{ $t('settings.instancePanel') }}
+        <el-tooltip :content="$t('settings.removeFromDB')" placement="bottom-end">
+          <el-button icon="el-icon-delete" circle size="mini" class="delete-setting-button" @click="removeInstanceDoc"/>
+        </el-tooltip>
+      </span>
       <div class="editor">
         <editor-menu-bar v-slot="{ commands, isActive }" :editor="editor">
           <div class="menubar">
@@ -165,6 +171,12 @@ export default {
   },
   beforeDestroy() {
     this.editor.destroy()
+  },
+  methods: {
+    async removeInstanceDoc(name) {
+      await this.$store.dispatch('RemoveInstanceDocument', 'instance-panel')
+      this.editor.setContent(this.content)
+    }
   }
 }
 </script>
