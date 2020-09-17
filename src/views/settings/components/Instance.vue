@@ -166,8 +166,8 @@ export default {
       return _.get(this.settings.settings, [':pleroma', ':welcome']) || {}
     }
   },
-  mounted() {
-    this.$store.dispatch('FetchInstanceDocument', 'instance-panel')
+  async mounted() {
+    await this.$store.dispatch('FetchInstanceDocument', 'instance-panel')
   },
   methods: {
     handleEditorUpdate(content) {

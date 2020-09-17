@@ -39,14 +39,13 @@ export async function getInstanceDocument(name, authHost, token) {
 }
 
 export async function updateInstanceDocument(name, formData, authHost, token) {
-  const url = baseName(authHost) + `/api/pleroma/admin/instance_document/${name}`
-
-  return fetch(url, {
-    body: formData,
-    method: 'PATCH',
-    headers: authHeaders(token)
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/instance_document/${name}`,
+    method: 'patch',
+    data: formData,
+    headers: { ...authHeaders(token), 'Content-Type': 'multipart/form-data' }
   })
-    .then((data) => data.json())
 }
 
 export async function updateSettings(configs, authHost, token) {
