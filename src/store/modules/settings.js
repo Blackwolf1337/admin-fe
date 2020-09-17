@@ -132,7 +132,8 @@ const settings = {
     },
     async UpdateInstanceDocs({ getters }, { name, content }) {
       const formData = new FormData()
-      formData.append('file', content)
+      const blob = new Blob([content], { type: 'text/html' })
+      formData.append('file', blob)
       await updateInstanceDocument(name, formData, getters.authHost, getters.token)
     },
     UpdateSettings({ commit }, { group, key, input, value, type }) {

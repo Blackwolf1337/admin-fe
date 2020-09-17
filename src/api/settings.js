@@ -43,7 +43,7 @@ export async function updateInstanceDocument(name, formData, authHost, token) {
 
   return fetch(url, {
     body: formData,
-    method: 'patch',
+    method: 'PATCH',
     headers: authHeaders(token)
   })
     .then((data) => data.json())
