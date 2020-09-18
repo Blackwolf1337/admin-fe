@@ -1,5 +1,5 @@
 import Vuex from 'vuex'
-import { mount, createLocalVue, config } from '@vue/test-utils'
+import { mount, createLocalVue, config, RouterLinkStub } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import Element from 'element-ui'
 import Users from '@/views/users/index'
@@ -8,7 +8,8 @@ import { storeConfig } from './store.conf'
 import { cloneDeep } from 'lodash'
 
 config.mocks["$t"] = () => {}
-config.stubs['users-filter'] = '<div />'
+config.stubs['users-filter'] = { template: '<div />'}
+config.stubs.transition = false
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -31,7 +32,9 @@ describe('Search and filter users', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
 
     await flushPromises()
@@ -44,7 +47,9 @@ describe('Search and filter users', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
 
     wrapper.vm.handleDebounceSearchInput = (query) => {
@@ -82,7 +87,9 @@ describe('Users actions', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -101,7 +108,9 @@ describe('Users actions', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -120,7 +129,9 @@ describe('Users actions', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -136,7 +147,9 @@ describe('Users actions', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -154,7 +167,9 @@ describe('Users actions', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
     expect(store.state.users.fetchedUsers[1].deactivated).toBe(false)
@@ -172,7 +187,9 @@ describe('Users actions', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -196,7 +213,9 @@ describe('Users actions', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -214,7 +233,9 @@ describe('Users actions', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -239,7 +260,9 @@ describe('Users actions', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -278,7 +301,9 @@ describe('Creates new account', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -302,7 +327,9 @@ describe('Creates new account', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
     expect(wrapper.vm.usersCount).toEqual(4)
@@ -336,7 +363,9 @@ describe('Creates new account', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
 
     const validateEmailRule = { validator: wrapper.vm.validateEmail, field: 'email', fullField: 'email', type: 'string' }
@@ -361,7 +390,9 @@ describe('Creates new account', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
