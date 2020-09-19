@@ -3,7 +3,9 @@
     <el-form :model="instanceData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="instance" :data="instanceData"/>
     </el-form>
-    <editor-input :content="instancePanelContent" :name="'instance-panel'" @input="handleEditorUpdate"/>
+    <div>
+      <editor-input v-model="instancePanelContent" :name="'instance-panel'" @input="handleEditorUpdate"/>
+    </div>
     <el-divider v-if="instance" class="divider thick-line"/>
     <el-form :model="restrictUnauthenticatedData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="restrictUnauthenticated" :data="restrictUnauthenticatedData"/>
@@ -78,8 +80,13 @@ export default {
     adminTokenData() {
       return _.get(this.settings.settings, [':pleroma', ':admin_token']) || {}
     },
-    instancePanelContent() {
-      return this.$store.state.settings.instancePanel
+    instancePanelContent: {
+      get() {
+        return this.$store.state.settings.instancePanel
+      },
+      set(content) {
+        this.editorContent = content
+      }
     },
     favicons() {
       return this.settings.description.find(setting => setting.key === ':instances_favicons')

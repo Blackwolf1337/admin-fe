@@ -88,11 +88,9 @@ const settings = {
   actions: {
     async FetchInstanceDocument({ commit, getters }, name) {
       const { data } = await getInstanceDocument(name, getters.authHost, getters.token)
-      console.log(data)
       if (name === 'instance-panel') {
         commit('SET_INSTANCE_PANEL', data)
       } else {
-        console.log(name)
         commit('SET_TERMS_OF_SERVICES', data)
       }
     },

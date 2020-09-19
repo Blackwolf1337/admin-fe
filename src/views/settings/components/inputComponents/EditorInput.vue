@@ -123,7 +123,7 @@ export default {
     EditorMenuBar
   },
   props: {
-    content: {
+    value: {
       type: String,
       default: ''
     },
@@ -134,26 +134,8 @@ export default {
   },
   data() {
     return {
-      editor: new Editor({
-        extensions: [
-          new Blockquote(),
-          new Bold(),
-          new BulletList(),
-          new CodeBlock(),
-          new Heading({ levels: [1, 2, 3] }),
-          new History(),
-          new HorizontalRule(),
-          new Italic(),
-          new Link(),
-          new ListItem(),
-          new OrderedList(),
-          new Underline()
-        ],
-        content: this.content,
-        onUpdate: ({ getHTML }) => {
-          this.$emit('input', getHTML())
-        }
-      })
+      editor: null,
+      emitAfterOnUpdate: false
     }
   },
   computed: {
@@ -173,13 +155,48 @@ export default {
       }
     }
   },
+  watch: {
+    value(val) {
+      if (this.emitAfterOnUpdate) {
+        this.emitAfterOnUpdate = false
+        return
+      }
+      if (this.editor) this.editor.setContent(val)
+    }
+  },
   beforeDestroy() {
-    this.editor.destroy()
+    console.log(this.editor)
+    if (this.editor) {
+      this.editor.destroy()
+    }
+  },
+  mounted() {
+    this.editor = new Editor({
+      extensions: [
+        new Blockquote(),
+        new Bold(),
+        new BulletList(),
+        new CodeBlock(),
+        new Heading({ levels: [1, 2, 3] }),
+        new History(),
+        new HorizontalRule(),
+        new Italic(),
+        new Link(),
+        new ListItem(),
+        new OrderedList(),
+        new Underline()
+      ],
+      content: this.value,
+      onUpdate: ({ getHTML }) => {
+        this.$emit('input', getHTML())
+      }
+    })
+    this.editor.setContent(this.value)
   },
   methods: {
     async removeInstanceDoc() {
       await this.$store.dispatch('RemoveInstanceDocument', this.name)
-      this.editor.setContent(this.content)
+      this.editor.setContent(this.value)
     }
   }
 }
