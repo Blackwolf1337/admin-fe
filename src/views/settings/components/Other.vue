@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <editor-input :content="termsOfServicesContent" :name="'terms-of-service'" @input="handleEditorUpdate"/>
+    <editor-input v-model="termsOfServicesContent" :name="'terms-of-service'" @input="handleEditorUpdate"/>
     <el-form :model="mimeTypesData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="mimeTypes" :data="mimeTypesData"/>
     </el-form>
@@ -34,7 +34,7 @@ export default {
   components: { EditorInput, Setting },
   data() {
     return {
-      editorContent: ''
+      termsOfServices: ''
     }
   },
   computed: {
@@ -89,8 +89,13 @@ export default {
     remoteIpData() {
       return _.get(this.settings.settings, [':pleroma', 'Pleroma.Plugs.RemoteIp']) || {}
     },
-    termsOfServicesContent() {
-      return this.$store.state.settings.termsOfServices
+    termsOfServicesContent: {
+      get() {
+        return this.$store.state.settings.termsOfServices
+      },
+      set(content) {
+        this.termsOfServices = content
+      }
     }
   },
   async mounted() {
