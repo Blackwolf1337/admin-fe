@@ -1,6 +1,7 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
     <editor-input v-model="termsOfServicesContent" :name="'terms-of-service'" @input="handleEditorUpdate"/>
+    <el-divider class="divider thick-line"/>
     <el-form :model="mimeTypesData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="mimeTypes" :data="mimeTypesData"/>
     </el-form>

@@ -1,6 +1,6 @@
 <template>
   <el-form :label-position="labelPosition" :label-width="labelWidth">
-    <el-form-item class="editor-form-item">
+    <el-form-item :data-search="name === 'instance-panel' ? ':instance_panel' : ':terms_of_services'" class="editor-form-item">
       <span slot="label">
         {{ name === 'instance-panel' ? $t('settings.instancePanel') : $t('settings.termsOfServices') }}
         <el-tooltip :content="$t('settings.removeFromDB')" placement="bottom-end">
@@ -165,7 +165,6 @@ export default {
     }
   },
   beforeDestroy() {
-    console.log(this.editor)
     if (this.editor) {
       this.editor.destroy()
     }

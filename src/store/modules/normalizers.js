@@ -271,7 +271,7 @@ export const formSearchObject = description => {
     return [...acc, resultObject]
   }, [])
 
-  return description.reduce((acc, setting) => {
+  const processedDescription = description.reduce((acc, setting) => {
     const searchArray = _.compact([setting.key, setting.label, setting.description]).map(el => el.toLowerCase())
     const resultObject = { label: setting.label, key: setting.key || setting.group, groupKey: setting.key || setting.group, groupLabel: setting.label, search: searchArray }
     if (setting.children) {
@@ -280,4 +280,19 @@ export const formSearchObject = description => {
     }
     return !setting.key && setting.group === ':pleroma' ? acc : [...acc, resultObject]
   }, [])
+
+  const searchDataForEditableDocs = [{
+    groupKey: ':instance_panel',
+    groupLabel: 'Instance Panel',
+    key: ':instance_panel',
+    label: 'Instance Panel',
+    search: ['Instance Panel', ':instance_panel']
+  }, {
+    groupKey: ':terms_of_services',
+    groupLabel: 'Terms of Services',
+    key: ':terms_of_services',
+    label: 'Terms of Services',
+    search: ['Terms of Services', ':terms_of_services']
+  }]
+  return processedDescription.concat(searchDataForEditableDocs)
 }
