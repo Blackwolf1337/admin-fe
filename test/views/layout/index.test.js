@@ -15,6 +15,8 @@ localVue.use(Vuex)
 localVue.use(VueRouter)
 localVue.use(Element)
 
+jest.mock('@/api/reports')
+
 describe('Log out', () => {
   let store
   let router
