@@ -1,4 +1,11 @@
-import { fetchDescription, fetchSettings, removeSettings, updateSettings } from '@/api/settings'
+import {
+  deleteInstanceDocument,
+  fetchDescription,
+  fetchSettings,
+  getInstanceDocument,
+  removeSettings,
+  updateInstanceDocument,
+  updateSettings } from '@/api/settings'
 import { formSearchObject, parseNonTuples, parseTuples, valueHasTuples, wrapUpdatedSettings } from './normalizers'
 import _ from 'lodash'
 
@@ -8,14 +15,19 @@ const settings = {
     configDisabled: true,
     db: {},
     description: [],
+    instancePanel: '',
     loading: true,
     searchData: {},
     settings: {},
+    termsOfServices: '',
     updatedSettings: {}
   },
   mutations: {
     CLEAR_UPDATED_SETTINGS: (state) => {
       state.updatedSettings = {}
+    },
+    SET_INSTANCE_PANEL: (state, data) => {
+      state.instancePanel = data
     },
     REMOVE_SETTING_FROM_UPDATED: (state, { group, key, subkeys }) => {
       if (_.get(state.updatedSettings, [group, key, subkeys[0]])) {
@@ -54,6 +66,9 @@ const settings = {
       state.settings = newSettings
       state.db = newDbSettings
     },
+    SET_TERMS_OF_SERVICES: (state, data) => {
+      state.termsOfServices = data
+    },
     TOGGLE_TABS: (state, status) => {
       state.configDisabled = status
     },
@@ -71,6 +86,14 @@ const settings = {
     }
   },
   actions: {
+    async FetchInstanceDocument({ commit, getters }, name) {
+      const { data } = await getInstanceDocument(name, getters.authHost, getters.token)
+      if (name === 'instance-panel') {
+        commit('SET_INSTANCE_PANEL', data)
+      } else {
+        commit('SET_TERMS_OF_SERVICES', data)
+      }
+    },
     async FetchSettings({ commit, getters }) {
       commit('SET_LOADING', true)
       try {
@@ -88,6 +111,10 @@ const settings = {
       }
       commit('TOGGLE_TABS', false)
       commit('SET_LOADING', false)
+    },
+    async RemoveInstanceDocument({ dispatch, getters }, name) {
+      await deleteInstanceDocument(name, getters.authHost, getters.token)
+      await dispatch('FetchInstanceDocument', name)
     },
     async RemoveSetting({ commit, getters }, configs) {
       await removeSettings(configs, getters.authHost, getters.token)
@@ -110,6 +137,13 @@ const settings = {
       commit('SET_SETTINGS', response.data.configs)
       commit('TOGGLE_REBOOT', response.data.need_reboot)
       commit('CLEAR_UPDATED_SETTINGS')
+    },
+    async UpdateInstanceDocs({ commit, getters }, { name, content }) {
+      commit('SET_INSTANCE_PANEL', content)
+      const formData = new FormData()
+      const blob = new Blob([content], { type: 'text/html' })
+      formData.append('file', blob)
+      await updateInstanceDocument(name, formData, getters.authHost, getters.token)
     },
     UpdateSettings({ commit }, { group, key, input, value, type }) {
       key

@@ -1,4 +1,5 @@
 export { default as EditableKeywordInput } from './EditableKeywordInput'
+export { default as EditorInput } from './EditorInput'
 export { default as IconsInput } from './IconsInput'
 export { default as ImageUploadInput } from './ImageUploadInput'
 export { default as LinkFormatterInput } from './LinkFormatterInput'

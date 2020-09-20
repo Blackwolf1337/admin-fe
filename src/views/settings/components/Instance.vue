@@ -3,6 +3,7 @@
     <el-form :model="instanceData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="instance" :data="instanceData"/>
     </el-form>
+    <editor-input v-model="instancePanelContent" :name="'instance-panel'" @input="handleEditorUpdate"/>
     <el-divider v-if="instance" class="divider thick-line"/>
     <el-form :model="restrictUnauthenticatedData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="restrictUnauthenticated" :data="restrictUnauthenticatedData"/>
@@ -53,12 +54,19 @@
 import { mapGetters } from 'vuex'
 import i18n from '@/lang'
 import Setting from './Setting'
+import { EditorInput } from './inputComponents'
 import _ from 'lodash'
 
 export default {
   name: 'Instance',
   components: {
+    EditorInput,
     Setting
+  },
+  data() {
+    return {
+      editorContent: ''
+    }
   },
   computed: {
     ...mapGetters([
@@ -69,6 +77,14 @@ export default {
     },
     adminTokenData() {
       return _.get(this.settings.settings, [':pleroma', ':admin_token']) || {}
+    },
+    instancePanelContent: {
+      get() {
+        return this.$store.state.settings.instancePanel
+      },
+      set(content) {
+        this.editorContent = content
+      }
     },
     favicons() {
       return this.settings.description.find(setting => setting.key === ':instances_favicons')
@@ -155,10 +171,17 @@ export default {
       return _.get(this.settings.settings, [':pleroma', ':welcome']) || {}
     }
   },
+  async mounted() {
+    await this.$store.dispatch('FetchInstanceDocument', 'instance-panel')
+  },
   methods: {
+    handleEditorUpdate(content) {
+      this.editorContent = content
+    },
     async onSubmit() {
       try {
         await this.$store.dispatch('SubmitChanges')
+        await this.$store.dispatch('UpdateInstanceDocs', { name: 'instance-panel', content: this.editorContent })
       } catch (e) {
         return
       }

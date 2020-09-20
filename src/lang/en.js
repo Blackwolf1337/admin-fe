@@ -436,7 +436,9 @@ export default {
     removeSettingConfirmation: 'Are you sure you want to remove this setting\'s value from the database?',
     changeImage: 'Change image',
     uploadImage: 'Upload image',
-    remove: 'Remove'
+    remove: 'Remove',
+    instancePanel: 'Instance Panel Document',
+    termsOfServices: 'Terms of Service'
   },
   invites: {
     inviteTokens: 'Invite tokens',

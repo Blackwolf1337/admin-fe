@@ -1,5 +1,5 @@
 import Vuex from 'vuex'
-import { mount, createLocalVue, config } from '@vue/test-utils'
+import { mount, createLocalVue, config, RouterLinkStub } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import Element from 'element-ui'
 import Invites from '@/views/invites/index'
@@ -28,7 +28,9 @@ describe('Invite tokens', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
 
     await flushPromises()
@@ -42,7 +44,9 @@ describe('Invite tokens', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
 
@@ -66,7 +70,9 @@ describe('Invite tokens', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
     await flushPromises()
     expect(store.state.invites.inviteTokens.length).toEqual(3)
@@ -101,7 +107,9 @@ describe('Invite tokens', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
 
     await flushPromises()
@@ -120,7 +128,9 @@ describe('Invite tokens', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link']
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
     })
 
     const dialog = wrapper.find('div.el-dialog__wrapper .invite-via-email-dialog')

@@ -47,6 +47,20 @@ describe('Form search object', () => {
           "filters",
           "list of filter modules for uploads"
         ]
+      },
+      {
+        groupKey: ':instance_panel',
+        groupLabel: 'Instance Panel',
+        key: ':instance_panel',
+        label: 'Instance Panel',
+        search: ['Instance Panel', ':instance_panel']
+      },
+      {
+        groupKey: ':terms_of_services',
+        groupLabel: 'Terms of Services',
+        key: ':terms_of_services',
+        label: 'Terms of Services',
+        search: ['Terms of Services', ':terms_of_services']
       }
     ]
     expect(_.isEqual(formSearchObject(description), expected)).toBeTruthy()
@@ -81,6 +95,20 @@ describe('Form search object', () => {
           "serve mailbox",
           "run the preview server together as part of your app"
         ]
+      },
+      {
+        groupKey: ':instance_panel',
+        groupLabel: 'Instance Panel',
+        key: ':instance_panel',
+        label: 'Instance Panel',
+        search: ['Instance Panel', ':instance_panel']
+      },
+      {
+        groupKey: ':terms_of_services',
+        groupLabel: 'Terms of Services',
+        key: ':terms_of_services',
+        label: 'Terms of Services',
+        search: ['Terms of Services', ':terms_of_services']
       }
     ]
     expect(_.isEqual(formSearchObject(description), expected)).toBeTruthy()
@@ -115,6 +143,20 @@ describe('Form search object', () => {
         groupKey: ":cors_plug",
         groupLabel: "Cors plug",
         search: [":methods", "methods"]
+      },
+      {
+        groupKey: ':instance_panel',
+        groupLabel: 'Instance Panel',
+        key: ':instance_panel',
+        label: 'Instance Panel',
+        search: ['Instance Panel', ':instance_panel']
+      },
+      {
+        groupKey: ':terms_of_services',
+        groupLabel: 'Terms of Services',
+        key: ':terms_of_services',
+        label: 'Terms of Services',
+        search: ['Terms of Services', ':terms_of_services']
       }
     ]
     expect(_.isEqual(formSearchObject(description), expected)).toBeTruthy()
@@ -137,6 +179,20 @@ describe('Form search object', () => {
       groupKey: ":pleroma",
       groupLabel: "Pleroma",
       search: [":admin_token", "admin token", "token"]
+    },
+    {
+      groupKey: ':instance_panel',
+      groupLabel: 'Instance Panel',
+      key: ':instance_panel',
+      label: 'Instance Panel',
+      search: ['Instance Panel', ':instance_panel']
+    },
+    {
+      groupKey: ':terms_of_services',
+      groupLabel: 'Terms of Services',
+      key: ':terms_of_services',
+      label: 'Terms of Services',
+      search: ['Terms of Services', ':terms_of_services']
     }]
     expect(_.isEqual(formSearchObject(description), expected)).toBeTruthy()
   })
@@ -206,6 +262,19 @@ describe('Form search object', () => {
         groupKey: ":media_proxy",
         groupLabel: "Media proxy",
         search: [":ssl_options", "ssl options", "ssl options for http adapter"]
+      },
+      {
+        groupKey: ':instance_panel',
+        groupLabel: 'Instance Panel',
+        key: ':instance_panel',
+        label: 'Instance Panel',
+        search: ['Instance Panel', ':instance_panel']
+      }, {
+        groupKey: ':terms_of_services',
+        groupLabel: 'Terms of Services',
+        key: ':terms_of_services',
+        label: 'Terms of Services',
+        search: ['Terms of Services', ':terms_of_services']
       }
     ]
     expect(_.isEqual(formSearchObject(description), expected)).toBeTruthy()

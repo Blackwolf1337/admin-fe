@@ -1,5 +1,5 @@
 import Vuex from 'vuex'
-import { mount, createLocalVue, config } from '@vue/test-utils'
+import { mount, createLocalVue, config, RouterLinkStub } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import Element from 'element-ui'
 import UsersShow from '@/views/users/show'
@@ -7,6 +7,7 @@ import { storeConfig } from './store.conf'
 import { cloneDeep } from 'lodash'
 
 config.mocks["$t"] = () => {}
+config.stubs.transition = false
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -33,7 +34,9 @@ describe('User profile', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link'],
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
       mocks: {
         $route
       }

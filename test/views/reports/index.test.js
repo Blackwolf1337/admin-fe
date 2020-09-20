@@ -7,8 +7,8 @@ import { cloneDeep } from 'lodash'
 import flushPromises from 'flush-promises'
 
 config.mocks["$t"] = () => {}
-config.stubs['reports-filter'] = '<div />'
-config.stubs['timeline-item'] = '<div />'
+config.stubs['reports-filter'] = { template: '<div />'}
+config.stubs['timeline-item'] = { template: '<div />'}
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
