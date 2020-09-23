@@ -2,7 +2,7 @@ import Vuex from 'vuex'
 import { mount, createLocalVue, config } from '@vue/test-utils'
 import Element from 'element-ui'
 import Filters from '@/views/users/components/UsersFilter'
-import storeConfig from './store.conf'
+import { storeConfig } from './store.conf'
 import { cloneDeep } from 'lodash'
 import flushPromises from 'flush-promises'
 

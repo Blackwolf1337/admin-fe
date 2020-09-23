@@ -7,6 +7,7 @@ import storeConfig from './storeForPagination.conf'
 import { cloneDeep } from 'lodash'
 
 config.mocks["$t"] = () => {}
+config.stubs.transition = false
 
 const localVue = createLocalVue()
 localVue.use(Vuex)

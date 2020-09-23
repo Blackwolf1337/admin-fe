@@ -31,11 +31,31 @@ AdminFE is bundled with Pleroma, i.e. you can just visit `https://your.instance/
 
 ### Development
 
-To run AdminFE locally execute `yarn dev`
+To run AdminFE locally execute
+
+```
+# install dependencies
+npm install -g yarn
+yarn
+
+# run AdminFE locally
+yarn dev
+```
 
 ### Build
 
-To compile everything for production run `yarn build:prod`, this will build admin-fe into `dist` folder, which you will need to upload to your server and/or point your webserver of choice to.
+To compile everything for production run
+
+```
+# install dependencies
+npm install -g yarn
+yarn
+
+# compile everything for production
+yarn build:prod
+```
+
+This will build admin-fe into `dist` folder, which you will need to upload to your server and/or point your webserver of choice to.
 
 #### Disabling features
 

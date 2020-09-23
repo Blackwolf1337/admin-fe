@@ -5,6 +5,7 @@ import Settings from '@/views/settings/index'
 import flushPromises from 'flush-promises'
 import app from '@/store/modules/app'
 import settings from '@/store/modules/settings'
+import user from '@/store/modules/user'
 import getters from '@/store/getters'
 
 config.mocks["$t"] = () => {}
@@ -24,7 +25,8 @@ describe('Settings search', () => {
     store = new Vuex.Store({
       modules: {
         app: { ...app, actions: appActions },
-        settings: { ...settings, actions }
+        settings: { ...settings, actions },
+        user: { ...user, state: { ...user.state, authHost: 'localhost:4000' }}
       },
       getters
     })

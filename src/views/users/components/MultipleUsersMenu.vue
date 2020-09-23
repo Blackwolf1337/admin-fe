@@ -61,7 +61,7 @@
         @click.native="requirePasswordReset">
         {{ $t('users.requirePasswordReset') }}
       </el-dropdown-item>
-      <el-dropdown-item divided class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" divided class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.forceNsfw') }}</span>
           <el-button-group class="tag-button-group">
@@ -74,7 +74,7 @@
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.stripMedia') }}</span>
           <el-button-group class="tag-button-group">
@@ -87,7 +87,7 @@
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.forceUnlisted') }}</span>
           <el-button-group class="tag-button-group">
@@ -100,7 +100,7 @@
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.sandbox') }}</span>
           <el-button-group class="tag-button-group">
@@ -113,7 +113,7 @@
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.disableRemoteSubscriptionForMultiple') }}</span>
           <el-button-group class="tag-button-group">
@@ -126,7 +126,7 @@
           </el-button-group>
         </div>
       </el-dropdown-item>
-      <el-dropdown-item class="no-hover">
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
         <div class="tag-container">
           <span class="tag-text">{{ $t('users.disableAnySubscriptionForMultiple') }}</span>
           <el-button-group class="tag-button-group">
@@ -138,6 +138,12 @@
             </el-button>
           </el-button-group>
         </div>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="!tagPolicyEnabled"
+        divided
+        @click.native="enableTagPolicy">
+        {{ $t('users.enableTagPolicy') }}
       </el-dropdown-item>
     </el-dropdown-menu>
     <el-dropdown-menu v-else slot="dropdown">
@@ -159,11 +165,14 @@ export default {
     }
   },
   computed: {
+    isDesktop() {
+      return this.$store.state.app.device === 'desktop'
+    },
     showDropdownForMultipleUsers() {
       return this.$props.selectedUsers.length > 0
     },
-    isDesktop() {
-      return this.$store.state.app.device === 'desktop'
+    tagPolicyEnabled() {
+      return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
     }
   },
   methods: {
@@ -247,6 +256,26 @@ export default {
           applyAction(filtered, resendConfirmationFn)
         }
       }
+    },
+    enableTagPolicy() {
+      this.$confirm(
+        this.$t('users.confirmEnablingTagPolicy'),
+        {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        this.$message({
+          type: 'success',
+          message: this.$t('users.enableTagPolicySuccessMessage')
+        })
+        this.$store.dispatch('EnableTagPolicy')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        })
+      })
     },
     isLocalUser(user) {
       return user.nickname && user.local

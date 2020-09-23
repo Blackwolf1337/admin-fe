@@ -103,7 +103,11 @@ export default {
     evictObjectsHeader: 'Evict object from the MediaProxy cache',
     listBannedUrlsHeader: 'List of all banned MediaProxy URLs',
     multipleInput: 'You can enter a single URL or several comma separated links',
-    removeSelected: 'Remove Selected'
+    removeSelected: 'Remove Selected',
+    enable: 'Enable',
+    invalidationAndMediaProxy: 'MediaProxy and Invalidation to evict and ban MediaProxy objects',
+    confirmEnablingMediaProxy: 'Are you sure you want to enable Media Proxy and Media Cache object Invalidation?',
+    enableMediaProxySuccessMessage: 'Media Proxy and Media Cache object Invalidation were enabled'
   },
   documentation: {
     documentation: 'Documentation',
@@ -273,7 +277,10 @@ export default {
     linkToResetPassword: 'You can also use this link to reset password:',
     registrationReason: 'Registration Reason',
     service: 'Service',
-    person: 'Person'
+    person: 'Person',
+    enableTagPolicy: 'Enable MRF TagPolicy to manage user tags',
+    confirmEnablingTagPolicy: 'Are you sure you want to add TagPolicy to the list of enabled MRF policies?',
+    enableTagPolicySuccessMessage: 'MRF TagPolicy was enabled'
   },
   statuses: {
     statuses: 'Statuses',
@@ -429,7 +436,9 @@ export default {
     removeSettingConfirmation: 'Are you sure you want to remove this setting\'s value from the database?',
     changeImage: 'Change image',
     uploadImage: 'Upload image',
-    remove: 'Remove'
+    remove: 'Remove',
+    instancePanel: 'Instance Panel Document',
+    termsOfServices: 'Terms of Service'
   },
   invites: {
     inviteTokens: 'Invite tokens',

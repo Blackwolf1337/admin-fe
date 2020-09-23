@@ -2,7 +2,7 @@ import Vuex from 'vuex'
 import { mount, createLocalVue, config } from '@vue/test-utils'
 import Element from 'element-ui'
 import MultipleUsersMenu from '@/views/users/components/MultipleUsersMenu'
-import storeConfig from './store.conf'
+import { storeWithTagPolicy } from './store.conf'
 import { cloneDeep } from 'lodash'
 import flushPromises from 'flush-promises'
 import { users } from '@/api/__mocks__/users.js'
@@ -20,7 +20,7 @@ describe('Apply users actions to multiple users', () => {
   let store
 
   beforeEach(async() => {
-    store = new Vuex.Store(cloneDeep(storeConfig))
+    store = new Vuex.Store(cloneDeep(storeWithTagPolicy))
     store.dispatch('FetchUsers', { page: 1 })
     await flushPromises()
   })

@@ -69,7 +69,7 @@ export default {
       })
     },
     showMrfPolicy(key) {
-      const selectedMrfPolicies = _.get(this.settings.settings, [':pleroma', ':mrf', ':policies'])
+      const selectedMrfPolicies = _.get(this.settings.settings, [':pleroma', ':mrf', ':policies']) || []
       const mappedPolicies = this.mrfSettings.reduce((acc, { key, related_policy }) => {
         if (key !== ':mrf') {
           acc[key] = related_policy
