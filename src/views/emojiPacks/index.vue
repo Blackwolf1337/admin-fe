@@ -30,6 +30,7 @@
                 {{ $t('users.create') }}
               </el-button>
             </div>
+            <span class="emoji-name-warning">{{ $t('emoji.emojiWarning') }}</span>
           </el-form-item>
           <el-form-item v-if="Object.keys(localPacks).length > 0" :label="$t('emoji.packs')">
             <el-collapse v-for="(pack, name) in localPacks" :key="name" v-model="activeLocalPack" accordion @change="setActiveTab">
@@ -205,6 +206,15 @@ export default {
   align-items: center;
   justify-content: space-between;
   margin: 0 15px 22px 15px;
+}
+.emoji-name-warning {
+  color: #666666;
+  font-size: 13px;
+  line-height: 22px;
+  margin: 5px 0 0 0;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .emoji-packs-header-button-container {
   display: flex;
