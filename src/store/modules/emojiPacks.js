@@ -208,8 +208,8 @@ const emojiPacks = {
     SetActiveTab({ commit }, activeTab) {
       commit('SET_ACTIVE_TAB', activeTab)
     },
-    async SetRemoteEmojiPacks({ commit, getters }, { remoteInstance }) {
-      const { data } = await listRemotePacks(getters.authHost, getters.token, remoteInstance)
+    async SetRemoteEmojiPacks({ commit, getters, state }, { page, remoteInstance }) {
+      const { data } = await listRemotePacks(remoteInstance, page, state.pageSize, getters.authHost, getters.token)
       const { packs, count } = data
       const updatedPacks = Object.keys(packs).reduce((acc, packName) => {
         const { files, ...pack } = packs[packName]

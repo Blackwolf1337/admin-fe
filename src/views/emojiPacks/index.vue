@@ -45,7 +45,7 @@
             :page-size="pageSize"
             hide-on-single-page
             layout="prev, pager, next"
-            @current-change="handlePageChange"
+            @current-change="handleLocalPageChange"
           />
         </div>
       </el-tab-pane>
@@ -71,6 +71,16 @@
             </el-collapse>
           </el-form-item>
         </el-form>
+        <div class="pagination">
+          <el-pagination
+            :total="remotePacksCount"
+            :current-page="currentRemotePacksPage"
+            :page-size="pageSize"
+            hide-on-single-page
+            layout="prev, pager, next"
+            @current-change="handleRemotePageChange"
+          />
+        </div>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -96,6 +106,9 @@ export default {
   computed: {
     currentLocalPacksPage() {
       return this.$store.state.emojiPacks.currentLocalPacksPage
+    },
+    currentRemotePacksPage() {
+      return this.$store.state.emojiPacks.currentRemotePacksPage
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -131,6 +144,9 @@ export default {
     },
     remotePacks() {
       return this.$store.state.emojiPacks.remotePacks
+    },
+    remotePacksCount() {
+      return this.$store.state.emojiPacks.remotePacksCount
     }
   },
   mounted() {
@@ -148,8 +164,11 @@ export default {
           this.$store.dispatch('ReloadEmoji')
         })
     },
-    handlePageChange(page) {
+    handleLocalPageChange(page) {
       this.$store.dispatch('FetchLocalEmojiPacks', page)
+    },
+    handleRemotePageChange(page) {
+      this.$store.dispatch('SetRemoteEmojiPacks', { page, remoteInstance: this.remoteInstanceAddress })
     },
     importFromFS() {
       this.$store.dispatch('ImportFromFS')
@@ -171,7 +190,7 @@ export default {
     },
     async refreshRemotePacks() {
       this.fullscreenLoading = true
-      await this.$store.dispatch('SetRemoteEmojiPacks', { remoteInstance: this.remoteInstanceAddress })
+      await this.$store.dispatch('SetRemoteEmojiPacks', { page: 1, remoteInstance: this.remoteInstanceAddress })
       this.fullscreenLoading = false
     },
     async reloadEmoji() {

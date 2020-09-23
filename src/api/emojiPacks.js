@@ -92,10 +92,10 @@ export async function listPacks(page, pageSize, host, token) {
   })
 }
 
-export async function listRemotePacks(host, token, instance) {
+export async function listRemotePacks(instance, page, pageSize, host, token) {
   return await request({
     baseURL: baseName(host),
-    url: `/api/pleroma/emoji/packs/remote?url=${baseName(instance)}`,
+    url: `/api/pleroma/emoji/packs/remote?url=${baseName(instance)}&page=${page}&page_size=${pageSize}`,
     method: 'get',
     headers: authHeaders(token)
   })
