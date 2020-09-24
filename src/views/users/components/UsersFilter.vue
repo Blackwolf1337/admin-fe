@@ -7,13 +7,14 @@
     class="select-field"
     @change="toggleFilters">
     <el-option-group :label="$t('usersFilter.byAccountType')">
-      <el-option value="local" label="Local">{{ $t('usersFilter.local') }}</el-option>
-      <el-option value="external" label="External">{{ $t('usersFilter.external') }}</el-option>
+      <el-option value="local">{{ $t('usersFilter.local') }}</el-option>
+      <el-option value="external">{{ $t('usersFilter.external') }}</el-option>
     </el-option-group>
     <el-option-group :label="$t('usersFilter.byStatus')">
-      <el-option value="active" label="Active">{{ $t('usersFilter.active') }}</el-option>
-      <el-option value="need_approval" label="Need Approval">{{ $t('usersFilter.pending') }}</el-option>
-      <el-option value="deactivated" label="Deactivated">{{ $t('usersFilter.deactivated') }}</el-option>
+      <el-option value="active">{{ $t('usersFilter.active') }}</el-option>
+      <el-option value="deactivated">{{ $t('usersFilter.deactivated') }}</el-option>
+      <el-option value="need_approval">{{ $t('usersFilter.pending') }}</el-option>
+      <el-option value="need_confirmed">{{ $t('usersFilter.unconfirmed') }}</el-option>
     </el-option-group>
   </el-select>
 </template>
@@ -43,6 +44,7 @@ export default {
       const indexOfActive = this.$data.value.indexOf('active')
       const indexOfDeactivated = this.$data.value.indexOf('deactivated')
       const indexOfPending = this.$data.value.indexOf('need_approval')
+      const indexOfUnconfirmed = this.$data.value.indexOf('need_confirmed')
 
       if (this.$data.value.length === filtersQuantity) {
         return []
@@ -52,8 +54,8 @@ export default {
         ? currentFilters.push(this.$data.value[Math.max(indexOfLocal, indexOfExternal)])
         : currentFilters
 
-      Math.max(indexOfActive, indexOfDeactivated, indexOfPending) > -1
-        ? currentFilters.push(this.$data.value[Math.max(indexOfActive, indexOfDeactivated, indexOfPending)])
+      Math.max(indexOfActive, indexOfDeactivated, indexOfPending, indexOfUnconfirmed) > -1
+        ? currentFilters.push(this.$data.value[Math.max(indexOfActive, indexOfDeactivated, indexOfPending, indexOfUnconfirmed)])
         : currentFilters
 
       return currentFilters

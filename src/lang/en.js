@@ -337,7 +337,8 @@ export default {
     byStatus: 'By status',
     active: 'Active',
     pending: 'Pending Approval',
-    deactivated: 'Deactivated'
+    deactivated: 'Deactivated',
+    unconfirmed: 'Unconfirmed'
   },
   reports: {
     reports: 'Reports',

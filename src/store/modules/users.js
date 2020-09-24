@@ -35,7 +35,8 @@ const users = {
       external: false,
       active: false,
       need_approval: false,
-      deactivated: false
+      deactivated: false,
+      need_confirmed: false
     },
     passwordResetToken: {
       token: '',
@@ -143,7 +144,14 @@ const users = {
     },
     ClearUsersState({ commit }) {
       commit('SET_SEARCH_QUERY', '')
-      commit('SET_USERS_FILTERS', { local: false, external: false, active: false, need_approval: false, deactivated: false })
+      commit('SET_USERS_FILTERS',
+        { local: false,
+          external: false,
+          active: false,
+          need_approval: false,
+          deactivated: false,
+          need_confirmed: false
+        })
     },
     async ClearFilters({ commit, dispatch, state }) {
       commit('CLEAR_USERS_FILTERS')
@@ -299,7 +307,8 @@ const users = {
         external: false,
         active: false,
         need_approval: false,
-        deactivated: false
+        deactivated: false,
+        need_confirmed: false
       }
       const currentFilters = { ...defaultFilters, ...filters }
       commit('SET_USERS_FILTERS', currentFilters)
