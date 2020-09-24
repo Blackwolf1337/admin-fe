@@ -67,55 +67,59 @@
         @click.native="handleConfirmationResend(user)">
         {{ $t('users.resendConfirmation') }}
       </el-dropdown-item>
-      <el-dropdown-item
-        v-if="tagPolicyEnabled"
-        :divided="showAdminAction(user)"
-        :class="{ 'active-tag': user.tags.includes('mrf_tag:media-force-nsfw') }"
-        @click.native="toggleTag(user, 'mrf_tag:media-force-nsfw')">
-        {{ $t('users.forceNsfw') }}
-        <i v-if="user.tags.includes('mrf_tag:media-force-nsfw')" class="el-icon-check"/>
-      </el-dropdown-item>
-      <el-dropdown-item
-        v-if="tagPolicyEnabled"
-        :class="{ 'active-tag': user.tags.includes('mrf_tag:media-strip') }"
-        @click.native="toggleTag(user, 'mrf_tag:media-strip')">
-        {{ $t('users.stripMedia') }}
-        <i v-if="user.tags.includes('mrf_tag:media-strip')" class="el-icon-check"/>
-      </el-dropdown-item>
-      <el-dropdown-item
-        v-if="tagPolicyEnabled"
-        :class="{ 'active-tag': user.tags.includes('mrf_tag:force-unlisted') }"
-        @click.native="toggleTag(user, 'mrf_tag:force-unlisted')">
-        {{ $t('users.forceUnlisted') }}
-        <i v-if="user.tags.includes('mrf_tag:force-unlisted')" class="el-icon-check"/>
-      </el-dropdown-item>
-      <el-dropdown-item
-        v-if="tagPolicyEnabled"
-        :class="{ 'active-tag': user.tags.includes('mrf_tag:sandbox') }"
-        @click.native="toggleTag(user, 'mrf_tag:sandbox')">
-        {{ $t('users.sandbox') }}
-        <i v-if="user.tags.includes('mrf_tag:sandbox')" class="el-icon-check"/>
-      </el-dropdown-item>
-      <el-dropdown-item
-        v-if="user.local && tagPolicyEnabled"
-        :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-remote-subscription') }"
-        @click.native="toggleTag(user, 'mrf_tag:disable-remote-subscription')">
-        {{ $t('users.disableRemoteSubscription') }}
-        <i v-if="user.tags.includes('mrf_tag:disable-remote-subscription')" class="el-icon-check"/>
-      </el-dropdown-item>
-      <el-dropdown-item
-        v-if="user.local && tagPolicyEnabled"
-        :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-any-subscription') }"
-        @click.native="toggleTag(user, 'mrf_tag:disable-any-subscription')">
-        {{ $t('users.disableAnySubscription') }}
-        <i v-if="user.tags.includes('mrf_tag:disable-any-subscription')" class="el-icon-check"/>
-      </el-dropdown-item>
-      <el-dropdown-item
-        v-if="user.local && tagPolicyEnabled"
-        icon="el-icon-plus"
-        @click.native="$emit('open-custom-tag-dialog')">
-        {{ $t('users.createCustomTag') }}
-      </el-dropdown-item>
+      <el-collapse accordion class="moderate-tags">
+        <el-collapse-item :title="$t('users.moderateTags')" name="open-tags">
+          <el-dropdown-item
+            v-if="tagPolicyEnabled"
+            :divided="showAdminAction(user)"
+            :class="{ 'active-tag': user.tags.includes('mrf_tag:media-force-nsfw') }"
+            @click.native="toggleTag(user, 'mrf_tag:media-force-nsfw')">
+            {{ $t('users.forceNsfw') }}
+            <i v-if="user.tags.includes('mrf_tag:media-force-nsfw')" class="el-icon-check"/>
+          </el-dropdown-item>
+          <el-dropdown-item
+            v-if="tagPolicyEnabled"
+            :class="{ 'active-tag': user.tags.includes('mrf_tag:media-strip') }"
+            @click.native="toggleTag(user, 'mrf_tag:media-strip')">
+            {{ $t('users.stripMedia') }}
+            <i v-if="user.tags.includes('mrf_tag:media-strip')" class="el-icon-check"/>
+          </el-dropdown-item>
+          <el-dropdown-item
+            v-if="tagPolicyEnabled"
+            :class="{ 'active-tag': user.tags.includes('mrf_tag:force-unlisted') }"
+            @click.native="toggleTag(user, 'mrf_tag:force-unlisted')">
+            {{ $t('users.forceUnlisted') }}
+            <i v-if="user.tags.includes('mrf_tag:force-unlisted')" class="el-icon-check"/>
+          </el-dropdown-item>
+          <el-dropdown-item
+            v-if="tagPolicyEnabled"
+            :class="{ 'active-tag': user.tags.includes('mrf_tag:sandbox') }"
+            @click.native="toggleTag(user, 'mrf_tag:sandbox')">
+            {{ $t('users.sandbox') }}
+            <i v-if="user.tags.includes('mrf_tag:sandbox')" class="el-icon-check"/>
+          </el-dropdown-item>
+          <el-dropdown-item
+            v-if="user.local && tagPolicyEnabled"
+            :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-remote-subscription') }"
+            @click.native="toggleTag(user, 'mrf_tag:disable-remote-subscription')">
+            {{ $t('users.disableRemoteSubscription') }}
+            <i v-if="user.tags.includes('mrf_tag:disable-remote-subscription')" class="el-icon-check"/>
+          </el-dropdown-item>
+          <el-dropdown-item
+            v-if="user.local && tagPolicyEnabled"
+            :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-any-subscription') }"
+            @click.native="toggleTag(user, 'mrf_tag:disable-any-subscription')">
+            {{ $t('users.disableAnySubscription') }}
+            <i v-if="user.tags.includes('mrf_tag:disable-any-subscription')" class="el-icon-check"/>
+          </el-dropdown-item>
+          <el-dropdown-item
+            v-if="user.local && tagPolicyEnabled"
+            icon="el-icon-plus"
+            @click.native="$emit('open-custom-tag-dialog')">
+            {{ $t('users.createCustomTag') }}
+          </el-dropdown-item>
+        </el-collapse-item>
+      </el-collapse>
       <el-dropdown-item
         v-if="!tagPolicyEnabled"
         divided
@@ -160,6 +164,11 @@ export default {
     statusId: {
       type: String,
       default: ''
+    }
+  },
+  data() {
+    return {
+      tagsOpen: []
     }
   },
   computed: {
@@ -328,8 +337,27 @@ export default {
     display: flex;
     justify-content: space-between;
   }
+  .moderate-tags {
+    .el-collapse-item__content {
+      padding-bottom: 0px;
+    }
+    .el-collapse-item__header {
+      height: 23px;
+      margin-top: 4px;
+      padding-left: 15px;
+      font-weight: 400;
+      color: #606266;
+      border-bottom: none;
+    }
+    .el-collapse-item__wrap {
+      border-bottom: none;
+    }
+  }
   .moderation-dropdown-menu {
     width: 350px;
+    .el-dropdown-menu--small .el-dropdown-menu__item.el-dropdown-menu__item--divided {
+      margin-top: 0;
+    }
   }
   @media only screen and (max-width:480px) {
     .moderate-user-button {
