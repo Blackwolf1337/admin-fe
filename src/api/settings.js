@@ -2,6 +2,15 @@ import request from '@/utils/request'
 import { getToken } from '@/utils/auth'
 import { baseName } from './utils'
 
+export async function deleteInstanceDocument(name, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/instance_document/${name}`,
+    method: 'delete',
+    headers: authHeaders(token)
+  })
+}
+
 export async function fetchDescription(authHost, token) {
   return await request({
     baseURL: baseName(authHost),
@@ -17,6 +26,25 @@ export async function fetchSettings(authHost, token) {
     url: `/api/pleroma/admin/config`,
     method: 'get',
     headers: authHeaders(token)
+  })
+}
+
+export async function getInstanceDocument(name, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/instance_document/${name}`,
+    method: 'get',
+    headers: authHeaders(token)
+  })
+}
+
+export async function updateInstanceDocument(name, formData, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/instance_document/${name}`,
+    method: 'patch',
+    data: formData,
+    headers: { ...authHeaders(token), 'Content-Type': 'multipart/form-data' }
   })
 }
 

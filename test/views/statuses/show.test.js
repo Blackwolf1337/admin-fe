@@ -1,5 +1,5 @@
 import Vuex from 'vuex'
-import { mount, createLocalVue, config } from '@vue/test-utils'
+import { mount, createLocalVue, config, RouterLinkStub } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import Element from 'element-ui'
 import StatusShow from '@/views/statuses/show'
@@ -7,6 +7,7 @@ import storeConfig from './statusShowStore.conf'
 import { cloneDeep } from 'lodash'
 
 config.mocks["$t"] = () => {}
+config.stubs.transition = false
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -36,7 +37,9 @@ describe('Status show page', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link'],
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
       mocks: {
         $route
       }
@@ -55,14 +58,16 @@ describe('Status show page', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link'],
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
       mocks: {
         $route
       }
     })
     await flushPromises()
 
-    expect(wrapper.find('router-link-stub h1').text()).toBe('dolin')
+    expect(wrapper.findComponent(RouterLinkStub).find('h1').text()).toBe('dolin')
     expect(wrapper.find('button.moderate-user-button').exists()).toBe(true)
     expect(wrapper.find('.el-dropdown-menu').exists()).toBe(true)
     done()
@@ -73,7 +78,9 @@ describe('Status show page', () => {
       store,
       localVue,
       sync: false,
-      stubs: ['router-link'],
+      stubs: {
+        RouterLink: RouterLinkStub
+      },
       mocks: {
         $route
       }
@@ -81,7 +88,7 @@ describe('Status show page', () => {
     await flushPromises()
 
     expect(wrapper.find('.status-card').exists()).toBe(true)
-    expect(wrapper.find('router-link-stub span.status-account-name').text()).toBe('dolin')
+    expect(wrapper.findAllComponents(RouterLinkStub).at(1).find('span.status-account-name').text()).toBe('dolin')
     expect(wrapper.find('span.el-tag').text()).not.toBe('Sensitive')
     expect(wrapper.find('span.el-tag').text()).toBe('Public')
     expect(wrapper.find('button.status-actions-button').exists()).toBe(true)

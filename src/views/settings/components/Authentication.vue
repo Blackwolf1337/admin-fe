@@ -15,10 +15,6 @@
     <el-form :model="oauth2Data" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="oauth2" :data="oauth2Data"/>
     </el-form>
-    <el-divider v-if="oauth2" class="divider thick-line"/>
-    <el-form :model="restrictUnauthenticatedData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="restrictUnauthenticated" :data="restrictUnauthenticatedData"/>
-    </el-form>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
     </div>
@@ -85,12 +81,6 @@ export default {
     },
     pleromaAuthenticatorData() {
       return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.Auth.Authenticator']) || {}
-    },
-    restrictUnauthenticated() {
-      return this.settings.description.find(setting => setting.key === ':restrict_unauthenticated')
-    },
-    restrictUnauthenticatedData() {
-      return _.get(this.settings.settings, [':pleroma', ':restrict_unauthenticated']) || {}
     }
   },
   methods: {
