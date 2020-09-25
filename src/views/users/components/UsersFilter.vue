@@ -16,6 +16,11 @@
       <el-option value="need_approval">{{ $t('usersFilter.pending') }}</el-option>
       <el-option value="unconfirmed">{{ $t('usersFilter.unconfirmed') }}</el-option>
     </el-option-group>
+    <el-option-group :label="$t('usersFilter.byActorType')">
+      <el-option value="Person">{{ $t('usersFilter.person') }}</el-option>
+      <el-option value="Service">{{ $t('usersFilter.bot') }}</el-option>
+      <el-option value="Application">{{ $t('usersFilter.application') }}</el-option>
+    </el-option-group>
   </el-select>
 </template>
 
@@ -45,6 +50,9 @@ export default {
       const indexOfDeactivated = this.$data.value.indexOf('deactivated')
       const indexOfPending = this.$data.value.indexOf('need_approval')
       const indexOfUnconfirmed = this.$data.value.indexOf('unconfirmed')
+      const indexOfPerson = this.$data.value.indexOf('Person')
+      const indexOfService = this.$data.value.indexOf('Service')
+      const indexOfApplication = this.$data.value.indexOf('Application')
 
       if (this.$data.value.length === filtersQuantity) {
         return []
@@ -56,6 +64,10 @@ export default {
 
       Math.max(indexOfActive, indexOfDeactivated, indexOfPending, indexOfUnconfirmed) > -1
         ? currentFilters.push(this.$data.value[Math.max(indexOfActive, indexOfDeactivated, indexOfPending, indexOfUnconfirmed)])
+        : currentFilters
+
+      Math.max(indexOfPerson, indexOfService, indexOfApplication) > -1
+        ? currentFilters.push(this.$data.value[Math.max(indexOfPerson, indexOfService, indexOfApplication)])
         : currentFilters
 
       return currentFilters

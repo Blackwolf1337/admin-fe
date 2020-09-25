@@ -332,13 +332,17 @@ export default {
   usersFilter: {
     inputPlaceholder: 'Select filter',
     byAccountType: 'By account type',
+    byActorType: 'By actor type',
     local: 'Local',
     external: 'External',
     byStatus: 'By status',
     active: 'Active',
     pending: 'Pending Approval',
     deactivated: 'Deactivated',
-    unconfirmed: 'Unconfirmed'
+    unconfirmed: 'Unconfirmed',
+    person: 'Person',
+    bot: 'Bot',
+    application: 'Application'
   },
   reports: {
     reports: 'Reports',
