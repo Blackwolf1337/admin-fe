@@ -36,7 +36,7 @@ const users = {
       active: false,
       need_approval: false,
       deactivated: false,
-      need_confirmed: false
+      unconfirmed: false
     },
     passwordResetToken: {
       token: '',
@@ -150,7 +150,7 @@ const users = {
           active: false,
           need_approval: false,
           deactivated: false,
-          need_confirmed: false
+          unconfirmed: false
         })
     },
     async ClearFilters({ commit, dispatch, state }) {
@@ -308,7 +308,7 @@ const users = {
         active: false,
         need_approval: false,
         deactivated: false,
-        need_confirmed: false
+        unconfirmed: false
       }
       const currentFilters = { ...defaultFilters, ...filters }
       commit('SET_USERS_FILTERS', currentFilters)

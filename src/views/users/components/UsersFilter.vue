@@ -14,7 +14,7 @@
       <el-option value="active">{{ $t('usersFilter.active') }}</el-option>
       <el-option value="deactivated">{{ $t('usersFilter.deactivated') }}</el-option>
       <el-option value="need_approval">{{ $t('usersFilter.pending') }}</el-option>
-      <el-option value="need_confirmed">{{ $t('usersFilter.unconfirmed') }}</el-option>
+      <el-option value="unconfirmed">{{ $t('usersFilter.unconfirmed') }}</el-option>
     </el-option-group>
   </el-select>
 </template>
@@ -44,7 +44,7 @@ export default {
       const indexOfActive = this.$data.value.indexOf('active')
       const indexOfDeactivated = this.$data.value.indexOf('deactivated')
       const indexOfPending = this.$data.value.indexOf('need_approval')
-      const indexOfUnconfirmed = this.$data.value.indexOf('need_confirmed')
+      const indexOfUnconfirmed = this.$data.value.indexOf('unconfirmed')
 
       if (this.$data.value.length === filtersQuantity) {
         return []
