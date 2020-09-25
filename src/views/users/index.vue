@@ -118,7 +118,7 @@
     <el-dialog
       :visible.sync="createCustomTagDialogOpen"
       :show-close="false"
-      :title="$t('users.createCustomTag')"
+      :title="`${$t('users.createCustomTag')} ${customTagUser.nickname}`"
       @open="resetForm">
       <el-form ref="customTagForm" :model="customTagForm" :label-width="isDesktop ? '120px' : '85px'">
         <el-form-item :label="$t('users.name')" prop="name">
@@ -127,11 +127,11 @@
         <el-form-item :label="$t('users.label')" prop="label">
           <el-input v-model="customTagForm.label" name="label"/>
         </el-form-item>
-        <span slot="footer">
-          <el-button @click="closeCustomTagDialog">{{ $t('users.cancel') }}</el-button>
-          <el-button type="primary" @click="addCustomTag('customTagForm')">{{ $t('users.create') }}</el-button>
-        </span>
       </el-form>
+      <span slot="footer">
+        <el-button @click="closeCustomTagDialog">{{ $t('users.cancel') }}</el-button>
+        <el-button type="primary" @click="addCustomTag">{{ $t('users.create') }}</el-button>
+      </span>
     </el-dialog>
     <div v-if="!loading" class="pagination">
       <el-pagination
@@ -181,7 +181,8 @@ export default {
       customTagForm: {
         name: '',
         label: ''
-      }
+      },
+      customTagUser: {}
     }
   },
   computed: {
@@ -230,6 +231,15 @@ export default {
     this.$store.dispatch('ClearUsersState')
   },
   methods: {
+    addCustomTag() {
+      this.$store.dispatch('AddTag', {
+        users: [this.customTagUser],
+        tag: this.customTagForm.name,
+        _userId: this.customTagUser.id,
+        _statusId: this.statusId
+      })
+      this.createCustomTagDialogOpen = false
+    },
     clearSelection() {
       this.$refs.usersTable.clearSelection()
     },
@@ -263,7 +273,8 @@ export default {
     handleSelectionChange(value) {
       this.$data.selectedUsers = value
     },
-    openCustomTagDialog() {
+    openCustomTagDialog(user) {
+      this.customTagUser = user
       this.createCustomTagDialogOpen = true
     },
     openResetPasswordDialog() {

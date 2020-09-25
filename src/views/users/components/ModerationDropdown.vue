@@ -115,7 +115,7 @@
           <el-dropdown-item
             v-if="user.local && tagPolicyEnabled"
             icon="el-icon-plus"
-            @click.native="$emit('open-custom-tag-dialog')">
+            @click.native="$emit('open-custom-tag-dialog', user)">
             {{ $t('users.createCustomTag') }}
           </el-dropdown-item>
         </el-collapse-item>
