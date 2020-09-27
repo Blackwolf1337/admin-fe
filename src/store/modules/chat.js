@@ -7,7 +7,7 @@ const chat = {
     loading: false,
     buttonLoading: false,
     allLoaded: false,
-    max_id: null
+    maxId: null
   },
   mutations: {
     SET_LOADING: (state, chat) => {
@@ -26,7 +26,7 @@ const chat = {
       state.fetchedChatMessages = chatMessages
     },
     CHANGE_MAX_ID: (state, max_id) => {
-      state.max_id = max_id
+      state.maxId = max_id
     }
   },
   actions: {
@@ -39,7 +39,7 @@ const chat = {
     },
     async FetchChatMessages({ commit, dispatch, getters, state }, id, max_id) {
       commit('SET_LOADING', true)
-      const chat = await fetchChatMessages(id, state.max_id, getters.authHost, getters.token)
+      const chat = await fetchChatMessages(id, state.maxId, getters.authHost, getters.token)
       commit('SET_CHAT_MESSAGES', chat.data)
       commit('SET_LOADING', false)
     },

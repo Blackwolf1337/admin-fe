@@ -372,6 +372,7 @@ table {
 .user-chats-card {
   width: auto;
   height: fit-content;
+  margin-bottom: 20px;
 }
 .user-profile-container {
   display: flex;
