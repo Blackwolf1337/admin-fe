@@ -45,7 +45,7 @@ describe('Chat view', () => {
     expect(wrapper.find('.chat-particiants-receiver').isVisible()).toBe(true)
     expect(store.state.chat.fetchedChat.receiver.acct).toBe('test10')
     expect(store.state.chat.fetchedChatMessages[0].chat_id).toBe('9y8e7ESoVUiKVMAoCW')
-    expect(store.state.chat.max_id).toBe(null)
+    expect(store.state.chat.maxId).toBe(null)
     done()
   })
 })

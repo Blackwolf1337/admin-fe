@@ -20,10 +20,9 @@ export async function fetchChat(id, authHost, token) {
   })
 }
 
-export async function fetchChatMessages(id, max_id, authHost, token) {
-  let url
-  const url = max_id 
-    ? `/api/pleroma/admin/chats/${id}/messages?max_id=${max_id}`
+export async function fetchChatMessages(id, maxId, authHost, token) {
+  const url = maxId
+    ? `/api/pleroma/admin/chats/${id}/messages?max_id=${maxId}`
     : `/api/pleroma/admin/chats/${id}/messages`
   return await request({
     baseURL: baseName(authHost),
