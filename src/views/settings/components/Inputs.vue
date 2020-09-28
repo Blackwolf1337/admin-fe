@@ -42,7 +42,8 @@
           @change="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"
         />
         <el-input
-          v-else-if="setting.type === 'string' || (setting.type.includes('string') && setting.type.includes('atom'))"
+          v-else-if="setting.type === 'string' ||
+          (Array.isArray(setting.type) && setting.type.includes('string') && setting.type.includes('atom'))"
           :value="inputValue"
           :placeholder="setting.suggestions ? setting.suggestions[0] : null"
           :data-search="setting.key || setting.group"
@@ -358,7 +359,10 @@ export default {
       )
     },
     renderSingleSelect(type) {
-      return !this.reducedSelects && (type === 'module' || (type.includes('atom') && type.includes('dropdown')))
+      return !this.reducedSelects && (
+        type === 'module' ||
+        (Array.isArray(type) && type.includes('atom') && type.includes('dropdown'))
+      )
     },
     senderInput({ key, type }) {
       return Array.isArray(type) && type.includes('string') && type.includes('tuple') && key === ':sender'
