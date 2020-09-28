@@ -245,7 +245,7 @@ const wrapValues = (settings, currentState) => {
         return acc
       }, {})
       return { 'tuple': [setting, { ...currentState[setting], ...mapValue }] }
-    } else if (type.includes('map')) {
+    } else if (type.includes('map') && !type.includes('list')) {
       const mapValue = Object.keys(value).reduce((acc, key) => {
         acc[key] = value[key][1]
         return acc
