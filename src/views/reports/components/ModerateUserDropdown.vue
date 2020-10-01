@@ -72,11 +72,26 @@ export default {
     }
   },
   methods: {
-    handleDeactivation({ nickname }) {
-      this.$store.dispatch('ToggleUserActivation', nickname)
+    handleDeactivation(user) {
+      user.deactivated
+        ? this.$store.dispatch('ActivateUsers', { users: [user], _userId: user.id })
+        : this.$store.dispatch('DeactivateUsers', { users: [user], _userId: user.id })
     },
     handleDeletion(user) {
-      this.$store.dispatch('DeleteUser', user)
+      this.$confirm(
+        this.$t('users.deleteUserConfirmation'),
+        {
+          confirmButtonText: 'Delete',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        this.$store.dispatch('DeleteUsers', { users: [user], _userId: user.id })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Delete canceled'
+        })
+      })
     },
     showDeactivatedButton(id) {
       return this.$store.state.user.id !== id
