@@ -1,5 +1,5 @@
 <template>
-  <el-dropdown trigger="click">
+  <el-dropdown :hide-on-click="false" trigger="click">
     <el-button :disabled="!account.id" plain size="small" icon="el-icon-files">{{ $t('reports.moderateUser') }}
       <i class="el-icon-arrow-down el-icon--right"/>
     </el-button>
@@ -11,7 +11,7 @@
       </el-dropdown-item>
       <el-dropdown-item
         v-if="showDeactivatedButton(account.id)"
-        @click.native="handleDeletion(account.id)">
+        @click.native="handleDeletion(account)">
         {{ $t('users.deleteAccount') }}
       </el-dropdown-item>
       <el-dropdown-item
@@ -64,6 +64,10 @@ export default {
     account: {
       type: Object,
       required: true
+    },
+    reportId: {
+      type: String,
+      required: true
     }
   },
   computed: {
@@ -74,8 +78,8 @@ export default {
   methods: {
     handleDeactivation(user) {
       user.deactivated
-        ? this.$store.dispatch('ActivateUsers', { users: [user], _userId: user.id })
-        : this.$store.dispatch('DeactivateUsers', { users: [user], _userId: user.id })
+        ? this.$store.dispatch('ActivateUserFromReports', { user, reportId: this.reportId })
+        : this.$store.dispatch('DeactivateUserFromReports', { user, reportId: this.reportId })
     },
     handleDeletion(user) {
       this.$confirm(
@@ -85,7 +89,7 @@ export default {
           cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(() => {
-        this.$store.dispatch('DeleteUsers', { users: [user], _userId: user.id })
+        this.$store.dispatch('DeleteUserFromReports', { user, reportId: this.reportId })
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -98,8 +102,8 @@ export default {
     },
     toggleTag(user, tag) {
       user.tags.includes(tag)
-        ? this.$store.dispatch('RemoveTag', { users: [user], tag })
-        : this.$store.dispatch('AddTag', { users: [user], tag })
+        ? this.$store.dispatch('RemoveTagFromReports', { user, tag, reportId: this.reportId })
+        : this.$store.dispatch('AddTagFromReports', { user, tag, reportId: this.reportId })
     }
   }
 }
