@@ -1,4 +1,11 @@
 import { changeState, fetchReports, createNote, deleteNote } from '@/api/reports'
+import {
+  activateUsers,
+  deactivateUsers,
+  deleteUsers,
+  tagUser,
+  untagUser
+} from '@/api/users'
 
 const reports = {
   state: {
@@ -34,6 +41,34 @@ const reports = {
     }
   },
   actions: {
+    async ActivateUserFromReports({ commit, dispatch, getters, state }, { user, reportId }) {
+      try {
+        await activateUsers([user.nickname], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReports = state.fetchedReports.map(report => {
+          const updatedAccount = { ...user, deactivated: false }
+          return report.id === reportId ? { ...report, account: updatedAccount } : report
+        })
+        commit('SET_REPORTS', updatedReports)
+      }
+      dispatch('SuccessMessage')
+    },
+    async AddTagFromReports({ commit, dispatch, getters, state }, { user, tag, reportId }) {
+      try {
+        await tagUser([user.nickname], [tag], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReports = state.fetchedReports.map(report => {
+          const updatedAccount = { ...user, tags: [...user.tags, tag] }
+          return report.id === reportId ? { ...report, account: updatedAccount } : report
+        })
+        commit('SET_REPORTS', updatedReports)
+      }
+      dispatch('SuccessMessage')
+    },
     async ChangeReportState({ commit, dispatch, getters, state }, reportsData) {
       changeState(reportsData, getters.authHost, getters.token)
 
@@ -47,6 +82,34 @@ const reports = {
     },
     ClearFetchedReports({ commit }) {
       commit('SET_REPORTS', [])
+    },
+    async DeactivateUserFromReports({ commit, dispatch, getters, state }, { user, reportId }) {
+      try {
+        await deactivateUsers([user.nickname], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReports = state.fetchedReports.map(report => {
+          const updatedAccount = { ...user, deactivated: true }
+          return report.id === reportId ? { ...report, account: updatedAccount } : report
+        })
+        commit('SET_REPORTS', updatedReports)
+      }
+      dispatch('SuccessMessage')
+    },
+    async DeleteUserFromReports({ commit, dispatch, getters, state }, { user, reportId }) {
+      try {
+        await deleteUsers([user.nickname], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReports = state.fetchedReports.map(report => {
+          const updatedAccount = { ...user, deactivated: true }
+          return report.id === reportId ? { ...report, account: updatedAccount } : report
+        })
+        commit('SET_REPORTS', updatedReports)
+      }
+      dispatch('SuccessMessage')
     },
     async FetchReports({ commit, getters, state }, page) {
       commit('SET_LOADING', true)
@@ -63,6 +126,20 @@ const reports = {
 
       commit('SET_OPEN_REPORTS_COUNT', data.total)
       commit('SET_LOADING', false)
+    },
+    async RemoveTagFromReports({ commit, dispatch, getters, state }, { user, tag, reportId }) {
+      try {
+        await untagUser([user.nickname], [tag], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReports = state.fetchedReports.map(report => {
+          const updatedAccount = { ...user, tags: user.tags.filter(userTag => userTag !== tag) }
+          return report.id === reportId ? { ...report, account: updatedAccount } : report
+        })
+        commit('SET_REPORTS', updatedReports)
+      }
+      dispatch('SuccessMessage')
     },
     SetReportsFilter({ commit }, filter) {
       commit('SET_REPORTS_FILTER', filter)
