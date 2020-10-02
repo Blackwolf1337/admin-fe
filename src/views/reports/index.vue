@@ -41,6 +41,7 @@ export default {
   mounted() {
     this.$store.dispatch('GetNodeInfo')
     this.$store.dispatch('NeedReboot')
+    this.$store.dispatch('FetchTagPolicySetting')
     this.$store.dispatch('FetchReports', 1)
   }
 }
