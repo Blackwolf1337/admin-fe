@@ -226,6 +226,7 @@ export default {
     this.$store.dispatch('NeedReboot')
     this.$store.dispatch('FetchTagPolicySetting')
     this.$store.dispatch('FetchUsers', { page: 1 })
+    this.$store.dispatch('ListTags')
   },
   destroyed() {
     this.$store.dispatch('ClearUsersState')
