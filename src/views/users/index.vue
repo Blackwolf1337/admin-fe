@@ -25,8 +25,7 @@
       </el-button>
       <multiple-users-menu
         :selected-users="selectedUsers"
-        @apply-action="clearSelection"
-        @open-custom-tag-dialog="openCustomTagDialog"/>
+        @apply-action="clearSelection"/>
     </div>
     <new-account-dialog
       :dialog-form-visible="createAccountDialogOpen"
@@ -103,8 +102,7 @@
             v-if="propertyExists(scope.row, 'nickname')"
             :user="scope.row"
             :page="'users'"
-            @open-reset-token-dialog="openResetPasswordDialog"
-            @open-custom-tag-dialog="openCustomTagDialog"/>
+            @open-reset-token-dialog="openResetPasswordDialog"/>
           <el-button v-else type="text" disabled>
             {{ $t('users.moderation') }}
             <i v-if="isDesktop" class="el-icon-arrow-down el-icon--right"/>
@@ -115,24 +113,6 @@
     <reset-password-dialog
       :reset-password-dialog-open="resetPasswordDialogOpen"
       @close-reset-token-dialog="closeResetPasswordDialog"/>
-    <el-dialog
-      :visible.sync="createCustomTagDialogOpen"
-      :show-close="false"
-      :title="`${$t('users.createCustomTag')} ${customTagUser.nickname}`"
-      @open="resetForm">
-      <el-form ref="customTagForm" :model="customTagForm" :label-width="isDesktop ? '120px' : '85px'">
-        <el-form-item :label="$t('users.name')" prop="name">
-          <el-input v-model="customTagForm.name" name="name" autofocus/>
-        </el-form-item>
-        <el-form-item :label="$t('users.label')" prop="label">
-          <el-input v-model="customTagForm.label" name="label"/>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button @click="closeCustomTagDialog">{{ $t('users.cancel') }}</el-button>
-        <el-button type="primary" @click="addCustomTag">{{ $t('users.create') }}</el-button>
-      </span>
-    </el-dialog>
     <div v-if="!loading" class="pagination">
       <el-pagination
         :total="usersCount"
@@ -176,13 +156,7 @@ export default {
       search: '',
       selectedUsers: [],
       createAccountDialogOpen: false,
-      resetPasswordDialogOpen: false,
-      createCustomTagDialogOpen: false,
-      customTagForm: {
-        name: '',
-        label: ''
-      },
-      customTagUser: {}
+      resetPasswordDialogOpen: false
     }
   },
   computed: {
@@ -232,20 +206,8 @@ export default {
     this.$store.dispatch('ClearUsersState')
   },
   methods: {
-    addCustomTag() {
-      this.$store.dispatch('AddTag', {
-        users: [this.customTagUser],
-        tag: this.customTagForm.name,
-        _userId: this.customTagUser.id,
-        _statusId: this.statusId
-      })
-      this.createCustomTagDialogOpen = false
-    },
     clearSelection() {
       this.$refs.usersTable.clearSelection()
-    },
-    closeCustomTagDialog() {
-      this.createCustomTagDialogOpen = false
     },
     closeResetPasswordDialog() {
       this.resetPasswordDialogOpen = false
@@ -274,10 +236,6 @@ export default {
     handleSelectionChange(value) {
       this.$data.selectedUsers = value
     },
-    openCustomTagDialog(user) {
-      this.customTagUser = user
-      this.createCustomTagDialogOpen = true
-    },
     openResetPasswordDialog() {
       this.resetPasswordDialogOpen = true
     },
@@ -287,7 +245,6 @@ export default {
     regReason(reason) {
       return reason && reason.length > 0
     },
-    resetForm() {},
     showDeactivatedButton(id) {
       return this.$store.state.user.id !== id
     }

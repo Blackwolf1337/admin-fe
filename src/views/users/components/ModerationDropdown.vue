@@ -67,8 +67,8 @@
         @click.native="handleConfirmationResend(user)">
         {{ $t('users.resendConfirmation') }}
       </el-dropdown-item>
-      <el-collapse accordion class="moderate-tags">
-        <el-collapse-item :title="$t('users.moderateTags')" name="open-tags">
+      <!-- <el-collapse accordion class="moderate-tags">
+        <el-collapse-item name="open-tags">
           <el-dropdown-item
             v-if="tagPolicyEnabled"
             :divided="showAdminAction(user)"
@@ -112,21 +112,35 @@
             {{ $t('users.disableAnySubscription') }}
             <i v-if="user.tags.includes('mrf_tag:disable-any-subscription')" class="el-icon-check"/>
           </el-dropdown-item>
+          <el-dropdown-item divided class="custom-tags-titile">
+            {{ $t('users.customTags') }}
+          </el-dropdown-item>
           <el-dropdown-item
             v-if="user.local && tagPolicyEnabled"
             icon="el-icon-plus"
             @click.native="$emit('open-custom-tag-dialog', user)">
-            {{ $t('users.createCustomTag') }}
+            <el-popover
+              :title="`${$t('users.createCustomTag')} ${user.nickname}`"
+              placement="left"
+              width="400"
+              trigger="click">
+              <el-form :inline="true" :model="customTagForm" >
+                <el-form-item prop="name">
+                  <el-input v-model="customTagForm.name" autofocus class="custom-tag-input"/>
+                </el-form-item>
+                <el-form-item class="close-custom-tag-button">
+                  <el-button @click="closeCustomTagDialog">{{ $t('users.cancel') }}</el-button>
+                </el-form-item>
+                <el-form-item class="add-custom-tag-button">
+                  <el-button type="primary" @click="addCustomTag">{{ $t('users.create') }}</el-button>
+                </el-form-item>
+              </el-form>
+              <span slot="reference">{{ $t('users.createCustomTag') }}</span>
+              <el-button slot="reference">Hover to activate</el-button>
+            </el-popover>
           </el-dropdown-item>
         </el-collapse-item>
-      </el-collapse>
-      <el-dropdown-item
-        v-if="!tagPolicyEnabled"
-        divided
-        class="no-hover"
-        @click.native="enableTagPolicy">
-        {{ $t('users.enableTagPolicy') }}
-      </el-dropdown-item>
+      </el-collapse> -->
       <el-dropdown-item
         v-if="user.local"
         divided
@@ -142,6 +156,37 @@
         v-if="user.local"
         @click.native="disableMfa(user.nickname)">
         {{ $t('users.disableMfa') }}
+      </el-dropdown-item>
+      <el-select
+        v-if="tagPolicyEnabled"
+        v-model="selectedTags"
+        multiple
+        filterable
+        allow-create
+        placeholder="Select Tags"
+        size="small"
+        class="select-tags">
+        <el-option-group :label="$t('users.defaultTags')">
+          <el-option
+            v-for="(value, name) in defaultTags"
+            :key="name"
+            :label="value"
+            :value="name"/>
+        </el-option-group>
+        <el-option-group :label="$t('users.customTags')">
+          <el-option
+            v-for="item in customTags"
+            :key="item"
+            :value="item"
+            class="capitalize"/>
+        </el-option-group>
+      </el-select>
+      <el-dropdown-item
+        v-if="!tagPolicyEnabled"
+        divided
+        class="no-hover"
+        @click.native="enableTagPolicy">
+        {{ $t('users.enableTagPolicy') }}
       </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
@@ -168,7 +213,7 @@ export default {
   },
   data() {
     return {
-      tagsOpen: []
+      selectedTags: []
     }
   },
   computed: {
@@ -185,14 +230,48 @@ export default {
         })
       }
     },
+    customTags() {
+      return this.$store.state.users.tags.filter(tag => !Object.keys(this.mapTags).includes(tag))
+    },
+    defaultTags() {
+      return Object.keys(this.mapTags)
+        .filter(tag => this.$store.state.users.tags.includes(tag))
+        .reduce((acc, el) => {
+          acc[el] = this.mapTags[el]
+          return acc
+        }, {})
+    },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
+    },
+    mapTags() {
+      return {
+        'mrf_tag:media-force-nsfw': 'NSFW',
+        'mrf_tag:media-strip': 'Strip Media',
+        'mrf_tag:force-unlisted': 'Unlisted',
+        'mrf_tag:sandbox': 'Sandbox',
+        'mrf_tag:verified': 'Verified',
+        'mrf_tag:disable-remote-subscription': 'Disable remote subscription',
+        'mrf_tag:disable-any-subscription': 'Disable any subscription'
+      }
     },
     tagPolicyEnabled() {
       return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
     }
   },
   methods: {
+    addCustomTag() {
+      this.$store.dispatch('AddTag', {
+        users: [this.customTagUser],
+        tag: this.customTagForm.name,
+        _userId: this.customTagUser.id,
+        _statusId: this.statusId
+      })
+      this.createCustomTagDialogOpen = false
+    },
+    closeCustomTagDialog() {
+      this.createCustomTagDialogOpen = false
+    },
     disableMfa(nickname) {
       this.$store.dispatch('DisableMfa', nickname)
     },
@@ -295,6 +374,17 @@ export default {
 </script>
 
 <style rel='stylesheet/scss' lang='scss'>
+  .capitalize {
+    text-transform: capitalize;
+  }
+  .el-form--inline {
+    .el-form-item.add-custom-tag-button {
+      margin-right: 0;
+    }
+    .el-form-item.close-custom-tag-button {
+      margin-right: 8px;
+    }
+  }
   .el-dropdown-menu--small  .el-dropdown-menu__item.el-dropdown-menu__item--divided.actor-type-dropdown:before {
     margin: 0 0;
     height: 0;
@@ -326,8 +416,14 @@ export default {
     }
   }
   .actor-type-select .el-input.is-focus .el-input__inner {
-      border-color: transparent;
-    }
+    border-color: transparent;
+  }
+  .custom-tags-titile {
+    padding-left: 20px;
+    font-size: 12px;
+    color: #909399;
+    line-height: 30px;
+  }
   .moderate-user-button {
     text-align: left;
     width: 350px;
@@ -358,6 +454,10 @@ export default {
     .el-dropdown-menu--small .el-dropdown-menu__item.el-dropdown-menu__item--divided {
       margin-top: 0;
     }
+  }
+  .select-tags {
+    padding: 2px 15px 0 15px;
+    width: 100%;
   }
   @media only screen and (max-width:480px) {
     .moderate-user-button {
