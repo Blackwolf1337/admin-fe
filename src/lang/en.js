@@ -521,6 +521,8 @@ export default {
     copy: 'Copy',
     copyToLocalPack: 'Copy to local pack',
     emptyPack: 'This emoji pack is empty',
-    emojiWarning: 'Pack names cannot include any of the following characters: # / < > & +'
+    emojiWarning: 'Pack names cannot include any of the following characters: # / < > & +',
+    image: 'Image'
+
   }
 }

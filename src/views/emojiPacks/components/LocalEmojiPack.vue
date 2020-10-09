@@ -44,6 +44,11 @@
       </el-collapse-item>
       <el-collapse-item :title=" $t('emoji.manageEmoji')" name="manageEmoji" class="no-background">
         <div v-if="pack.files && Object.keys(pack.files).length > 0">
+          <div :class="isMobile ? 'emoji-container-flex' : 'emoji-container-grid'">
+            <span class="emoji-preview-img emoji-table-head">{{ $t('emoji.image') }}</span>
+            <span class="emoji-table-head">{{ $t('emoji.shortcode') }}</span>
+            <span class="emoji-table-head">{{ $t('emoji.file') }}</span>
+          </div>
           <single-emoji-editor
             v-for="(file, shortcode) in pack.files"
             :key="shortcode"
@@ -251,6 +256,11 @@ export default {
   font-size: 14px;
   font-weight: 700;
   color: #606266;
+}
+.emoji-table-head {
+  color: #909399;
+  font-size: 14px;
+  font-weight: 700;
 }
 .emoji-pack-card {
   margin-top: 5px;
