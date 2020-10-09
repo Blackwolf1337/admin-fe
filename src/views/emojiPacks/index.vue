@@ -30,6 +30,7 @@
                 {{ $t('users.create') }}
               </el-button>
             </div>
+            <span class="emoji-name-warning">{{ $t('emoji.emojiWarning') }}</span>
           </el-form-item>
           <el-form-item v-if="Object.keys(localPacks).length > 0" :label="$t('emoji.packs')">
             <el-collapse v-for="(pack, name) in localPacks" :key="name" v-model="activeLocalPack" accordion @change="setActiveTab">
@@ -40,11 +41,11 @@
         <div class="pagination">
           <el-pagination
             :total="localPacksCount"
-            :current-page="currentPage"
+            :current-page="currentLocalPacksPage"
             :page-size="pageSize"
             hide-on-single-page
             layout="prev, pager, next"
-            @current-change="handlePageChange"
+            @current-change="handleLocalPageChange"
           />
         </div>
       </el-tab-pane>
@@ -70,6 +71,16 @@
             </el-collapse>
           </el-form-item>
         </el-form>
+        <div class="pagination">
+          <el-pagination
+            :total="remotePacksCount"
+            :current-page="currentRemotePacksPage"
+            :page-size="pageSize"
+            hide-on-single-page
+            layout="prev, pager, next"
+            @current-change="handleRemotePageChange"
+          />
+        </div>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -93,8 +104,11 @@ export default {
     }
   },
   computed: {
-    currentPage() {
-      return this.$store.state.emojiPacks.currentPage
+    currentLocalPacksPage() {
+      return this.$store.state.emojiPacks.currentLocalPacksPage
+    },
+    currentRemotePacksPage() {
+      return this.$store.state.emojiPacks.currentRemotePacksPage
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -130,6 +144,9 @@ export default {
     },
     remotePacks() {
       return this.$store.state.emojiPacks.remotePacks
+    },
+    remotePacksCount() {
+      return this.$store.state.emojiPacks.remotePacksCount
     }
   },
   mounted() {
@@ -143,23 +160,26 @@ export default {
         .then(() => {
           this.newPackName = ''
 
-          this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
+          this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage)
           this.$store.dispatch('ReloadEmoji')
         })
     },
-    handlePageChange(page) {
+    handleLocalPageChange(page) {
       this.$store.dispatch('FetchLocalEmojiPacks', page)
+    },
+    handleRemotePageChange(page) {
+      this.$store.dispatch('SetRemoteEmojiPacks', { page, remoteInstance: this.remoteInstanceAddress })
     },
     importFromFS() {
       this.$store.dispatch('ImportFromFS')
         .then(() => {
-          this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
+          this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage)
           this.$store.dispatch('ReloadEmoji')
         })
     },
     refreshLocalPacks() {
       try {
-        this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
+        this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage)
       } catch (e) {
         return
       }
@@ -170,7 +190,7 @@ export default {
     },
     async refreshRemotePacks() {
       this.fullscreenLoading = true
-      await this.$store.dispatch('SetRemoteEmojiPacks', { remoteInstance: this.remoteInstanceAddress })
+      await this.$store.dispatch('SetRemoteEmojiPacks', { page: 1, remoteInstance: this.remoteInstanceAddress })
       this.fullscreenLoading = false
     },
     async reloadEmoji() {
@@ -205,6 +225,15 @@ export default {
   align-items: center;
   justify-content: space-between;
   margin: 0 15px 22px 15px;
+}
+.emoji-name-warning {
+  color: #666666;
+  font-size: 13px;
+  line-height: 22px;
+  margin: 5px 0 0 0;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .emoji-packs-header-button-container {
   display: flex;

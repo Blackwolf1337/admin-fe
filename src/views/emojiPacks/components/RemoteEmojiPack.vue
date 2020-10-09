@@ -33,7 +33,7 @@
           </el-link>
         </el-form-item>
       </el-form>
-      <el-collapse v-model="showPackContent" class="contents-collapse">
+      <el-collapse v-model="showPackContent" class="contents-collapse" @change="handleChange($event, name)">
         <el-collapse-item :title=" $t('emoji.manageEmoji')" name="manageEmoji" class="no-background">
           <div v-if="pack.files && Object.keys(pack.files).length > 0">
             <single-emoji-editor
@@ -46,6 +46,16 @@
               :is-local="isLocal" />
           </div>
           <span v-else class="expl">{{ $t('emoji.emptyPack') }}</span>
+          <div class="files-pagination">
+            <el-pagination
+              :total="remotePackFilesCount"
+              :current-page="currentFilesPage"
+              :page-size="pageSize"
+              hide-on-single-page
+              layout="prev, pager, next"
+              @current-change="handleFilesPageChange"
+            />
+          </div>
         </el-collapse-item>
         <el-collapse-item :title=" $t('emoji.downloadPack')" name="downloadPack" class="no-background">
           <p>
@@ -95,8 +105,11 @@ export default {
     }
   },
   computed: {
-    currentPage() {
-      return this.$store.state.emojiPacks.currentPage
+    currentFilesPage() {
+      return this.$store.state.emojiPacks.currentRemoteFilesPage
+    },
+    currentRemotePacksPage() {
+      return this.$store.state.emojiPacks.currentRemotePacksPage
     },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
@@ -119,8 +132,14 @@ export default {
     loadRemotePack() {
       return this.$store.state.emojiPacks.activeTab === this.name
     },
+    pageSize() {
+      return this.$store.state.emojiPacks.filesPageSize
+    },
     remoteInstanceAddress() {
       return this.$store.state.emojiPacks.remoteInstance
+    },
+    remotePackFilesCount() {
+      return this.$store.state.emojiPacks.remotePackFilesCount
     },
     share: {
       get() { return this.pack.pack['share-files'] },
@@ -186,6 +205,14 @@ export default {
         { instanceAddress: this.remoteInstanceAddress, packName: this.name, as: this.downloadSharedAs }
       ).then(() => this.$store.dispatch('ReloadEmoji'))
         .then(() => this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage))
+    },
+    handleChange(openTabs, name) {
+      if (openTabs.includes('manageEmoji')) {
+        this.$store.dispatch('FetchRemoteSinglePack', { name, page: 1 })
+      }
+    },
+    handleFilesPageChange(page) {
+      this.$store.dispatch('FetchRemoteSinglePack', { name: this.name, page })
     }
   }
 }
@@ -230,6 +257,10 @@ export default {
   .el-form-item {
     margin-bottom: 10px;
   }
+}
+.files-pagination {
+  margin: 25px 0;
+  text-align: center;
 }
 .has-background .el-collapse-item__header {
   background: #f6f6f6;
