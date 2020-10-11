@@ -34,6 +34,10 @@ export async function fetchSettings(authHost, token) {
   return Promise.resolve({ data: configsWithTagPolicy })
 }
 
+export async function getInstanceDocument(name, authHost, token) {
+  return Promise.resolve({ data: '<h1>Instance panel</h1>' })
+}
+
 export async function updateSettings(configs, authHost, token) {
   return Promise.resolve({ data: configAfterUpdate })
 }

@@ -16,6 +16,7 @@ localVue.use(Element)
 
 jest.mock('@/api/app')
 jest.mock('@/api/reports')
+jest.mock('@/api/settings')
 
 describe('Reports', () => {
   let store

@@ -122,7 +122,7 @@ export default {
       return re.test(email)
     },
     validNickname(nickname) {
-      var re = /^[a-zA-Z\d]+$/
+      var re = /^[a-zA-Z\d_-]+$/
       return re.test(nickname)
     }
   }

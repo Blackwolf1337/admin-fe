@@ -520,6 +520,9 @@ export default {
     specifyFilename: 'Specify a custom filename',
     copy: 'Copy',
     copyToLocalPack: 'Copy to local pack',
-    emptyPack: 'This emoji pack is empty'
+    emptyPack: 'This emoji pack is empty',
+    emojiWarning: 'Pack names cannot include any of the following characters: # / < > & +',
+    image: 'Image'
+
   }
 }
