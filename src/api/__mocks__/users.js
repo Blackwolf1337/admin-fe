@@ -123,3 +123,19 @@ export async function createNewAccount(nickname, email, password, authHost, toke
 export async function updateUserCredentials(nickname, credentials, authHost, token) {
   return Promise.resolve()
 }
+
+export async function disableMfa(nickname, authHost, token) {
+  return Promise.resolve()
+}
+
+export async function forcePasswordReset(nicknames, authHost, token) {
+  return Promise.resolve()
+}
+
+export async function confirmUserEmail(nicknames, authHost, token) {
+  return Promise.resolve()
+}
+
+export async function resendConfirmationEmail(nicknames, authHost, token) {
+  return Promise.resolve()
+}

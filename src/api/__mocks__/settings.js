@@ -41,3 +41,19 @@ export async function getInstanceDocument(name, authHost, token) {
 export async function updateSettings(configs, authHost, token) {
   return Promise.resolve({ data: configAfterUpdate })
 }
+
+export async function deleteInstanceDocument(name, authHost, token) {
+  return Promise.resolve()
+}
+
+export async function fetchDescription(authHost, token) {
+  return Promise.resolve()
+}
+
+export async function updateInstanceDocument(name, formData, authHost, token) {
+  return Promise.resolve()
+}
+
+export async function removeSettings(configs, authHost, token) {
+  return Promise.resolve()
+}

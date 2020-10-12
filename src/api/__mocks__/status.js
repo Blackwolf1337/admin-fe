@@ -91,3 +91,7 @@ export async function fetchStatusesCount(instance, authHost, token) {
     }
   return Promise.resolve({ data })
 }
+
+export async function fetchStatuses({ godmode, localOnly, authHost, token, pageSize, page }) {
+  return Promise.resolve()
+}
