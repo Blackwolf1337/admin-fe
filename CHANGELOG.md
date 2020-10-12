@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Fix depricatied action names in Reports, move actions that manage users from Reports to reports module
 - Allow using underscores and hyphens in new account's usernames
+- Fix wrapping `:icons` setting and parsing tuples in settings with key `:headers`
 
 
 ## [2.1] - 2020-08-26
