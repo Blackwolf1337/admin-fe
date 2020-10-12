@@ -13,7 +13,9 @@ const localVue = createLocalVue()
 localVue.use(Vuex)
 localVue.use(Element)
 
+jest.mock('@/api/app')
 jest.mock('@/api/nodeInfo')
+jest.mock('@/api/settings')
 jest.mock('@/api/users')
 
 describe('Apply users actions to multiple users', () => {

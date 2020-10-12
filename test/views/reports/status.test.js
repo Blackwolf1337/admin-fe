@@ -12,7 +12,10 @@ const localVue = createLocalVue()
 localVue.use(Vuex)
 localVue.use(Element)
 
+jest.mock('@/api/app')
+jest.mock('@/api/nodeInfo')
 jest.mock('@/api/reports')
+jest.mock('@/api/settings')
 jest.mock('@/api/status')
 
 describe('Status in reports', () => {

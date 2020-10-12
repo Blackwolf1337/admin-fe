@@ -15,6 +15,7 @@ localVue.use(Element)
 jest.mock('@/api/app')
 jest.mock('@/api/invites')
 jest.mock('@/api/nodeInfo')
+jest.mock('@/api/settings')
 
 describe('Invite tokens', () => {
   let store
