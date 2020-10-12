@@ -123,41 +123,4 @@ describe('Invite tokens', () => {
     expect(store.state.invites.inviteTokens[0].used).toBe(true)
     done()
   })
-
-  it('invites user via email', async (done) => {
-    const wrapper = mount(Invites, {
-      store,
-      localVue,
-      sync: false,
-      stubs: {
-        RouterLink: RouterLinkStub
-      }
-    })
-
-    const dialog = wrapper.find('div.el-dialog__wrapper .invite-via-email-dialog')
-    expect(dialog.isVisible()).toBe(false)
-
-    const inviteUserViaEmailStub = jest.fn()
-    wrapper.setMethods({ inviteUserViaEmail: inviteUserViaEmailStub })
-
-    const openDialogButton = wrapper.find('button.invite-via-email')
-    openDialogButton.trigger('click')
-    await flushPromises()
-    expect(dialog.isVisible()).toBe(true)
-
-    const email = wrapper.find('input[name="email"]')
-    email.element.value = 'bob@gmail.com'
-    email.trigger('input')
-
-    const name = wrapper.find('input[name="name"]')
-    name.element.value = 'Bob'
-    name.trigger('input')
-
-    const createButton = wrapper.find('.invite-via-email-dialog button.el-button--primary')
-    createButton.trigger('click')
-    await flushPromises()
-
-    expect(wrapper.vm.inviteUserViaEmail).toHaveBeenCalled()
-    done()
-  })
 })
