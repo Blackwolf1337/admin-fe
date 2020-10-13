@@ -47,7 +47,7 @@ test:
     key: '$CI_COMMIT_SHORT_SHA'
     policy: pull
   script:
-    - yarn test
+    - yarn test --detectOpenHandles
 
 docker:
   stage: release
