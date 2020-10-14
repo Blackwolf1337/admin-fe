@@ -341,6 +341,40 @@ describe('Wrap settings', () => {
     expect(_.isEqual(result2, expectedResult2)).toBeTruthy()
   })
 
+  it('wraps settings with type [`list`, `map`]', () => {
+    const settings = { ':manifest': { ':icons': [['map', 'list'], [
+      { ':src': '/static/logo.png', ':type': 'image/png' },
+      { ':src': '/static/icon.png', ':type': 'image/png' }
+    ]]}}
+    
+    const state = { ':pleroma': { ':manifest': { 
+      ':background_color': '#191b22',
+      ':theme_color': '#282c37',
+      ':icons': [
+        [
+          { 'id': 'f21318c4', 'key': ':src', 'value': '/static/logo.png' },
+          { 'id': 'f4b87549', 'key': ':type', 'value': 'image/png' }
+        ], [
+          { 'id': 'f31d351e', 'key': ':src', 'value': '/static/icon.png' },
+          { 'id': 'f1455852', 'key': ':type', 'value': 'image/png' }
+        ]
+      ]
+    }}}
+
+    const result = wrapUpdatedSettings(':pleroma', settings, state)
+    const expectedResult = [{
+      group: ':pleroma',
+      key: ':manifest',
+      value: [{ tuple: [':icons', [
+        { ':src': '/static/logo.png', ':type': 'image/png' },
+        { ':src': '/static/icon.png', ':type': 'image/png' }
+      ]]}]
+    }]
+
+    expect(_.isEqual(result, expectedResult)).toBeTruthy()
+  })
+
+
   it('wraps IP setting', () => {
     const settings = { ':gopher': { ':ip': ['tuple', '127.0.0.1']}}
     const state = { ':pleroma': { ':gopher': {}}}

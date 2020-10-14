@@ -24,7 +24,7 @@
                   <el-dropdown-item v-if="report.state !== 'closed'" @click.native="changeReportState('closed', report.id)">{{ $t('reports.close') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <moderate-user-dropdown v-if="propertyExists(report.account, 'nickname')" :account="report.account"/>
+              <moderate-user-dropdown v-if="propertyExists(report.account, 'nickname')" :account="report.account" :report-id="report.id" />
             </div>
           </div>
           <el-divider class="divider"/>

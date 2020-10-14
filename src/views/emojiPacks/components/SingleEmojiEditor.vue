@@ -178,7 +178,7 @@ export default {
 }
 .emoji-container-grid {
   display: grid;
-  grid-template-columns: 75px auto auto 200px;
+  grid-template-columns: 75px 1fr 1fr 200px;
   grid-column-gap: 15px;
   margin-bottom: 10px;
 }
@@ -197,7 +197,7 @@ export default {
 }
 .remote-emoji-container-grid {
   display: grid;
-  grid-template-columns: 75px auto auto 160px;
+  grid-template-columns: 75px 1fr 1fr 160px;
   grid-column-gap: 15px;
   margin-bottom: 10px;
 }

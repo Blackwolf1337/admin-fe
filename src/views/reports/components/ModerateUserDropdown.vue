@@ -1,5 +1,5 @@
 <template>
-  <el-dropdown trigger="click">
+  <el-dropdown :hide-on-click="false" trigger="click">
     <el-button :disabled="!account.id" plain size="small" icon="el-icon-files">{{ $t('reports.moderateUser') }}
       <i class="el-icon-arrow-down el-icon--right"/>
     </el-button>
@@ -11,10 +11,11 @@
       </el-dropdown-item>
       <el-dropdown-item
         v-if="showDeactivatedButton(account.id)"
-        @click.native="handleDeletion(account.id)">
+        @click.native="handleDeletion(account)">
         {{ $t('users.deleteAccount') }}
       </el-dropdown-item>
       <el-dropdown-item
+        v-if="tagPolicyEnabled"
         :divided="true"
         :class="{ 'active-tag': tags.includes('mrf_tag:media-force-nsfw') }"
         @click.native="toggleTag(account, 'mrf_tag:media-force-nsfw')">
@@ -22,36 +23,46 @@
         <i v-if="tags.includes('mrf_tag:media-force-nsfw')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
+        v-if="tagPolicyEnabled"
         :class="{ 'active-tag': tags.includes('mrf_tag:media-strip') }"
         @click.native="toggleTag(account, 'mrf_tag:media-strip')">
         {{ $t('users.stripMedia') }}
         <i v-if="tags.includes('mrf_tag:media-strip')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
+        v-if="tagPolicyEnabled"
         :class="{ 'active-tag': tags.includes('mrf_tag:force-unlisted') }"
         @click.native="toggleTag(account, 'mrf_tag:force-unlisted')">
         {{ $t('users.forceUnlisted') }}
         <i v-if="tags.includes('mrf_tag:force-unlisted')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
+        v-if="tagPolicyEnabled"
         :class="{ 'active-tag': tags.includes('mrf_tag:sandbox') }"
         @click.native="toggleTag(account, 'mrf_tag:sandbox')">
         {{ $t('users.sandbox') }}
         <i v-if="tags.includes('mrf_tag:sandbox')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
-        v-if="account.local"
+        v-if="tagPolicyEnabled && account.local"
         :class="{ 'active-tag': tags.includes('mrf_tag:disable-remote-subscription') }"
         @click.native="toggleTag(account, 'mrf_tag:disable-remote-subscription')">
         {{ $t('users.disableRemoteSubscription') }}
         <i v-if="tags.includes('mrf_tag:disable-remote-subscription')" class="el-icon-check"/>
       </el-dropdown-item>
       <el-dropdown-item
-        v-if="account.local"
+        v-if="tagPolicyEnabled && account.local"
         :class="{ 'active-tag': tags.includes('mrf_tag:disable-any-subscription') }"
         @click.native="toggleTag(account, 'mrf_tag:disable-any-subscription')">
         {{ $t('users.disableAnySubscription') }}
         <i v-if="tags.includes('mrf_tag:disable-any-subscription')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="!tagPolicyEnabled"
+        divided
+        class="no-hover"
+        @click.native="enableTagPolicy">
+        {{ $t('users.enableTagPolicy') }}
       </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
@@ -64,27 +75,69 @@ export default {
     account: {
       type: Object,
       required: true
+    },
+    reportId: {
+      type: String,
+      required: true
     }
   },
   computed: {
+    tagPolicyEnabled() {
+      return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
+    },
     tags() {
       return this.account.tags || []
     }
   },
   methods: {
-    handleDeactivation({ nickname }) {
-      this.$store.dispatch('ToggleUserActivation', nickname)
+    enableTagPolicy() {
+      this.$confirm(
+        this.$t('users.confirmEnablingTagPolicy'),
+        {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        this.$message({
+          type: 'success',
+          message: this.$t('users.enableTagPolicySuccessMessage')
+        })
+        this.$store.dispatch('EnableTagPolicy')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        })
+      })
+    },
+    handleDeactivation(user) {
+      user.deactivated
+        ? this.$store.dispatch('ActivateUserFromReports', { user, reportId: this.reportId })
+        : this.$store.dispatch('DeactivateUserFromReports', { user, reportId: this.reportId })
     },
     handleDeletion(user) {
-      this.$store.dispatch('DeleteUser', user)
+      this.$confirm(
+        this.$t('users.deleteUserConfirmation'),
+        {
+          confirmButtonText: 'Delete',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        this.$store.dispatch('DeleteUserFromReports', { user, reportId: this.reportId })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Delete canceled'
+        })
+      })
     },
     showDeactivatedButton(id) {
       return this.$store.state.user.id !== id
     },
     toggleTag(user, tag) {
       user.tags.includes(tag)
-        ? this.$store.dispatch('RemoveTag', { users: [user], tag })
-        : this.$store.dispatch('AddTag', { users: [user], tag })
+        ? this.$store.dispatch('RemoveTagFromReports', { user, tag, reportId: this.reportId })
+        : this.$store.dispatch('AddTagFromReports', { user, tag, reportId: this.reportId })
     }
   }
 }
