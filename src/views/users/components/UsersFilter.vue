@@ -66,16 +66,27 @@ export default {
         ? currentFilters.push(this.$data.value[Math.max(indexOfActive, indexOfDeactivated, indexOfPending, indexOfUnconfirmed)])
         : currentFilters
 
-      Math.max(indexOfPerson, indexOfService, indexOfApplication) > -1
-        ? currentFilters.push(this.$data.value[Math.max(indexOfPerson, indexOfService, indexOfApplication)])
-        : currentFilters
+      const actorTypeFilters = [indexOfPerson, indexOfService, indexOfApplication].reduce((acc, index) => {
+        if (index > -1) {
+          currentFilters.push(this.$data.value[index])
+          acc.push(this.$data.value[index])
+        }
+        return acc
+      }, [])
 
-      return currentFilters
+      return [
+        currentFilters,
+        currentFilters.filter(filter => !actorTypeFilters.includes(filter)),
+        actorTypeFilters
+      ]
     },
     toggleFilters() {
-      this.$data.value = this.removeOppositeFilters()
-      const currentFilters = this.$data.value.reduce((acc, filter) => ({ ...acc, [filter]: true }), {})
+      const [allFilters, filters, actorTypeFilters] = this.removeOppositeFilters()
+
+      this.$data.value = allFilters
+      const currentFilters = filters.reduce((acc, filter) => ({ ...acc, [filter]: true }), {})
       this.$store.dispatch('ToggleUsersFilter', currentFilters)
+      this.$store.dispatch('ToggleActorTypeFilter', actorTypeFilters)
     }
   }
 }
