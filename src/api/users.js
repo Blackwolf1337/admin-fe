@@ -100,10 +100,10 @@ export async function updateUserCredentials(nickname, credentials, authHost, tok
   })
 }
 
-export async function fetchUsers(filters, authHost, token, page = 1) {
+export async function fetchUsers(filters, actorTypeFilters, authHost, token, page = 1) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users?page=${page}&filters=${filters}`,
+    url: `/api/pleroma/admin/users?page=${page}&filters=${filters}&actor_types=${actorTypeFilters}`,
     method: 'get',
     headers: authHeaders(token)
   })
@@ -128,10 +128,10 @@ export async function forcePasswordReset(nicknames, authHost, token) {
   })
 }
 
-export async function searchUsers(query, filters, authHost, token, page = 1) {
+export async function searchUsers(query, filters, actorTypeFilters, authHost, token, page = 1) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users?query=${query}&page=${page}&filters=${filters}`,
+    url: `/api/pleroma/admin/users?query=${query}&page=${page}&filters=${filters}&actor_types=${actorTypeFilters}`,
     method: 'get',
     headers: authHeaders(token)
   })
