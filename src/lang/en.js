@@ -485,6 +485,7 @@ export default {
     homepage: 'Homepage',
     description: 'Description',
     packs: 'Packs',
+    displayName: 'Display name',
     license: 'License',
     shortcode: 'Shortcode',
     fallbackSrc: 'Fallback source',

@@ -4,6 +4,9 @@
       <el-form-item :label=" $t('emoji.sharePack')">
         <el-switch v-model="share" />
       </el-form-item>
+      <el-form-item :label=" $t('emoji.displayName')">
+        <el-input v-model="displayName" />
+      </el-form-item>
       <el-form-item :label=" $t('emoji.homepage')">
         <el-input v-model="homepage" />
       </el-form-item>
@@ -146,6 +149,15 @@ export default {
         this.$store.dispatch(
           'UpdateLocalPackVal',
           { name: this.name, key: 'homepage', value }
+        )
+      }
+    },
+    displayName: {
+      get() { return this.pack.pack['display-name'] },
+      set(value) {
+        this.$store.dispatch(
+          'UpdateLocalPackVal',
+          { name: this.name, key: 'display-name', value }
         )
       }
     },
