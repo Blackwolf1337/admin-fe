@@ -1,4 +1,4 @@
-import { changeState, fetchReports, createNote, deleteNote } from '@/api/reports'
+import { changeState, fetchReports, fetchSingleReport, createNote, deleteNote } from '@/api/reports'
 import {
   activateUsers,
   deactivateUsers,
@@ -14,6 +14,7 @@ const reports = {
     loading: true,
     openReportsCount: 0,
     pageSize: 50,
+    singleReport: {},
     stateFilter: '',
     totalReportsCount: 0
   },
@@ -38,6 +39,9 @@ const reports = {
     },
     SET_REPORTS_FILTER: (state, filter) => {
       state.stateFilter = filter
+    },
+    SET_SINGLE_REPORT: (state, report) => {
+      state.singleReport = report
     }
   },
   actions: {
@@ -118,6 +122,13 @@ const reports = {
       commit('SET_REPORTS', data.reports)
       commit('SET_REPORTS_COUNT', data.total)
       commit('SET_PAGE', page)
+      commit('SET_LOADING', false)
+    },
+    async FetchSingleReport({ commit, getters }, id) {
+      commit('SET_LOADING', true)
+      const { data } = await fetchSingleReport(id, getters.authHost, getters.token)
+
+      commit('SET_SINGLE_REPORT', data)
       commit('SET_LOADING', false)
     },
     async FetchOpenReportsCount({ commit, getters, state }) {
