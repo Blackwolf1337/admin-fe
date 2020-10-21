@@ -199,5 +199,17 @@ export const asyncRouterMap = [
     ],
     hidden: true
   },
+  {
+    path: '/reports/:id',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'ReportsShow',
+        component: () => import('@/views/reports/show')
+      }
+    ],
+    hidden: true
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
