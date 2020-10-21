@@ -30,7 +30,7 @@
       <div class="download-pack-button-container">
         <el-link
           v-if="pack.pack['can-download']"
-          :href="`//${host}/api/pleroma/emoji/packs/${name}/download_shared`"
+          :href="`//${host}//api/pleroma/emoji/packs/archive?name=${name}`"
           :underline="false"
           type="primary"
           target="_blank">
@@ -44,6 +44,11 @@
       </el-collapse-item>
       <el-collapse-item :title=" $t('emoji.manageEmoji')" name="manageEmoji" class="no-background">
         <div v-if="pack.files && Object.keys(pack.files).length > 0">
+          <div :class="isMobile ? 'emoji-container-flex' : 'emoji-container-grid'">
+            <span class="emoji-preview-img emoji-table-head">{{ $t('emoji.image') }}</span>
+            <span class="emoji-table-head">{{ $t('emoji.shortcode') }}</span>
+            <span class="emoji-table-head">{{ $t('emoji.file') }}</span>
+          </div>
           <single-emoji-editor
             v-for="(file, shortcode) in pack.files"
             :key="shortcode"
@@ -100,10 +105,10 @@ export default {
   },
   computed: {
     currentFilesPage() {
-      return this.$store.state.emojiPacks.currentFilesPage
+      return this.$store.state.emojiPacks.currentLocalFilesPage
     },
-    currentPage() {
-      return this.$store.state.emojiPacks.currentPage
+    currentLocalPacksPage() {
+      return this.$store.state.emojiPacks.currentLocalPacksPage
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -197,21 +202,21 @@ export default {
           .then(() => this.$store.dispatch('ReloadEmoji'))
           .then(() => {
             const { [this.name]: value, ...updatedPacks } = this.$store.state.emojiPacks.localPacks
-            if (Object.keys(updatedPacks).length === 0 && this.currentPage > 1) {
-              this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage - 1)
+            if (Object.keys(updatedPacks).length === 0 && this.currentLocalPacksPage > 1) {
+              this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage - 1)
             } else {
-              this.$store.dispatch('FetchLocalEmojiPacks', this.currentPage)
+              this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage)
             }
           })
       }).catch(() => {})
     },
     handleChange(openTabs, name) {
       if (openTabs.includes('manageEmoji')) {
-        this.$store.dispatch('FetchSinglePack', { name, page: 1 })
+        this.$store.dispatch('FetchLocalSinglePack', { name, page: 1 })
       }
     },
     handleFilesPageChange(page) {
-      this.$store.dispatch('FetchSinglePack', { name: this.name, page })
+      this.$store.dispatch('FetchLocalSinglePack', { name: this.name, page })
     },
     savePackMetadata() {
       this.$store.dispatch('SavePackMetadata', { packName: this.name })
@@ -251,6 +256,11 @@ export default {
   font-size: 14px;
   font-weight: 700;
   color: #606266;
+}
+.emoji-table-head {
+  color: #909399;
+  font-size: 14px;
+  font-weight: 700;
 }
 .emoji-pack-card {
   margin-top: 5px;

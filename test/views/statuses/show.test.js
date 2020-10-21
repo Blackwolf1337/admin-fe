@@ -20,9 +20,10 @@ const $route = {
 }
 
 jest.mock('@/api/app')
-jest.mock('@/api/status')
-jest.mock('@/api/peers')
 jest.mock('@/api/nodeInfo')
+jest.mock('@/api/peers')
+jest.mock('@/api/settings')
+jest.mock('@/api/status')
 jest.mock('@/api/users')
 
 describe('Status show page', () => {

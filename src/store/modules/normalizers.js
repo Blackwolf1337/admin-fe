@@ -66,7 +66,11 @@ export const parseTuples = (tuples, key) => {
         return [...acc, { [mascot.tuple[0]]: { ...mascot.tuple[1], id: `f${(~~(Math.random() * 1e8)).toString(16)}` }}]
       }, [])
     } else if (Array.isArray(item.tuple[1]) &&
-      (item.tuple[0] === ':groups' || item.tuple[0] === ':replace' || item.tuple[0] === ':retries' || item.tuple[0] === ':headers' || item.tuple[0] === ':crontab')) {
+      (item.tuple[0] === ':groups' ||
+      item.tuple[0] === ':replace' ||
+      item.tuple[0] === ':retries' ||
+      (item.tuple[0] === ':headers' && key === 'Pleroma.Web.MediaProxy.Invalidation.Http') ||
+      item.tuple[0] === ':crontab')) {
       if (item.tuple[0] === ':crontab') {
         accum[item.tuple[0]] = item.tuple[1].reduce((acc, group) => {
           return [...acc, { [group.tuple[1]]: { value: group.tuple[0], id: `f${(~~(Math.random() * 1e8)).toString(16)}` }}]
@@ -245,7 +249,7 @@ const wrapValues = (settings, currentState) => {
         return acc
       }, {})
       return { 'tuple': [setting, { ...currentState[setting], ...mapValue }] }
-    } else if (type.includes('map')) {
+    } else if (type.includes('map') && !type.includes('list')) {
       const mapValue = Object.keys(value).reduce((acc, key) => {
         acc[key] = value[key][1]
         return acc

@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Fix depricatied action names in Reports, move actions that manage users from Reports to reports module
+- Allow using underscores and hyphens in new account's usernames
+- Fix wrapping `:icons` setting and parsing tuples in settings with key `:headers`
 
 
 ## [2.1] - 2020-08-26
@@ -30,7 +32,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - On Reports page add links to reported account and the author of the report 
 - In Notes add link to the note author's profile page 
 - In Moderation log add link to the actor's profile page
-- Support pagination of local emoji packs and files
+- Support pagination of local and remote emoji packs and files
 - Add MRF Activity Expiration setting
 - Add ability to disable multi-factor authentication for a user
 - Add ability to configure Invalidation settings on MediaProxy tab
@@ -55,6 +57,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Show only those MRF settings that have been enabled in MRF Policies setting
 - Move Auto Linker settings to Link Formatter Tab as its configuration was moved to :pleroma, Pleroma.Formatter
 - Active and Local filters are applied by default on the Users tab
+- Update Emoji Packs API to support special chars in pack names
 
 ### Fixed
 
@@ -63,6 +66,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add new type of settings: `['string', 'image']`. Render Image upload Input depending on the type of setting, not its key
 - Fix displaying `Pending` tag and filtering by Pending Approval status
 - Fix following and unfollowing relays from Admin-FE, update mobile UI
+- Support special chars in Emoji packs names
 
 ## [2.0.3] - 2020-04-29
 

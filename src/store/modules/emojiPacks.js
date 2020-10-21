@@ -20,25 +20,29 @@ import Vue from 'vue'
 const emojiPacks = {
   state: {
     activeTab: '',
-    currentFilesPage: 1,
-    currentPage: 1,
+    currentLocalFilesPage: 1,
+    currentLocalPacksPage: 1,
+    currentRemoteFilesPage: 1,
+    currentRemotePacksPage: 1,
     filesPageSize: 30,
     localPackFilesCount: 0,
     localPacks: {},
     localPacksCount: 0,
     pageSize: 50,
     remoteInstance: '',
-    remotePacks: {}
+    remotePackFilesCount: 0,
+    remotePacks: {},
+    remotePacksCount: 0
   },
   mutations: {
     SET_ACTIVE_TAB: (state, tab) => {
       state.activeTab = tab
     },
-    SET_FILES_COUNT: (state, count) => {
+    SET_LOCAL_FILES_COUNT: (state, count) => {
       state.localPackFilesCount = count
     },
-    SET_FILES_PAGE: (state, page) => {
-      state.currentFilesPage = page
+    SET_LOCAL_FILES_PAGE: (state, page) => {
+      state.currentLocalFilesPage = page
     },
     SET_LOCAL_PACKS: (state, packs) => {
       state.localPacks = packs
@@ -46,14 +50,26 @@ const emojiPacks = {
     SET_LOCAL_PACKS_COUNT: (state, count) => {
       state.localPacksCount = count
     },
-    SET_PACK_FILES: (state, { name, files }) => {
+    SET_LOCAL_PACK_FILES: (state, { name, files }) => {
       state.localPacks = { ...state.localPacks, [name]: { ...state.localPacks[name], files }}
     },
-    SET_PAGE: (state, page) => {
-      state.currentPage = page
+    SET_LOCAL_PAGE: (state, page) => {
+      state.currentLocalPacksPage = page
+    },
+    SET_REMOTE_FILES_COUNT: (state, count) => {
+      state.remotePackFilesCount = count
+    },
+    SET_REMOTE_FILES_PAGE: (state, page) => {
+      state.currentRemoteFilesPage = page
     },
     SET_REMOTE_INSTANCE: (state, name) => {
       state.remoteInstance = name
+    },
+    SET_REMOTE_PACKS_COUNT: (state, count) => {
+      state.remotePacksCount = count
+    },
+    SET_REMOTE_PACK_FILES: (state, { name, files }) => {
+      state.remotePacks = { ...state.remotePacks, [name]: { ...state.remotePacks[name], files }}
     },
     SET_REMOTE_PACKS: (state, packs) => {
       state.remotePacks = packs
@@ -103,10 +119,10 @@ const emojiPacks = {
         type: 'success',
         duration: 5 * 1000
       })
-      if (Object.keys(updatedPackFiles).length === 0 && state.currentFilesPage > 1) {
-        dispatch('FetchSinglePack', { name: packName, page: state.currentFilesPage - 1 })
+      if (Object.keys(updatedPackFiles).length === 0 && state.currentLocalFilesPage > 1) {
+        dispatch('FetchLocalSinglePack', { name: packName, page: state.currentLocalFilesPage - 1 })
       } else {
-        dispatch('FetchSinglePack', { name: packName, page: state.currentFilesPage })
+        dispatch('FetchLocalSinglePack', { name: packName, page: state.currentLocalFilesPage })
       }
     },
     async CreatePack({ getters }, { name }) {
@@ -136,14 +152,21 @@ const emojiPacks = {
       }, {})
       commit('SET_LOCAL_PACKS', updatedPacks)
       commit('SET_LOCAL_PACKS_COUNT', count)
-      commit('SET_PAGE', page)
+      commit('SET_LOCAL_PAGE', page)
     },
-    async FetchSinglePack({ getters, commit, state }, { name, page }) {
+    async FetchLocalSinglePack({ getters, commit, state }, { name, page }) {
       const { data } = await fetchPack(name, page, state.filesPageSize, getters.authHost, getters.token)
       const { files, files_count } = data
-      commit('SET_PACK_FILES', { name, files })
-      commit('SET_FILES_COUNT', files_count)
-      commit('SET_FILES_PAGE', page)
+      commit('SET_LOCAL_PACK_FILES', { name, files })
+      commit('SET_LOCAL_FILES_COUNT', files_count)
+      commit('SET_LOCAL_FILES_PAGE', page)
+    },
+    async FetchRemoteSinglePack({ getters, commit, state }, { name, page }) {
+      const { data } = await fetchPack(name, page, state.filesPageSize, getters.authHost, getters.token)
+      const { files, files_count } = data
+      commit('SET_REMOTE_PACK_FILES', { name, files })
+      commit('SET_REMOTE_FILES_COUNT', files_count)
+      commit('SET_REMOTE_FILES_PAGE', page)
     },
     async ImportFromFS({ getters }) {
       const result = await importFromFS(getters.authHost, getters.token)
@@ -185,11 +208,18 @@ const emojiPacks = {
     SetActiveTab({ commit }, activeTab) {
       commit('SET_ACTIVE_TAB', activeTab)
     },
-    async SetRemoteEmojiPacks({ commit, getters }, { remoteInstance }) {
-      const { data } = await listRemotePacks(getters.authHost, getters.token, remoteInstance)
+    async SetRemoteEmojiPacks({ commit, getters, state }, { page, remoteInstance }) {
+      const { data } = await listRemotePacks(remoteInstance, page, state.pageSize, getters.authHost, getters.token)
+      const { packs, count } = data
+      const updatedPacks = Object.keys(packs).reduce((acc, packName) => {
+        const { files, ...pack } = packs[packName]
+        acc[packName] = pack
+        return acc
+      }, {})
 
       commit('SET_REMOTE_INSTANCE', remoteInstance)
-      commit('SET_REMOTE_PACKS', data.packs)
+      commit('SET_REMOTE_PACKS', updatedPacks)
+      commit('SET_REMOTE_PACKS_COUNT', count)
     },
     SetRemoteInstance({ commit }, instance) {
       commit('SET_REMOTE_INSTANCE', instance)
@@ -216,7 +246,7 @@ const emojiPacks = {
         duration: 5 * 1000
       })
 
-      dispatch('FetchSinglePack', { name: packName, page: state.currentFilesPage })
+      dispatch('FetchLocalSinglePack', { name: packName, page: state.currentLocalFilesPage })
     },
     async UpdateLocalPackVal({ commit }, args) {
       commit('UPDATE_LOCAL_PACK_VAL', args)

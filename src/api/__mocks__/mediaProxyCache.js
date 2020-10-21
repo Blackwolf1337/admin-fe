@@ -16,5 +16,5 @@ export async function removeBannedUrls(urls, authHost, token) {
 }
 
 export async function searchBannedUrls(query, page, pageSize, authHost, token) {
-
+  return Promise.resolve()
 }

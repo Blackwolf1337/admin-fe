@@ -14,7 +14,7 @@ export async function addNewEmojiFile(packName, file, shortcode, filename, host,
 
   return await request({
     baseURL: baseName(host),
-    url: `/api/pleroma/emoji/packs/${packName}/files`,
+    url: `/api/pleroma/emoji/packs/files?name=${packName}`,
     method: 'post',
     headers: authHeaders(token),
     data
@@ -22,13 +22,13 @@ export async function addNewEmojiFile(packName, file, shortcode, filename, host,
 }
 
 export function addressOfEmojiInPack(host, packName, name) {
-  return `${baseName(host)}/emoji/${packName}/${name}`
+  return `${baseName(host)}/emoji/${encodeUri(packName)}/${name}`
 }
 
 export async function createPack(host, token, packName) {
   return await request({
     baseURL: baseName(host),
-    url: `/api/pleroma/emoji/packs/${packName}`,
+    url: `/api/pleroma/emoji/pack?name=${packName}`,
     method: 'post',
     headers: authHeaders(token)
   })
@@ -37,7 +37,7 @@ export async function createPack(host, token, packName) {
 export async function deleteEmojiFile(packName, shortcode, host, token) {
   return await request({
     baseURL: baseName(host),
-    url: `/api/pleroma/emoji/packs/${packName}/files?shortcode=${shortcode}`,
+    url: `/api/pleroma/emoji/packs/files?name=${packName}&shortcode=${shortcode}`,
     method: 'delete',
     headers: authHeaders(token)
   })
@@ -46,7 +46,7 @@ export async function deleteEmojiFile(packName, shortcode, host, token) {
 export async function deletePack(host, token, packName) {
   return await request({
     baseURL: baseName(host),
-    url: `/api/pleroma/emoji/packs/${packName}`,
+    url: `/api/pleroma/emoji/pack?name=${packName}`,
     method: 'delete',
     headers: authHeaders(token)
   })
@@ -68,7 +68,7 @@ export async function downloadFrom(instanceAddress, packName, as, host, token) {
 export async function fetchPack(packName, page, pageSize, host, token) {
   return await request({
     baseURL: baseName(host),
-    url: `/api/pleroma/emoji/packs/${packName}?page=${page}&page_size=${pageSize}`,
+    url: `/api/pleroma/emoji/pack?name=${packName}&page=${page}&page_size=${pageSize}`,
     method: 'get',
     headers: authHeaders(token)
   })
@@ -92,10 +92,10 @@ export async function listPacks(page, pageSize, host, token) {
   })
 }
 
-export async function listRemotePacks(host, token, instance) {
+export async function listRemotePacks(instance, page, pageSize, host, token) {
   return await request({
     baseURL: baseName(host),
-    url: `/api/pleroma/emoji/packs/remote?url=${baseName(instance)}`,
+    url: `/api/pleroma/emoji/packs/remote?url=${baseName(instance)}&page=${page}&page_size=${pageSize}`,
     method: 'get',
     headers: authHeaders(token)
   })
@@ -113,7 +113,7 @@ export async function reloadEmoji(host, token) {
 export async function savePackMetadata(host, token, packName, metadata) {
   return await request({
     baseURL: baseName(host),
-    url: `/api/pleroma/emoji/packs/${packName}`,
+    url: `/api/pleroma/emoji/pack?name=${packName}`,
     method: 'patch',
     headers: authHeaders(token),
     data: { metadata },
@@ -124,7 +124,7 @@ export async function savePackMetadata(host, token, packName, metadata) {
 export async function updateEmojiFile(packName, shortcode, newShortcode, newFilename, force, host, token) {
   return await request({
     baseURL: baseName(host),
-    url: `/api/pleroma/emoji/packs/${packName}/files`,
+    url: `/api/pleroma/emoji/packs/files?name=${packName}`,
     method: 'patch',
     headers: authHeaders(token),
     data: { shortcode, new_shortcode: newShortcode, new_filename: newFilename, force }
@@ -132,3 +132,5 @@ export async function updateEmojiFile(packName, shortcode, newShortcode, newFile
 }
 
 const authHeaders = (token) => token ? { 'Authorization': `Bearer ${getToken()}` } : {}
+
+const encodeUri = (name) => encodeURIComponent(name)
