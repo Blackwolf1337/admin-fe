@@ -101,9 +101,16 @@ export async function updateUserCredentials(nickname, credentials, authHost, tok
 }
 
 export async function fetchUsers(filters, actorTypeFilters, authHost, token, page = 1) {
+  const url = actorTypeFilters.length === 0
+    ? `/api/pleroma/admin/users?page=${page}&filters=${filters}`
+    : actorTypeFilters.reduce((acc, filter) => {
+      const newAcc = acc.concat(`&actor_types[]=${filter}`)
+      return newAcc
+    }, `/api/pleroma/admin/users?page=${page}&filters=${filters}`)
+
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users?page=${page}&filters=${filters}&actor_types=${actorTypeFilters}`,
+    url,
     method: 'get',
     headers: authHeaders(token)
   })

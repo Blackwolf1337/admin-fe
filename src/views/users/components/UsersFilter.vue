@@ -7,19 +7,19 @@
     class="select-field"
     @change="toggleFilters">
     <el-option-group :label="$t('usersFilter.byAccountType')">
-      <el-option value="local">{{ $t('usersFilter.local') }}</el-option>
-      <el-option value="external">{{ $t('usersFilter.external') }}</el-option>
+      <el-option :label="$t('usersFilter.local')" value="local"/>
+      <el-option :label="$t('usersFilter.external')" value="external"/>
     </el-option-group>
     <el-option-group :label="$t('usersFilter.byStatus')">
-      <el-option value="active">{{ $t('usersFilter.active') }}</el-option>
-      <el-option value="deactivated">{{ $t('usersFilter.deactivated') }}</el-option>
-      <el-option value="need_approval">{{ $t('usersFilter.pending') }}</el-option>
-      <el-option value="unconfirmed">{{ $t('usersFilter.unconfirmed') }}</el-option>
+      <el-option :label="$t('usersFilter.active')" value="active"/>
+      <el-option :label="$t('usersFilter.deactivated')" value="deactivated"/>
+      <el-option :label="$t('usersFilter.pending')" value="need_approval"/>
+      <el-option :label="$t('usersFilter.unconfirmed')" value="unconfirmed"/>
     </el-option-group>
     <el-option-group :label="$t('usersFilter.byActorType')">
-      <el-option value="Person">{{ $t('usersFilter.person') }}</el-option>
-      <el-option value="Service">{{ $t('usersFilter.bot') }}</el-option>
-      <el-option value="Application">{{ $t('usersFilter.application') }}</el-option>
+      <el-option :label="$t('usersFilter.person')" value="Person"/>
+      <el-option :label="$t('usersFilter.bot')" value="Service"/>
+      <el-option :label="$t('usersFilter.application')" value="Application"/>
     </el-option-group>
   </el-select>
 </template>
