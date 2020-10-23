@@ -92,7 +92,7 @@ describe('Filters users', () => {
     done()
   })
 
-  it('applies actor types filters', async (done) => {
+  it('applies actor type filter', async (done) => {
     expect(store.state.users.totalUsersCount).toEqual(6)
 
     store.dispatch('ToggleActorTypeFilter', ["Person"])
@@ -105,13 +105,53 @@ describe('Filters users', () => {
     expect(store.state.users.totalUsersCount).toEqual(1)
     expect(store.state.users.fetchedUsers[0].nickname).toEqual('sally')
 
+    done()
+  })
+
+  it('shows users with applied actor type filter and search query', async (done) => {
+    expect(store.state.users.totalUsersCount).toEqual(6)
+
+    store.dispatch('ToggleActorTypeFilter', ["Person"])
+    await flushPromises()
+    store.dispatch('SearchUsers', { query: 'john', page: 1 })
+    await flushPromises()
+    expect(store.state.users.totalUsersCount).toEqual(1)
+
+    store.dispatch('SearchUsers', { query: 'bot', page: 1 })
+    await flushPromises()
+    expect(store.state.users.totalUsersCount).toEqual(0)
+
+    store.dispatch('SearchUsers', { query: '', page: 1 })
+    await flushPromises()
+    expect(store.state.users.totalUsersCount).toEqual(4)
+
+    done()
+  })
+
+  it('applies two actor type filters', async (done) => {
+    expect(store.state.users.totalUsersCount).toEqual(6)
+
     store.dispatch('ToggleActorTypeFilter', ["Person", "Service"])
     await flushPromises()
     expect(store.state.users.totalUsersCount).toEqual(5)
 
+    store.dispatch('ToggleActorTypeFilter', ["Service", "Application"])
+    await flushPromises()
+    expect(store.state.users.totalUsersCount).toEqual(2)
+
+    done()
+  })
+
+  it('shows all users after removing actor type filters', async (done) => {
+    expect(store.state.users.totalUsersCount).toEqual(6)
+
     store.dispatch('ToggleActorTypeFilter', ["Application"])
     await flushPromises()
     expect(store.state.users.totalUsersCount).toEqual(1)
+
+    store.dispatch('ToggleActorTypeFilter', [])
+    await flushPromises()
+    expect(store.state.users.totalUsersCount).toEqual(6)
 
     done()
   })
