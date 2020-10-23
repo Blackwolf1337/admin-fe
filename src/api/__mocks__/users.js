@@ -1,8 +1,10 @@
 export let users = [
   { active: true, approval_pending: false, deactivated: false, id: '2', nickname: 'allis', local: true, external: false, roles: { admin: true, moderator: false }, tags: [], actor_type: 'Person' },
-  { active: true, approval_pending: false, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'], actor_type: 'Person' },
+  { active: true, approval_pending: false, deactivated: false, id: '10', nickname: 'bob', local: true, external: false, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'], actor_type: 'Person' },
+  { active: true, approval_pending: true, deactivated: false, id: '567', nickname: 'ded', local: false, external: true, roles: { admin: false, moderator: false }, tags: [], actor_type: 'Person' },
   { active: false, approval_pending: false, deactivated: true, id: 'abc', nickname: 'john', local: true, external: false, roles: { admin: false, moderator: false }, tags: ['mrf_tag:media-strip'], actor_type: 'Person' },
-  { active: true, approval_pending: true, deactivated: false, id: '100', nickname: 'sally', local: true, external: false, roles: { admin: false, moderator: false }, tags: [], actor_type: 'Service' }
+  { active: true, approval_pending: true, deactivated: false, id: '100', nickname: 'sally', local: true, external: false, roles: { admin: false, moderator: false }, tags: [], actor_type: 'Service' },
+  { active: true, approval_pending: true, deactivated: false, id: '123', nickname: 'bot', local: true, external: false, roles: { admin: false, moderator: false }, tags: [], actor_type: 'Application' }
 ]
 
 const userProfile = { avatar: 'avatar.jpg', nickname: 'allis', id: '2', tags: [], roles: { admin: true, moderator: false }, local: true, external: false }

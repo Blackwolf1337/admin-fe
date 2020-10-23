@@ -33,18 +33,18 @@ describe('Filters users', () => {
       localVue
     })
 
-    expect(store.state.users.totalUsersCount).toEqual(4)
+    expect(store.state.users.totalUsersCount).toEqual(6)
 
     const filter = wrapper.find(`li.el-select-dropdown__item:nth-child(${1})`)
     filter.trigger('click')
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(3)
+    expect(store.state.users.totalUsersCount).toEqual(5)
 
     done()
   })
 
   it('shows users with applied filter and search query', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(4)
+    expect(store.state.users.totalUsersCount).toEqual(6)
 
     store.dispatch('ToggleUsersFilter', { active: true })
     await flushPromises()
@@ -58,17 +58,17 @@ describe('Filters users', () => {
 
     store.dispatch('SearchUsers', { query: '', page: 1 })
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(3)
+    expect(store.state.users.totalUsersCount).toEqual(5)
 
     done()
   })
 
   it('applies two filters', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(4)
+    expect(store.state.users.totalUsersCount).toEqual(6)
 
     store.dispatch('ToggleUsersFilter', { active: true, local: true })
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(2)
+    expect(store.state.users.totalUsersCount).toEqual(4)
     expect(store.state.users.fetchedUsers[0].nickname).toEqual('allis')
 
     store.dispatch('ToggleUsersFilter', { deactivated: true, external: true })
@@ -79,7 +79,7 @@ describe('Filters users', () => {
   })
 
   it('shows all users after removing filters', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(4)
+    expect(store.state.users.totalUsersCount).toEqual(6)
 
     store.dispatch('ToggleUsersFilter', { deactivated: true })
     await flushPromises()
@@ -87,17 +87,17 @@ describe('Filters users', () => {
 
     store.dispatch('ToggleUsersFilter', {})
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(4)
+    expect(store.state.users.totalUsersCount).toEqual(6)
 
     done()
   })
 
   it('applies actor types filters', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(4)
+    expect(store.state.users.totalUsersCount).toEqual(6)
 
     store.dispatch('ToggleActorTypeFilter', ["Person"])
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(3)
+    expect(store.state.users.totalUsersCount).toEqual(4)
     expect(store.state.users.fetchedUsers[0].nickname).toEqual('allis')
 
     store.dispatch('ToggleActorTypeFilter', ["Service"])
@@ -107,11 +107,11 @@ describe('Filters users', () => {
 
     store.dispatch('ToggleActorTypeFilter', ["Person", "Service"])
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(4)
+    expect(store.state.users.totalUsersCount).toEqual(5)
 
     store.dispatch('ToggleActorTypeFilter', ["Application"])
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(0)
+    expect(store.state.users.totalUsersCount).toEqual(1)
 
     done()
   })
