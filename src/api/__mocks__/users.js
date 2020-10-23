@@ -29,6 +29,10 @@ const filterUsers = (str) => {
   return applyFilters([], filters, users)
 }
 
+const filterUsersByActorType = filters => {
+  return users.filter(user => filters.includes(user.actor_type))
+}
+
 export async function fetchUser(id, authHost, token) {
   return Promise.resolve({ data: userProfile })
 }
@@ -37,11 +41,13 @@ export async function fetchUserCredentials(nickname, authHost, token) {
   return Promise.resolve({ data: {}})
 }
 
-export async function fetchUsers(filters, authHost, token, page = 1) {
+export async function fetchUsers(filters, actorTypeFilters, authHost, token, page = 1) {
   const filteredUsers = filterUsers(filters)
+  const filteredByActorTypeUsers = filterUsersByActorType(actorTypeFilters)
+  const response = actorTypeFilters.length === 0 ? filteredUsers : filteredByActorTypeUsers
   return Promise.resolve({ data: {
-    users: filteredUsers,
-    count: filteredUsers.length,
+    users: response,
+    count: response.length,
     page_size: 50
   }})
 }
@@ -54,12 +60,13 @@ export async function getPasswordResetToken(nickname, authHost, token) {
   return Promise.resolve({ data: { token: 'g05lxnBJQnL', link: 'http://url/api/pleroma/password_reset/g05lxnBJQnL' }})
 }
 
-export async function searchUsers(query, filters, authHost, token, page = 1) {
+export async function searchUsers(query, filters, actorTypeFilters, authHost, token, page = 1) {
   const filteredUsers = filterUsers(filters)
-  const response = filteredUsers.filter(user => user.nickname === query)
+  const filteredByActorTypeUsers = filterUsersByActorType(actorTypeFilters)
+  const response = actorTypeFilters.length === 0 ? filteredUsers : filteredByActorTypeUsers
   return Promise.resolve({ data: {
-    users: response,
-    count: response.length,
+    users: response.filter(user => user.nickname === query),
+    count: response.filter(user => user.nickname === query).length,
     page_size: 50
   }})
 }

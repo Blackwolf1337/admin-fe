@@ -91,4 +91,28 @@ describe('Filters users', () => {
 
     done()
   })
+
+  it('applies actor types filters', async (done) => {
+    expect(store.state.users.totalUsersCount).toEqual(4)
+
+    store.dispatch('ToggleActorTypeFilter', ["Person"])
+    await flushPromises()
+    expect(store.state.users.totalUsersCount).toEqual(3)
+    expect(store.state.users.fetchedUsers[0].nickname).toEqual('allis')
+
+    store.dispatch('ToggleActorTypeFilter', ["Service"])
+    await flushPromises()
+    expect(store.state.users.totalUsersCount).toEqual(1)
+    expect(store.state.users.fetchedUsers[0].nickname).toEqual('sally')
+
+    store.dispatch('ToggleActorTypeFilter', ["Person", "Service"])
+    await flushPromises()
+    expect(store.state.users.totalUsersCount).toEqual(4)
+
+    store.dispatch('ToggleActorTypeFilter', ["Application"])
+    await flushPromises()
+    expect(store.state.users.totalUsersCount).toEqual(0)
+
+    done()
+  })
 })
