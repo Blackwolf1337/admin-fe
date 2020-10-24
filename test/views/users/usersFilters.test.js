@@ -46,7 +46,7 @@ describe('Filters users', () => {
   it('shows users with applied filter and search query', async (done) => {
     expect(store.state.users.totalUsersCount).toEqual(6)
 
-    store.dispatch('ToggleUsersFilter', { active: true })
+    store.dispatch('ToggleUsersFilter', ['active'])
     await flushPromises()
     store.dispatch('SearchUsers', { query: 'john', page: 1 })
     await flushPromises()
@@ -66,12 +66,12 @@ describe('Filters users', () => {
   it('applies two filters', async (done) => {
     expect(store.state.users.totalUsersCount).toEqual(6)
 
-    store.dispatch('ToggleUsersFilter', { active: true, local: true })
+    store.dispatch('ToggleUsersFilter', ['active', 'local'])
     await flushPromises()
     expect(store.state.users.totalUsersCount).toEqual(4)
     expect(store.state.users.fetchedUsers[0].nickname).toEqual('allis')
 
-    store.dispatch('ToggleUsersFilter', { deactivated: true, external: true })
+    store.dispatch('ToggleUsersFilter', ['deactivated', 'external'])
     await flushPromises()
     expect(store.state.users.totalUsersCount).toEqual(0)
 
@@ -81,11 +81,11 @@ describe('Filters users', () => {
   it('shows all users after removing filters', async (done) => {
     expect(store.state.users.totalUsersCount).toEqual(6)
 
-    store.dispatch('ToggleUsersFilter', { deactivated: true })
+    store.dispatch('ToggleUsersFilter', ['deactivated'])
     await flushPromises()
     expect(store.state.users.totalUsersCount).toEqual(1)
 
-    store.dispatch('ToggleUsersFilter', {})
+    store.dispatch('ToggleUsersFilter', [])
     await flushPromises()
     expect(store.state.users.totalUsersCount).toEqual(6)
 
