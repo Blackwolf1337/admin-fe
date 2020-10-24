@@ -37,12 +37,10 @@ export default {
     }
   },
   created() {
-    const currentFilters = this.$data.value.reduce((acc, filter) => ({ ...acc, [filter]: true }), {})
-    this.$store.dispatch('ToggleUsersFilter', currentFilters)
+    this.$store.dispatch('ToggleUsersFilter', this.$data.value)
   },
   methods: {
     removeOppositeFilters() {
-      const filtersQuantity = Object.keys(this.$store.state.users.filters).length
       const currentFilters = []
       const indexOfLocal = this.$data.value.indexOf('local')
       const indexOfExternal = this.$data.value.indexOf('external')
@@ -53,10 +51,6 @@ export default {
       const indexOfPerson = this.$data.value.indexOf('Person')
       const indexOfService = this.$data.value.indexOf('Service')
       const indexOfApplication = this.$data.value.indexOf('Application')
-
-      if (this.$data.value.length === filtersQuantity) {
-        return []
-      }
 
       Math.max(indexOfLocal, indexOfExternal) > -1
         ? currentFilters.push(this.$data.value[Math.max(indexOfLocal, indexOfExternal)])
@@ -84,8 +78,7 @@ export default {
       const [allFilters, filters, actorTypeFilters] = this.removeOppositeFilters()
 
       this.$data.value = allFilters
-      const currentFilters = filters.reduce((acc, filter) => ({ ...acc, [filter]: true }), {})
-      this.$store.dispatch('ToggleUsersFilter', currentFilters)
+      this.$store.dispatch('ToggleUsersFilter', filters)
       this.$store.dispatch('ToggleActorTypeFilter', actorTypeFilters)
     }
   }
