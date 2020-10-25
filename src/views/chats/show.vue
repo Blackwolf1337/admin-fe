@@ -113,6 +113,7 @@ export default {
 .chat-page-header {
   display: flex;
   margin: 22px 15px 22px 20px;
+  justify-content: center;
   padding: 0;
   h1 {
     display: inline
@@ -141,10 +142,10 @@ export default {
 .chat-messages-container {
   display: flex;
   flex-direction: column;
-  max-width: 1000px;
-  .el-timeline-item {
-    margin-left: 20px;
-  }
+  align-items: center;
+}
+.messages.el-timeline {
+  padding: 0;
 }
 .no-chats {
   margin-left: 28px;
@@ -189,7 +190,6 @@ export default {
   }
   .messages.el-timeline {
     padding-left: 10px;
-    max-width: 97%;
   }
   .el-timeline-item__wrapper {
     padding-left: 18px;
