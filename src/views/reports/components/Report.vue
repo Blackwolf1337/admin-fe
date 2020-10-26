@@ -28,83 +28,7 @@
             </div>
           </div>
           <el-divider class="divider"/>
-          <div class="report-account-container">
-            <span class="report-row-key">{{ $t('reports.account') }}:</span>
-            <div class="report-account">
-              <router-link
-                v-if="propertyExists(report.account, 'id')"
-                :to="{ name: 'UsersShow', params: { id: report.account.id }}"
-                class="router-link">
-                <img
-                  v-if="propertyExists(report.account, 'avatar')"
-                  :src="report.account.avatar"
-                  alt="avatar"
-                  class="avatar-img">
-                <span v-if="propertyExists(report.account, 'nickname')" class="report-account-name">{{ report.account.nickname }}</span>
-                <span v-else class="report-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
-              </router-link>
-              <span v-else class="report-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
-              <a v-if="propertyExists(report.account, 'url')" :href="report.account.url" target="_blank" class="account">
-                {{ $t('userProfile.openAccountInInstance') }}
-                <i class="el-icon-top-right"/>
-              </a>
-            </div>
-          </div>
-          <div v-if="report.content && report.content.length > 0">
-            <el-divider class="divider"/>
-            <span class="report-row-key">{{ $t('reports.content') }}:
-              <span>{{ report.content }}</span>
-            </span>
-          </div>
-          <el-divider class="divider"/>
-          <div :style="showStatuses(report.statuses) ? '' : 'margin-bottom:15px'" class="report-account-container">
-            <span class="report-row-key">{{ $t('reports.actor') }}:</span>
-            <div class="report-account">
-              <router-link
-                v-if="propertyExists(report.actor, 'id')"
-                :to="{ name: 'UsersShow', params: { id: report.actor.id }}"
-                class="router-link">
-                <img
-                  v-if="propertyExists(report.actor, 'avatar')"
-                  :src="report.actor.avatar"
-                  alt="avatar"
-                  class="avatar-img">
-                <span v-if="propertyExists(report.actor, 'nickname')" class="report-account-name">{{ report.actor.nickname }}</span>
-                <span v-else class="report-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
-              </router-link>
-              <span v-else class="report-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
-              <a v-if="propertyExists(report.actor, 'url')" :href="report.actor.url" target="_blank" class="account">
-                {{ $t('userProfile.openAccountInInstance') }}
-                <i class="el-icon-top-right"/>
-              </a>
-            </div>
-          </div>
-          <div v-if="showStatuses(report.statuses)" class="reported-statuses">
-            <el-collapse>
-              <el-collapse-item :title="getStatusesTitle(report.statuses)">
-                <div v-for="status in report.statuses" :key="status.id">
-                  <status :status="status" :account="status.account.nickname ? status.account : report.account" :show-checkbox="false" :page="currentPage"/>
-                </div>
-              </el-collapse-item>
-            </el-collapse>
-          </div>
-          <div class="report-notes">
-            <el-collapse>
-              <el-collapse-item :title="getNotesTitle(report.notes)">
-                <note-card v-for="(note, index) in report.notes" :key="index" :note="note" :report="report"/>
-              </el-collapse-item>
-            </el-collapse>
-            <div class="report-note-form">
-              <el-input
-                v-model="notes[report.id]"
-                :placeholder="$t('reports.leaveNote')"
-                type="textarea"
-                rows="2"/>
-              <div class="report-post-note">
-                <el-button @click="handleNewNote(report.id)">{{ $t('reports.postNote') }}</el-button>
-              </div>
-            </div>
-          </div>
+          <report-content :report="report"/>
         </el-card>
       </el-timeline-item>
     </el-timeline>
@@ -123,22 +47,16 @@
 
 <script>
 import moment from 'moment'
-import NoteCard from './NoteCard'
-import Status from '@/components/Status'
 import ModerateUserDropdown from './ModerateUserDropdown'
+import ReportContent from './ReportContent'
 
 export default {
   name: 'Report',
-  components: { Status, ModerateUserDropdown, NoteCard },
+  components: { ModerateUserDropdown, ReportContent },
   props: {
     reports: {
       type: Array,
       required: true
-    }
-  },
-  data() {
-    return {
-      notes: {}
     }
   },
   computed: {
@@ -172,16 +90,6 @@ export default {
           return 'primary'
       }
     },
-    getStatusesTitle(statuses = []) {
-      return `Reported statuses: ${statuses.length} item(s)`
-    },
-    getNotesTitle(notes = []) {
-      return `Notes: ${notes.length} item(s)`
-    },
-    handleNewNote(reportID) {
-      this.$store.dispatch('CreateReportNote', { content: this.notes[reportID], reportID })
-      this.notes[reportID] = ''
-    },
     handlePageChange(page) {
       this.$store.dispatch('FetchReports', page)
     },
@@ -193,9 +101,6 @@ export default {
         return account[property] && account[_secondProperty]
       }
       return account[property]
-    },
-    showStatuses(statuses = []) {
-      return statuses.length > 0
     }
   }
 }
@@ -206,24 +111,8 @@ export default {
     margin: 0;
     height: 17px;
   }
-  .account {
-    line-height: 26px;
-    font-size: 13px;
-    color: #606266;
-  }
-  .account:hover {
-    text-decoration: underline;
-  }
-  .avatar-img {
-    vertical-align: bottom;
-    width: 15px;
-    height: 15px;
-  }
   .divider {
     margin: 15px 0;
-  }
-  .deactivated {
-    color: gray;
   }
   .el-card__body {
     padding: 17px;
@@ -279,34 +168,8 @@ export default {
       height: 40px;
     }
   }
-  .report-account {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex-grow: 2;
-  }
-  .report-account-container {
-    display: flex;
-    align-items: baseline;
-  }
-  .report-account-name {
-    font-size: 15px;
-    font-weight: 500;
-  }
-  .report-row-key {
-    font-size: 14px;
-    font-weight: 500;
-    padding-right: 5px;
-  }
   .report-title {
     margin: 0;
-  }
-  .report-note-form {
-    margin: 15px 0 0 0;
-  }
-  .report-post-note {
-    margin: 5px 0 0 0;
-    text-align: right;
   }
   .reports-pagination {
     margin: 25px 0;
@@ -315,12 +178,6 @@ export default {
   .reports-timeline {
     margin: 30px 45px 45px 19px;
     padding: 0px;
-  }
-  .router-link {
-    text-decoration: none;
-  }
-  .reported-statuses {
-    margin-top: 15px;
   }
   .submit-button {
     display: block;

@@ -15,16 +15,19 @@
       </div>
       <reboot-button/>
     </header>
-    <el-card class="report"/>
+    <el-card class="report">
+      <report-content :report="report"/>
+    </el-card>
   </div>
 </template>
 
 <script>
 import RebootButton from '@/components/RebootButton'
+import ReportContent from './components/ReportContent'
 
 export default {
   name: 'ReportsShow',
-  components: { RebootButton },
+  components: { RebootButton, ReportContent },
   computed: {
     loading() {
       return this.$store.state.reports.loading
