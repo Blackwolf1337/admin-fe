@@ -67,6 +67,7 @@ export default {
     reports: 'Reports',
     invites: 'Invites',
     statuses: 'Statuses',
+    chats: 'Chats',
     settings: 'Settings',
     moderationLog: 'Moderation Log',
     mediaProxyCache: 'MediaProxy Cache',
@@ -295,6 +296,11 @@ export default {
     unlisted: 'Unlisted',
     openStatusInInstance: 'Open status in instance'
   },
+  chats: {
+    chats: 'Chats',
+    loadMore: 'Load more',
+    chatHistory: 'Chat History'
+  },
   userProfile: {
     tags: 'Tags',
     moderator: 'Moderator',
@@ -305,6 +311,7 @@ export default {
     actorType: 'Actor Type',
     nickname: 'Nickname',
     recentStatuses: 'Recent Statuses',
+    chats: 'Chats',
     roles: 'Roles',
     active: 'Active',
     status: 'Status',
@@ -312,6 +319,8 @@ export default {
     deactivated: 'Deactivated',
     pending: 'Pending',
     noStatuses: 'No statuses to show',
+    noChats: 'No chats to show',
+    noMessages: 'No messages to show',
     openAccountInInstance: 'Open account in instance',
     securitySettings: {
       email: 'Email',
@@ -370,6 +379,7 @@ export default {
     unlisted: 'Make status unlisted',
     sensitive: 'Sensitive',
     deleteStatus: 'Delete status',
+    deleteMessage: 'Delete message',
     reportOn: 'Report on',
     reportsOn: 'Reports on',
     id: 'ID',
@@ -379,6 +389,8 @@ export default {
     content: 'Content',
     reportedStatus: 'Reported status',
     statusDeleted: 'This status has been deleted',
+    messageDeleted: 'This message has been deleted',
+    messageModeration: 'Message options',
     leaveNote: 'Leave a note',
     postNote: 'Send',
     deleteNote: 'Delete',
