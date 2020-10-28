@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="!loading" class="report-show-page-container">
     <header class="report-page-header-container">
       <div class="report-page-header">
         <div v-if="propertyExists(report.account, 'nickname')" class="avatar-name-container">
@@ -11,10 +11,10 @@
           </a>
         </div>
         <h1 v-else>{{ $t('reports.report') }}</h1>
-        <h4 v-if="propertyExists(report.account, 'id')" class="id">{{ $t('reports.id') }}: {{ report.id }}</h4>
       </div>
       <reboot-button/>
     </header>
+    <h4 v-if="propertyExists(report.account, 'id')" class="id">{{ $t('reports.id') }}: {{ report.id }}</h4>
     <el-card class="report">
       <report-content :report="report"/>
     </el-card>
@@ -53,37 +53,46 @@ export default {
 </script>
 
 <style rel='stylesheet/scss' lang='scss'>
-.report-page-header {
-  display: flex;
-  flex-direction: column;
-  margin: 22px 15px 22px 20px;
-  padding: 0;
-  h1 {
-    display: inline;
-    margin: 0;
-  }
-  h4 {
-    margin-top: 10px;
-  }
-  .avatar-name-container {
-    display: flex;
-    align-items: center;
-    .el-icon-top-right {
-      font-size: 2em;
-      line-height: 36px;
-      color: #606266;
-    }
-  }
+.report-show-page-container {
   .id {
     color: gray;
+    margin: 0 15px 22px 15px;
   }
-  .report-page-avatar {
-    margin: 0 7px 0 12px;
+  .report {
+    width: 1000px;
+    margin: auto;
   }
-}
-.report-page-header-container {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+  .report-page-header {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+    padding: 0;
+    h1 {
+      display: inline;
+      margin: 0;
+    }
+    h4 {
+      margin-top: 10px;
+    }
+    .avatar-name-container {
+      display: flex;
+      align-items: center;
+      .el-icon-top-right {
+        font-size: 2em;
+        line-height: 36px;
+        color: #606266;
+      }
+    }
+    .report-page-avatar {
+      margin: 0 7px 0 12px;
+    }
+  }
+  .report-page-header-container {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 15px;
+    padding: 0;
+  }
 }
 </style>
