@@ -59,6 +59,17 @@ const reports = {
       }
       dispatch('SuccessMessage')
     },
+    async ActivateUserFromReportShow({ commit, dispatch, getters, state }, user) {
+      try {
+        await activateUsers([user.nickname], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReport = { ...state.singleReport, account: { ...user, deactivated: false }}
+        commit('SET_SINGLE_REPORT', updatedReport)
+      }
+      dispatch('SuccessMessage')
+    },
     async AddTagFromReports({ commit, dispatch, getters, state }, { user, tag, reportId }) {
       try {
         await tagUser([user.nickname], [tag], getters.authHost, getters.token)
@@ -73,16 +84,31 @@ const reports = {
       }
       dispatch('SuccessMessage')
     },
+    async AddTagFromReportsFromReportShow({ commit, dispatch, getters, state }, { user, tag }) {
+      try {
+        await tagUser([user.nickname], [tag], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReport = { ...state.singleReport, account: { ...user, tags: [...user.tags, tag] }}
+        commit('SET_SINGLE_REPORT', updatedReport)
+      }
+      dispatch('SuccessMessage')
+    },
     async ChangeReportState({ commit, dispatch, getters, state }, reportsData) {
-      changeState(reportsData, getters.authHost, getters.token)
+      try {
+        await changeState(reportsData, getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReports = state.fetchedReports.map(report => {
+          const updatedReportsIds = reportsData.map(({ id }) => id)
+          return updatedReportsIds.includes(report.id) ? { ...report, state: reportsData[0].state } : report
+        })
 
-      const updatedReports = state.fetchedReports.map(report => {
-        const updatedReportsIds = reportsData.map(({ id }) => id)
-        return updatedReportsIds.includes(report.id) ? { ...report, state: reportsData[0].state } : report
-      })
-
-      commit('SET_REPORTS', updatedReports)
-      dispatch('FetchOpenReportsCount')
+        commit('SET_REPORTS', updatedReports)
+        dispatch('FetchOpenReportsCount')
+      }
     },
     ClearFetchedReports({ commit }) {
       commit('SET_REPORTS', [])
@@ -98,6 +124,17 @@ const reports = {
           return report.id === reportId ? { ...report, account: updatedAccount } : report
         })
         commit('SET_REPORTS', updatedReports)
+      }
+      dispatch('SuccessMessage')
+    },
+    async DeactivateUserFromReportShow({ commit, dispatch, getters, state }, user) {
+      try {
+        await deactivateUsers([user.nickname], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReport = { ...state.singleReport, account: { ...user, deactivated: true }}
+        commit('SET_SINGLE_REPORT', updatedReport)
       }
       dispatch('SuccessMessage')
     },
@@ -149,6 +186,17 @@ const reports = {
           return report.id === reportId ? { ...report, account: updatedAccount } : report
         })
         commit('SET_REPORTS', updatedReports)
+      }
+      dispatch('SuccessMessage')
+    },
+    async RemoveTagFromReportsFromReportShow({ commit, dispatch, getters, state }, { user, tag }) {
+      try {
+        await untagUser([user.nickname], [tag], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      } finally {
+        const updatedReport = { ...state.singleReport, account: { ...user, tags: user.tags.filter(userTag => userTag !== tag) }}
+        commit('SET_SINGLE_REPORT', updatedReport)
       }
       dispatch('SuccessMessage')
     },

@@ -24,7 +24,11 @@
                   <el-dropdown-item v-if="report.state !== 'closed'" @click.native="changeReportState('closed', report.id)">{{ $t('reports.close') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <moderate-user-dropdown v-if="propertyExists(report.account, 'nickname')" :account="report.account" :report-id="report.id" />
+              <moderate-user-dropdown
+                v-if="propertyExists(report.account, 'nickname')"
+                :account="report.account"
+                :report-id="report.id"
+                :rendered-from="'reportsPage'"/>
             </div>
           </div>
           <el-divider class="divider"/>
@@ -74,11 +78,11 @@ export default {
     }
   },
   methods: {
-    changeReportState(state, id) {
-      this.$store.dispatch('ChangeReportState', [{ state, id }])
-    },
     capitalizeFirstLetter(str) {
       return str.charAt(0).toUpperCase() + str.slice(1)
+    },
+    changeReportState(state, id) {
+      this.$store.dispatch('ChangeReportState', [{ state, id }])
     },
     getStateType(state) {
       switch (state) {

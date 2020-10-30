@@ -12,7 +12,23 @@
         </div>
         <h1 v-else>{{ $t('reports.report') }}</h1>
       </div>
-      <reboot-button/>
+      <div>
+        <el-tag :type="getStateType(report.state)" class="report-tag">{{ capitalizeFirstLetter(report.state) }}</el-tag>
+        <el-dropdown trigger="click">
+          <el-button plain icon="el-icon-edit" class="report-actions-button">{{ $t('reports.changeState') }}<i class="el-icon-arrow-down el-icon--right"/></el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-if="report.state !== 'resolved'" @click.native="changeReportState('resolved', report.id)">{{ $t('reports.resolve') }}</el-dropdown-item>
+            <el-dropdown-item v-if="report.state !== 'open'" @click.native="changeReportState('open', report.id)">{{ $t('reports.reopen') }}</el-dropdown-item>
+            <el-dropdown-item v-if="report.state !== 'closed'" @click.native="changeReportState('closed', report.id)">{{ $t('reports.close') }}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <moderate-user-dropdown
+          v-if="propertyExists(report.account, 'nickname')"
+          :account="report.account"
+          :report-id="report.id"
+          :rendered-from="'showPage'"/>
+        <reboot-button/>
+      </div>
     </header>
     <h4 v-if="propertyExists(report.account, 'id')" class="id">{{ $t('reports.id') }}: {{ report.id }}</h4>
     <el-card class="report">
@@ -22,12 +38,13 @@
 </template>
 
 <script>
+import ModerateUserDropdown from './components/ModerateUserDropdown'
 import RebootButton from '@/components/RebootButton'
 import ReportContent from './components/ReportContent'
 
 export default {
   name: 'ReportsShow',
-  components: { RebootButton, ReportContent },
+  components: { ModerateUserDropdown, RebootButton, ReportContent },
   computed: {
     loading() {
       return this.$store.state.reports.loading
@@ -40,8 +57,26 @@ export default {
     this.$store.dispatch('NeedReboot')
     this.$store.dispatch('GetNodeInfo')
     this.$store.dispatch('FetchSingleReport', this.$route.params.id)
+    this.$store.dispatch('FetchTagPolicySetting')
   },
   methods: {
+    capitalizeFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1)
+    },
+    async changeReportState(state, id) {
+      await this.$store.dispatch('ChangeReportState', [{ state, id }])
+      this.$store.dispatch('FetchSingleReport', id)
+    },
+    getStateType(state) {
+      switch (state) {
+        case 'closed':
+          return 'info'
+        case 'resolved':
+          return 'success'
+        default:
+          return 'primary'
+      }
+    },
     propertyExists(account, property, _secondProperty) {
       if (_secondProperty) {
         return account[property] && account[_secondProperty]
@@ -61,6 +96,9 @@ export default {
   .report {
     width: 1000px;
     margin: auto;
+  }
+  .report-actions-button {
+    margin: 3px 0 6px;
   }
   .report-page-header {
     display: flex;
@@ -93,6 +131,12 @@ export default {
     justify-content: space-between;
     margin: 0 15px;
     padding: 0;
+  }
+  .report-tag {
+    height: 36px;
+    line-height: 36px;
+    padding: 0 20px;
+    font-size: 14px;
   }
 }
 </style>
