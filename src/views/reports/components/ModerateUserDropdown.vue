@@ -4,7 +4,7 @@
       {{ $t('reports.moderateUser') }}
       <i class="el-icon-arrow-down el-icon--right"/>
     </el-button>
-    <el-dropdown-menu slot="dropdown">
+    <el-dropdown-menu slot="dropdown" class="moderate-user-dropdown">
       <el-dropdown-item
         v-if="showDeactivatedButton(account)"
         @click.native="handleDeactivation(account)">
@@ -159,3 +159,9 @@ export default {
   }
 }
 </script>
+
+<style rel='stylesheet/scss' lang='scss'>
+.moderate-user-dropdown {
+  width: 350px;
+}
+</style>
