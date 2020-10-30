@@ -43,7 +43,7 @@
         v-for="(logEntry, index) in log"
         :key="index"
         :timestamp="normalizeTimestamp(logEntry.time)">
-        <log-entry-message v-if="propertyExists(logEntry.data.actor, 'nickname')" :actor="logEntry.data.actor" :message="logEntry.message"/>
+        <log-entry-message v-if="propertyExists(logEntry.data.actor, 'nickname')" :actor="logEntry.data.actor" :message="logEntry.message" :subject="logEntry.data.subject"/>
         <span v-else>{{ logEntry.message }}</span>
       </el-timeline-item>
     </el-timeline>
