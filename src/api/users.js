@@ -100,10 +100,17 @@ export async function updateUserCredentials(nickname, credentials, authHost, tok
   })
 }
 
-export async function fetchUsers(filters, authHost, token, page = 1) {
+export async function fetchUsers(filters, actorTypeFilters, authHost, token, page = 1) {
+  const url = actorTypeFilters.length === 0
+    ? `/api/pleroma/admin/users?page=${page}&filters=${filters}`
+    : actorTypeFilters.reduce((acc, filter) => {
+      const newAcc = acc.concat(`&actor_types[]=${filter}`)
+      return newAcc
+    }, `/api/pleroma/admin/users?page=${page}&filters=${filters}`)
+
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users?page=${page}&filters=${filters}`,
+    url,
     method: 'get',
     headers: authHeaders(token)
   })
@@ -128,10 +135,17 @@ export async function forcePasswordReset(nicknames, authHost, token) {
   })
 }
 
-export async function searchUsers(query, filters, authHost, token, page = 1) {
+export async function searchUsers(query, filters, actorTypeFilters, authHost, token, page = 1) {
+  const url = actorTypeFilters.length === 0
+    ? `/api/pleroma/admin/users?query=${query}&page=${page}&filters=${filters}`
+    : actorTypeFilters.reduce((acc, filter) => {
+      const newAcc = acc.concat(`&actor_types[]=${filter}`)
+      return newAcc
+    }, `/api/pleroma/admin/users?query=${query}&page=${page}&filters=${filters}`)
+
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users?query=${query}&page=${page}&filters=${filters}`,
+    url,
     method: 'get',
     headers: authHeaders(token)
   })
