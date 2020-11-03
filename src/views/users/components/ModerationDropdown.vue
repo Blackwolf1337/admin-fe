@@ -67,80 +67,6 @@
         @click.native="handleConfirmationResend(user)">
         {{ $t('users.resendConfirmation') }}
       </el-dropdown-item>
-      <!-- <el-collapse accordion class="moderate-tags">
-        <el-collapse-item name="open-tags">
-          <el-dropdown-item
-            v-if="tagPolicyEnabled"
-            :divided="showAdminAction(user)"
-            :class="{ 'active-tag': user.tags.includes('mrf_tag:media-force-nsfw') }"
-            @click.native="toggleTag(user, 'mrf_tag:media-force-nsfw')">
-            {{ $t('users.forceNsfw') }}
-            <i v-if="user.tags.includes('mrf_tag:media-force-nsfw')" class="el-icon-check"/>
-          </el-dropdown-item>
-          <el-dropdown-item
-            v-if="tagPolicyEnabled"
-            :class="{ 'active-tag': user.tags.includes('mrf_tag:media-strip') }"
-            @click.native="toggleTag(user, 'mrf_tag:media-strip')">
-            {{ $t('users.stripMedia') }}
-            <i v-if="user.tags.includes('mrf_tag:media-strip')" class="el-icon-check"/>
-          </el-dropdown-item>
-          <el-dropdown-item
-            v-if="tagPolicyEnabled"
-            :class="{ 'active-tag': user.tags.includes('mrf_tag:force-unlisted') }"
-            @click.native="toggleTag(user, 'mrf_tag:force-unlisted')">
-            {{ $t('users.forceUnlisted') }}
-            <i v-if="user.tags.includes('mrf_tag:force-unlisted')" class="el-icon-check"/>
-          </el-dropdown-item>
-          <el-dropdown-item
-            v-if="tagPolicyEnabled"
-            :class="{ 'active-tag': user.tags.includes('mrf_tag:sandbox') }"
-            @click.native="toggleTag(user, 'mrf_tag:sandbox')">
-            {{ $t('users.sandbox') }}
-            <i v-if="user.tags.includes('mrf_tag:sandbox')" class="el-icon-check"/>
-          </el-dropdown-item>
-          <el-dropdown-item
-            v-if="user.local && tagPolicyEnabled"
-            :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-remote-subscription') }"
-            @click.native="toggleTag(user, 'mrf_tag:disable-remote-subscription')">
-            {{ $t('users.disableRemoteSubscription') }}
-            <i v-if="user.tags.includes('mrf_tag:disable-remote-subscription')" class="el-icon-check"/>
-          </el-dropdown-item>
-          <el-dropdown-item
-            v-if="user.local && tagPolicyEnabled"
-            :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-any-subscription') }"
-            @click.native="toggleTag(user, 'mrf_tag:disable-any-subscription')">
-            {{ $t('users.disableAnySubscription') }}
-            <i v-if="user.tags.includes('mrf_tag:disable-any-subscription')" class="el-icon-check"/>
-          </el-dropdown-item>
-          <el-dropdown-item divided class="custom-tags-titile">
-            {{ $t('users.customTags') }}
-          </el-dropdown-item>
-          <el-dropdown-item
-            v-if="user.local && tagPolicyEnabled"
-            icon="el-icon-plus"
-            @click.native="$emit('open-custom-tag-dialog', user)">
-            <el-popover
-              :title="`${$t('users.createCustomTag')} ${user.nickname}`"
-              placement="left"
-              width="400"
-              trigger="click">
-              <el-form :inline="true" :model="customTagForm" >
-                <el-form-item prop="name">
-                  <el-input v-model="customTagForm.name" autofocus class="custom-tag-input"/>
-                </el-form-item>
-                <el-form-item class="close-custom-tag-button">
-                  <el-button @click="closeCustomTagDialog">{{ $t('users.cancel') }}</el-button>
-                </el-form-item>
-                <el-form-item class="add-custom-tag-button">
-                  <el-button type="primary" @click="addCustomTag">{{ $t('users.create') }}</el-button>
-                </el-form-item>
-              </el-form>
-              <span slot="reference">{{ $t('users.createCustomTag') }}</span>
-              <el-button slot="reference">Hover to activate</el-button>
-            </el-popover>
-          </el-dropdown-item>
-        </el-collapse-item>
-      </el-collapse> -->
       <el-dropdown-item
         v-if="user.local"
         divided
@@ -170,15 +96,24 @@
           <el-option
             v-for="(value, name) in defaultTags"
             :key="name"
-            :label="value"
-            :value="name"/>
+            :value="name"
+            :class="{ 'active-tag': user.tags.includes(name) }"
+            @click.native="toggleTag(user, name)">
+            {{ value }}
+            <i v-if="user.tags.includes(name)" class="el-icon-check"/>
+          </el-option>
         </el-option-group>
         <el-option-group :label="$t('users.customTags')">
           <el-option
             v-for="item in customTags"
             :key="item"
             :value="item"
-            class="capitalize"/>
+            :class="{ 'active-tag': user.tags.includes(item) }"
+            class="capitalize"
+            @click.native="toggleTag(user, item)">
+            {{ item }}
+            <i v-if="user.tags.includes(item)" class="el-icon-check"/>
+          </el-option>
         </el-option-group>
       </el-select>
       <el-dropdown-item
@@ -234,15 +169,28 @@ export default {
       return this.$store.state.users.tags.filter(tag => !Object.keys(this.mapTags).includes(tag))
     },
     defaultTags() {
-      return Object.keys(this.mapTags)
-        .filter(tag => this.$store.state.users.tags.includes(tag))
+      const tagsByType = this.user.local ? Object.keys(this.mapTags) : Object.keys(this.mapRemoteTags)
+      return tagsByType.filter(tag => this.$store.state.users.tags.includes(tag))
         .reduce((acc, el) => {
-          acc[el] = this.mapTags[el]
+          if (this.user.local) {
+            acc[el] = this.mapTags[el]
+          } else {
+            acc[el] = this.mapRemoteTags[el]
+          }
           return acc
         }, {})
     },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
+    },
+    mapRemoteTags() {
+      return {
+        'mrf_tag:media-force-nsfw': 'NSFW',
+        'mrf_tag:media-strip': 'Strip Media',
+        'mrf_tag:force-unlisted': 'Unlisted',
+        'mrf_tag:sandbox': 'Sandbox',
+        'mrf_tag:verified': 'Verified'
+      }
     },
     mapTags() {
       return {
@@ -260,18 +208,6 @@ export default {
     }
   },
   methods: {
-    addCustomTag() {
-      this.$store.dispatch('AddTag', {
-        users: [this.customTagUser],
-        tag: this.customTagForm.name,
-        _userId: this.customTagUser.id,
-        _statusId: this.statusId
-      })
-      this.createCustomTagDialogOpen = false
-    },
-    closeCustomTagDialog() {
-      this.createCustomTagDialogOpen = false
-    },
     disableMfa(nickname) {
       this.$store.dispatch('DisableMfa', nickname)
     },
@@ -377,14 +313,6 @@ export default {
   .capitalize {
     text-transform: capitalize;
   }
-  .el-form--inline {
-    .el-form-item.add-custom-tag-button {
-      margin-right: 0;
-    }
-    .el-form-item.close-custom-tag-button {
-      margin-right: 8px;
-    }
-  }
   .el-dropdown-menu--small  .el-dropdown-menu__item.el-dropdown-menu__item--divided.actor-type-dropdown:before {
     margin: 0 0;
     height: 0;
@@ -432,22 +360,6 @@ export default {
   .moderate-user-button-container {
     display: flex;
     justify-content: space-between;
-  }
-  .moderate-tags {
-    .el-collapse-item__content {
-      padding-bottom: 0px;
-    }
-    .el-collapse-item__header {
-      height: 23px;
-      margin-top: 4px;
-      padding-left: 15px;
-      font-weight: 400;
-      color: #606266;
-      border-bottom: none;
-    }
-    .el-collapse-item__wrap {
-      border-bottom: none;
-    }
   }
   .moderation-dropdown-menu {
     width: 350px;
