@@ -283,7 +283,8 @@ export default {
     confirmEnablingTagPolicy: 'Are you sure you want to add TagPolicy to the list of enabled MRF policies?',
     enableTagPolicySuccessMessage: 'MRF TagPolicy was enabled',
     customTags: 'Custom Tags',
-    defaultTags: 'Default Tags'
+    defaultTags: 'Default Tags',
+    tags: 'Tags'
   },
   statuses: {
     statuses: 'Statuses',
