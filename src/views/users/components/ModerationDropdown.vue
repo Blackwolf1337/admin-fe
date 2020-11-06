@@ -83,49 +83,6 @@
         @click.native="disableMfa(user.nickname)">
         {{ $t('users.disableMfa') }}
       </el-dropdown-item>
-      <el-dropdown-item
-        v-if="tagPolicyEnabled">
-        {{ $t('users.tags') }}:
-      </el-dropdown-item>
-      <el-select
-        v-if="tagPolicyEnabled"
-        :value="selectedTags"
-        multiple
-        filterable
-        allow-create
-        placeholder="Select Tags"
-        size="small"
-        class="select-tags"
-        @change="toggleTag($event, user)">
-        <el-option-group :label="$t('users.defaultTags')">
-          <el-option
-            v-for="option in defaultTags"
-            :value="option.tag"
-            :key="option.tag"
-            :label="option.label"
-            :class="{ 'active-tag': user.tags.includes(option.tag) }">
-            {{ option.label }}
-          </el-option>
-        </el-option-group>
-        <el-option-group :label="$t('users.customTags')">
-          <el-option
-            v-for="option in customTags"
-            :value="option.tag"
-            :key="option.tag"
-            :label="option.label"
-            :class="{ 'active-tag': user.tags.includes(option.tag) }"
-            class="capitalize">
-            {{ option.label }}
-          </el-option>
-        </el-option-group>
-      </el-select>
-      <el-dropdown-item
-        v-if="!tagPolicyEnabled"
-        divided
-        class="no-hover"
-        @click.native="enableTagPolicy">
-        {{ $t('users.enableTagPolicy') }}
-      </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 </template>
@@ -163,77 +120,13 @@ export default {
         })
       }
     },
-    customTags() {
-      return this.$store.state.users.tags
-        .filter(tag => !Object.keys(this.mapTags).includes(tag))
-        .map(tag => {
-          return { tag, label: tag.charAt(0).toUpperCase() + tag.slice(1) }
-        })
-    },
-    defaultTags() {
-      const tagsByType = this.user.local ? Object.keys(this.mapTags) : Object.keys(this.mapRemoteTags)
-      return tagsByType.filter(tag => this.$store.state.users.tags.includes(tag))
-        .map(tag => {
-          if (this.user.local) {
-            return { tag, label: this.mapTags[tag] }
-          } else {
-            return { tag, label: this.mapRemoteTags[tag] }
-          }
-        }, {})
-    },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
-    },
-    mapRemoteTags() {
-      return {
-        'mrf_tag:media-force-nsfw': 'NSFW',
-        'mrf_tag:media-strip': 'Strip Media',
-        'mrf_tag:force-unlisted': 'Unlisted',
-        'mrf_tag:sandbox': 'Sandbox',
-        'mrf_tag:verified': 'Verified'
-      }
-    },
-    mapTags() {
-      return {
-        'mrf_tag:media-force-nsfw': 'NSFW',
-        'mrf_tag:media-strip': 'Strip Media',
-        'mrf_tag:force-unlisted': 'Unlisted',
-        'mrf_tag:sandbox': 'Sandbox',
-        'mrf_tag:verified': 'Verified',
-        'mrf_tag:disable-remote-subscription': 'Disable remote subscription',
-        'mrf_tag:disable-any-subscription': 'Disable any subscription'
-      }
-    },
-    selectedTags() {
-      return this.user.tags
-    },
-    tagPolicyEnabled() {
-      return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
     }
   },
   methods: {
     disableMfa(nickname) {
       this.$store.dispatch('DisableMfa', nickname)
-    },
-    enableTagPolicy() {
-      this.$confirm(
-        this.$t('users.confirmEnablingTagPolicy'),
-        {
-          confirmButtonText: 'Yes',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-        this.$message({
-          type: 'success',
-          message: this.$t('users.enableTagPolicySuccessMessage')
-        })
-        this.$store.dispatch('EnableTagPolicy')
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Canceled'
-        })
-      })
     },
     getPasswordResetToken(nickname) {
       this.$emit('open-reset-token-dialog')
@@ -299,11 +192,6 @@ export default {
         ? this.$store.dispatch('ActivateUsers', { users: [user], _userId: user.id })
         : this.$store.dispatch('DeactivateUsers', { users: [user], _userId: user.id })
     },
-    toggleTag(tags, user) {
-      tags.length > user.tags.length
-        ? this.$store.dispatch('AddTag', { users: [user], tag: tags.filter(tag => !user.tags.includes(tag))[0] })
-        : this.$store.dispatch('RemoveTag', { users: [user], tag: user.tags.filter(tag => !tags.includes(tag))[0] })
-    },
     toggleUserRight(user, right) {
       user.roles[right]
         ? this.$store.dispatch('DeleteRight', { users: [user], right, _userId: user.id, _statusId: this.statusId })
@@ -314,9 +202,6 @@ export default {
 </script>
 
 <style rel='stylesheet/scss' lang='scss'>
-  .capitalize {
-    text-transform: capitalize;
-  }
   .el-dropdown-menu--small  .el-dropdown-menu__item.el-dropdown-menu__item--divided.actor-type-dropdown:before {
     margin: 0 0;
     height: 0;
@@ -370,10 +255,6 @@ export default {
     .el-dropdown-menu--small .el-dropdown-menu__item.el-dropdown-menu__item--divided {
       margin-top: 0;
     }
-  }
-  .select-tags {
-    padding: 2px 15px 0 15px;
-    width: 100%;
   }
   @media only screen and (max-width:480px) {
     .moderate-user-button {

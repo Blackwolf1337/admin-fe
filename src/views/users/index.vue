@@ -83,6 +83,42 @@
           </el-tooltip>
         </template>
       </el-table-column>
+      <el-table-column :min-width="width" :label="$t('users.tags')" header-align="center">
+        <template slot-scope="scope">
+          <el-select
+            v-if="tagPolicyEnabled"
+            :value="scope.row.tags"
+            multiple
+            filterable
+            allow-create
+            placeholder="Add Tags"
+            size="small"
+            class="select-tags"
+            @change="toggleTag($event, scope.row)">
+            <el-option-group :label="$t('users.defaultTags')">
+              <el-option
+                v-for="option in defaultTags(scope.row.local)"
+                :value="option.tag"
+                :key="option.tag"
+                :label="option.label"
+                :class="{ 'active-tag': scope.row.tags.includes(option.tag) }">
+                {{ option.label }}
+              </el-option>
+            </el-option-group>
+            <el-option-group :label="$t('users.customTags')">
+              <el-option
+                v-for="option in customTags()"
+                :value="option.tag"
+                :key="option.tag"
+                :label="option.label"
+                :class="{ 'active-tag': scope.row.tags.includes(option.tag) }"
+                class="capitalize">
+                {{ option.label }}
+              </el-option>
+            </el-option-group>
+          </el-select>
+        </template>
+      </el-table-column>
       <el-table-column v-if="pendingView && isDesktop" :label="$t('users.registrationReason')">
         <template slot-scope="scope">
           <el-tooltip
@@ -160,15 +196,6 @@ export default {
     }
   },
   computed: {
-    loading() {
-      return this.$store.state.users.loading
-    },
-    normalizedUsersCount() {
-      return numeral(this.$store.state.users.totalUsersCount).format('0a')
-    },
-    pageSize() {
-      return this.$store.state.users.pageSize
-    },
     currentPage() {
       return this.$store.state.users.currentPage
     },
@@ -178,14 +205,46 @@ export default {
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
+    loading() {
+      return this.$store.state.users.loading
+    },
+    mapRemoteTags() {
+      return {
+        'mrf_tag:media-force-nsfw': 'NSFW',
+        'mrf_tag:media-strip': 'Strip Media',
+        'mrf_tag:force-unlisted': 'Unlisted',
+        'mrf_tag:sandbox': 'Sandbox',
+        'mrf_tag:verified': 'Verified'
+      }
+    },
+    mapTags() {
+      return {
+        'mrf_tag:media-force-nsfw': 'NSFW',
+        'mrf_tag:media-strip': 'Strip Media',
+        'mrf_tag:force-unlisted': 'Unlisted',
+        'mrf_tag:sandbox': 'Sandbox',
+        'mrf_tag:verified': 'Verified',
+        'mrf_tag:disable-remote-subscription': 'Disable remote subscription',
+        'mrf_tag:disable-any-subscription': 'Disable any subscription'
+      }
+    },
+    normalizedUsersCount() {
+      return numeral(this.$store.state.users.totalUsersCount).format('0a')
+    },
+    pageSize() {
+      return this.$store.state.users.pageSize
+    },
+    pendingView() {
+      return this.$store.state.users.filters['need_approval']
+    },
+    tagPolicyEnabled() {
+      return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
+    },
     users() {
       return this.$store.state.users.fetchedUsers
     },
     usersCount() {
       return this.$store.state.users.totalUsersCount
-    },
-    pendingView() {
-      return this.$store.state.users.filters['need_approval']
     },
     width() {
       return this.isMobile ? 55 : false
@@ -217,6 +276,44 @@ export default {
       await this.$store.dispatch('CreateNewAccount', accountData)
       this.createAccountDialogOpen = false
     },
+    customTags() {
+      return this.$store.state.users.tags
+        .filter(tag => !Object.keys(this.mapTags).includes(tag))
+        .map(tag => {
+          return { tag, label: tag.charAt(0).toUpperCase() + tag.slice(1) }
+        })
+    },
+    defaultTags(userLocal) {
+      const tagsByType = userLocal ? Object.keys(this.mapTags) : Object.keys(this.mapRemoteTags)
+      return tagsByType.filter(tag => this.$store.state.users.tags.includes(tag))
+        .map(tag => {
+          if (userLocal) {
+            return { tag, label: this.mapTags[tag] }
+          } else {
+            return { tag, label: this.mapRemoteTags[tag] }
+          }
+        }, {})
+    },
+    enableTagPolicy() {
+      this.$confirm(
+        this.$t('users.confirmEnablingTagPolicy'),
+        {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        this.$message({
+          type: 'success',
+          message: this.$t('users.enableTagPolicySuccessMessage')
+        })
+        this.$store.dispatch('EnableTagPolicy')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        })
+      })
+    },
     getFirstLetter(str) {
       return str.charAt(0).toUpperCase()
     },
@@ -247,6 +344,11 @@ export default {
     },
     showDeactivatedButton(id) {
       return this.$store.state.user.id !== id
+    },
+    toggleTag(tags, user) {
+      tags.length > user.tags.length
+        ? this.$store.dispatch('AddTag', { users: [user], tag: tags.filter(tag => !user.tags.includes(tag))[0] })
+        : this.$store.dispatch('RemoveTag', { users: [user], tag: user.tags.filter(tag => !tags.includes(tag))[0] })
     }
   }
 }
@@ -281,6 +383,9 @@ export default {
   .el-icon-check {
     color: #bbb;
   }
+}
+.capitalize {
+  text-transform: capitalize;
 }
 .el-dropdown-link:hover {
     cursor: pointer;
@@ -330,6 +435,10 @@ export default {
     width: 350px;
     float: right;
     margin-left: 10px;
+  }
+  .select-tags {
+    padding: 2px 15px 0 15px;
+    width: 100%;
   }
   .filter-container {
     display: flex;
