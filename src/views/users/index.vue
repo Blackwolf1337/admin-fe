@@ -117,6 +117,9 @@
               </el-option>
             </el-option-group>
           </el-select>
+          <el-button v-if="!tagPolicyEnabled" type="text" @click.native.stop="enableTagPolicy">
+            {{ $t('users.enableTagPolicy') }}
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column v-if="pendingView && isDesktop" :label="$t('users.registrationReason')">
