@@ -54,7 +54,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column :min-width="width" :label="$t('users.status')">
+      <el-table-column :min-width="width" :label="$t('users.status')" width="200px">
         <template slot-scope="scope">
           <el-tag v-if="!scope.row.deactivated & !scope.row.approval_pending" type="success">
             <span v-if="isDesktop">{{ $t('users.active') }}</span>
@@ -83,7 +83,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column :min-width="width" :label="$t('users.tags')" header-align="center">
+      <el-table-column :min-width="width" :label="$t('users.tags')">
         <template slot-scope="scope">
           <el-select
             v-if="tagPolicyEnabled"
@@ -440,7 +440,7 @@ export default {
     margin-left: 10px;
   }
   .select-tags {
-    padding: 2px 15px 0 15px;
+    padding-right: 10px;
     width: 100%;
   }
   .filter-container {
