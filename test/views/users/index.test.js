@@ -38,7 +38,7 @@ describe('Search and filter users', () => {
     })
 
     await flushPromises()
-    expect(wrapper.vm.usersCount).toEqual(4)
+    expect(wrapper.vm.usersCount).toEqual(6)
     done()
   })
 
@@ -57,7 +57,7 @@ describe('Search and filter users', () => {
     }
 
     await flushPromises()
-    expect(wrapper.vm.usersCount).toEqual(4)
+    expect(wrapper.vm.usersCount).toEqual(6)
     const input = wrapper.find('.search input.el-input__inner')
     input.element.value = 'bob'
     input.trigger('input')
@@ -67,7 +67,7 @@ describe('Search and filter users', () => {
     input.element.value = ''
     input.trigger('input')
     await flushPromises()
-    expect(wrapper.vm.usersCount).toEqual(4)
+    expect(wrapper.vm.usersCount).toEqual(6)
 
     done()
   })
@@ -93,12 +93,12 @@ describe('Users actions', () => {
     })
     await flushPromises()
 
-    const user = store.state.users.fetchedUsers[2]
+    const user = store.state.users.fetchedUsers[1]
     expect(user.roles.admin).toBe(false)
     expect(user.roles.moderator).toBe(false)
-    wrapper.find(htmlElement(3, 2)).trigger('click')
+    wrapper.find(htmlElement(2, 2)).trigger('click')
 
-    const updatedUser = store.state.users.fetchedUsers[2]
+    const updatedUser = store.state.users.fetchedUsers[1]
     expect(updatedUser.roles.admin).toBe(true)
     done()
   })
@@ -114,12 +114,12 @@ describe('Users actions', () => {
     })
     await flushPromises()
 
-    const user = store.state.users.fetchedUsers[2]
-    expect(user.roles.admin).toBe(false)
+    const user = store.state.users.fetchedUsers[0]
+    expect(user.roles.admin).toBe(true)
     expect(user.roles.moderator).toBe(false)
-    wrapper.find(htmlElement(3, 3)).trigger('click')
+    wrapper.find(htmlElement(1, 3)).trigger('click')
 
-    const updatedUser = store.state.users.fetchedUsers[2]
+    const updatedUser = store.state.users.fetchedUsers[0]
     expect(updatedUser.roles.moderator).toBe(true)
     done()
   })
@@ -136,7 +136,7 @@ describe('Users actions', () => {
     await flushPromises()
 
     const dropdownMenuItems = wrapper.findAll(
-      `.el-table__fixed-body-wrapper table tr:nth-child(2) ul.el-dropdown-menu > li`
+      `.el-table__fixed-body-wrapper table tr:nth-child(3) ul.el-dropdown-menu > li`
     )
     expect(dropdownMenuItems.length).toBe(3)
     done()
@@ -155,7 +155,7 @@ describe('Users actions', () => {
 
     const user = store.state.users.fetchedUsers[1]
     expect(user.deactivated).toBe(false)
-    wrapper.find(htmlElement(2, 2)).trigger('click')
+    wrapper.find(htmlElement(2, 4)).trigger('click')
 
     const updatedUser = store.state.users.fetchedUsers[1]
     expect(updatedUser.deactivated).toBe(true)
@@ -174,7 +174,7 @@ describe('Users actions', () => {
     await flushPromises()
     expect(store.state.users.fetchedUsers[1].deactivated).toBe(false)
 
-    wrapper.find(htmlElement(2, 3)).trigger('click')
+    wrapper.find(htmlElement(2, 5)).trigger('click')
     store.dispatch('DeleteUsers', { users: [{ active: true, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'] }] })
 
     await flushPromises()
@@ -221,7 +221,7 @@ describe('Users actions', () => {
 
     const user = store.state.users.fetchedUsers[1]
     expect(user.tags.length).toBe(1)
-    wrapper.find(htmlElement(2, 7)).trigger('click')
+    wrapper.find(htmlElement(2, 9)).trigger('click')
 
     const updatedUser = store.state.users.fetchedUsers[1]
     expect(updatedUser.tags.length).toBe(0)
@@ -332,7 +332,7 @@ describe('Creates new account', () => {
       }
     })
     await flushPromises()
-    expect(wrapper.vm.usersCount).toEqual(4)
+    expect(wrapper.vm.usersCount).toEqual(6)
 
     const openDialogButton = wrapper.find('button.actions-button')
     openDialogButton.trigger('click')
@@ -354,7 +354,7 @@ describe('Creates new account', () => {
     createButton.trigger('click')
     await flushPromises()
 
-    expect(wrapper.vm.usersCount).toEqual(5)
+    expect(wrapper.vm.usersCount).toEqual(7)
     done()
   })
 

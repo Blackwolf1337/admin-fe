@@ -1,9 +1,10 @@
 <template>
   <el-dropdown :hide-on-click="false" trigger="click">
-    <el-button :disabled="!account.id" plain size="small" icon="el-icon-files">{{ $t('reports.moderateUser') }}
+    <el-button :disabled="!account.id" :size="renderedFrom === 'showPage' ? 'medium' : 'small'" plain icon="el-icon-files">
+      {{ $t('reports.moderateUser') }}
       <i class="el-icon-arrow-down el-icon--right"/>
     </el-button>
-    <el-dropdown-menu slot="dropdown">
+    <el-dropdown-menu slot="dropdown" class="moderate-user-dropdown">
       <el-dropdown-item
         v-if="showDeactivatedButton(account)"
         @click.native="handleDeactivation(account)">
@@ -45,6 +46,10 @@ export default {
       required: true
     },
     reportId: {
+      type: String,
+      required: true
+    },
+    renderedFrom: {
       type: String,
       required: true
     }
@@ -96,9 +101,15 @@ export default {
       })
     },
     handleDeactivation(user) {
-      user.deactivated
-        ? this.$store.dispatch('ActivateUserFromReports', { user, reportId: this.reportId })
-        : this.$store.dispatch('DeactivateUserFromReports', { user, reportId: this.reportId })
+      if (this.renderedFrom === 'showPage') {
+        user.deactivated
+          ? this.$store.dispatch('ActivateUserFromReportShow', user)
+          : this.$store.dispatch('DeactivateUserFromReportShow', user)
+      } else if (this.renderedFrom === 'reportsPage') {
+        user.deactivated
+          ? this.$store.dispatch('ActivateUserFromReports', { user, reportId: this.reportId })
+          : this.$store.dispatch('DeactivateUserFromReports', { user, reportId: this.reportId })
+      }
     },
     handleDeletion(user) {
       this.$confirm(
@@ -120,10 +131,22 @@ export default {
       return this.$store.state.user.id !== id
     },
     toggleTag(user, tag) {
-      user.tags.includes(tag)
-        ? this.$store.dispatch('RemoveTagFromReports', { user, tag, reportId: this.reportId })
-        : this.$store.dispatch('AddTagFromReports', { user, tag, reportId: this.reportId })
+      if (this.renderedFrom === 'showPage') {
+        user.tags.includes(tag)
+          ? this.$store.dispatch('RemoveTagFromReportsFromReportShow', { user, tag })
+          : this.$store.dispatch('AddTagFromReportsFromReportShow', { user, tag })
+      } else if (this.renderedFrom === 'reportsPage') {
+        user.tags.includes(tag)
+          ? this.$store.dispatch('RemoveTagFromReports', { user, tag, reportId: this.reportId })
+          : this.$store.dispatch('AddTagFromReports', { user, tag, reportId: this.reportId })
+      }
     }
   }
 }
 </script>
+
+<style rel='stylesheet/scss' lang='scss'>
+.moderate-user-dropdown {
+  width: 350px;
+}
+</style>

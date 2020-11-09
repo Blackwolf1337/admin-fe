@@ -24,6 +24,15 @@ export async function fetchReports(filter, page, pageSize, authHost, token) {
   })
 }
 
+export async function fetchSingleReport(id, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/reports/${id}`,
+    method: 'get',
+    headers: authHeaders(token)
+  })
+}
+
 export async function createNote(content, reportID, authHost, token) {
   return await request({
     baseURL: baseName(authHost),

@@ -10,11 +10,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Evicting and banning objects from the MediaProxy cache is disabled if MediaProxy is disabled on the Settings tab. Add ability to enable MediaProxy and Invalidation from MediaProxy tab.
 - Allow to upload the custom Terms of Service and Instance Panel HTML pages via Admin API
+- Add Report show page and link Moderation log references to the respective reports
+- Add Unconfimed filter for Users table
+- Filter users by actor type: Person, Bot or Application
 
 ### Changed
 
 - Hide Tag actions on Users tab if MRF TagPolicy is disabled. Add ability to enable TagPolicy from Moderation menu
 - Move `:restrict_unauthenticated` settings from Authentication tab to Instance tab
+- Replace regular inputs with textareas for setting welcome messages in the Settings section
 
 ### Fixed
 

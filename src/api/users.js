@@ -101,10 +101,10 @@ export async function fetchUser(id, authHost, token) {
   })
 }
 
-export async function fetchUsers(filters, authHost, token, page = 1) {
+export async function fetchUserChats(id, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users?page=${page}&filters=${filters}`,
+    url: `/api/pleroma/admin/users/${id}/chats`,
     method: 'get',
     headers: authHeaders(token)
   })
@@ -114,6 +114,22 @@ export async function fetchUserCredentials(nickname, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
     url: `/api/pleroma/admin/users/${nickname}/credentials`,
+    method: 'get',
+    headers: authHeaders(token)
+  })
+}
+
+export async function fetchUsers(filters, actorTypeFilters, authHost, token, page = 1) {
+  const url = actorTypeFilters.length === 0
+    ? `/api/pleroma/admin/users?page=${page}&filters=${filters}`
+    : actorTypeFilters.reduce((acc, filter) => {
+      const newAcc = acc.concat(`&actor_types[]=${filter}`)
+      return newAcc
+    }, `/api/pleroma/admin/users?page=${page}&filters=${filters}`)
+
+  return await request({
+    baseURL: baseName(authHost),
+    url,
     method: 'get',
     headers: authHeaders(token)
   })
@@ -166,10 +182,17 @@ export async function resendConfirmationEmail(nicknames, authHost, token) {
   })
 }
 
-export async function searchUsers(query, filters, authHost, token, page = 1) {
+export async function searchUsers(query, filters, actorTypeFilters, authHost, token, page = 1) {
+  const url = actorTypeFilters.length === 0
+    ? `/api/pleroma/admin/users?query=${query}&page=${page}&filters=${filters}`
+    : actorTypeFilters.reduce((acc, filter) => {
+      const newAcc = acc.concat(`&actor_types[]=${filter}`)
+      return newAcc
+    }, `/api/pleroma/admin/users?query=${query}&page=${page}&filters=${filters}`)
+
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users?query=${query}&page=${page}&filters=${filters}`,
+    url,
     method: 'get',
     headers: authHeaders(token)
   })

@@ -7,13 +7,19 @@
     class="select-field"
     @change="toggleFilters">
     <el-option-group :label="$t('usersFilter.byAccountType')">
-      <el-option value="local" label="Local">{{ $t('usersFilter.local') }}</el-option>
-      <el-option value="external" label="External">{{ $t('usersFilter.external') }}</el-option>
+      <el-option :label="$t('usersFilter.local')" value="local"/>
+      <el-option :label="$t('usersFilter.external')" value="external"/>
     </el-option-group>
     <el-option-group :label="$t('usersFilter.byStatus')">
-      <el-option value="active" label="Active">{{ $t('usersFilter.active') }}</el-option>
-      <el-option value="need_approval" label="Need Approval">{{ $t('usersFilter.pending') }}</el-option>
-      <el-option value="deactivated" label="Deactivated">{{ $t('usersFilter.deactivated') }}</el-option>
+      <el-option :label="$t('usersFilter.active')" value="active"/>
+      <el-option :label="$t('usersFilter.deactivated')" value="deactivated"/>
+      <el-option :label="$t('usersFilter.pending')" value="need_approval"/>
+      <el-option :label="$t('usersFilter.unconfirmed')" value="unconfirmed"/>
+    </el-option-group>
+    <el-option-group :label="$t('usersFilter.byActorType')">
+      <el-option :label="$t('usersFilter.person')" value="Person"/>
+      <el-option :label="$t('usersFilter.bot')" value="Service"/>
+      <el-option :label="$t('usersFilter.application')" value="Application"/>
     </el-option-group>
   </el-select>
 </template>
@@ -31,37 +37,49 @@ export default {
     }
   },
   created() {
-    const currentFilters = this.$data.value.reduce((acc, filter) => ({ ...acc, [filter]: true }), {})
-    this.$store.dispatch('ToggleUsersFilter', currentFilters)
+    this.$store.dispatch('ToggleUsersFilter', this.$data.value)
   },
   methods: {
     removeOppositeFilters() {
-      const filtersQuantity = Object.keys(this.$store.state.users.filters).length
       const currentFilters = []
       const indexOfLocal = this.$data.value.indexOf('local')
       const indexOfExternal = this.$data.value.indexOf('external')
       const indexOfActive = this.$data.value.indexOf('active')
       const indexOfDeactivated = this.$data.value.indexOf('deactivated')
       const indexOfPending = this.$data.value.indexOf('need_approval')
-
-      if (this.$data.value.length === filtersQuantity) {
-        return []
-      }
+      const indexOfUnconfirmed = this.$data.value.indexOf('unconfirmed')
+      const indexOfPerson = this.$data.value.indexOf('Person')
+      const indexOfService = this.$data.value.indexOf('Service')
+      const indexOfApplication = this.$data.value.indexOf('Application')
 
       Math.max(indexOfLocal, indexOfExternal) > -1
         ? currentFilters.push(this.$data.value[Math.max(indexOfLocal, indexOfExternal)])
         : currentFilters
 
-      Math.max(indexOfActive, indexOfDeactivated, indexOfPending) > -1
-        ? currentFilters.push(this.$data.value[Math.max(indexOfActive, indexOfDeactivated, indexOfPending)])
+      Math.max(indexOfActive, indexOfDeactivated, indexOfPending, indexOfUnconfirmed) > -1
+        ? currentFilters.push(this.$data.value[Math.max(indexOfActive, indexOfDeactivated, indexOfPending, indexOfUnconfirmed)])
         : currentFilters
 
-      return currentFilters
+      const actorTypeFilters = [indexOfPerson, indexOfService, indexOfApplication].reduce((acc, index) => {
+        if (index > -1) {
+          currentFilters.push(this.$data.value[index])
+          acc.push(this.$data.value[index])
+        }
+        return acc
+      }, [])
+
+      return [
+        currentFilters,
+        currentFilters.filter(filter => !actorTypeFilters.includes(filter)),
+        actorTypeFilters
+      ]
     },
     toggleFilters() {
-      this.$data.value = this.removeOppositeFilters()
-      const currentFilters = this.$data.value.reduce((acc, filter) => ({ ...acc, [filter]: true }), {})
-      this.$store.dispatch('ToggleUsersFilter', currentFilters)
+      const [allFilters, filters, actorTypeFilters] = this.removeOppositeFilters()
+
+      this.$data.value = allFilters
+      this.$store.dispatch('ToggleUsersFilter', filters)
+      this.$store.dispatch('ToggleActorTypeFilter', actorTypeFilters)
     }
   }
 }

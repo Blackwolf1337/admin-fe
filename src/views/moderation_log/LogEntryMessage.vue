@@ -8,7 +8,16 @@
         @{{ actor.nickname }}
       </span>
     </router-link>
-    <span>{{ logEntryMessage }}</span>
+    <span v-if="subject.type === 'report' && propertyExists(subject, 'id')">
+      {{ logEntryMessageWithoutId[0] }}
+      <router-link
+        :to="{ name: 'ReportsShow', params: { id: subject.id }}"
+        class="router-link">
+        <span style="font-weight: 600">#{{ subject.id }}</span>
+      </router-link>
+      {{ logEntryMessageWithoutId[1] }}
+    </span>
+    <span v-else>{{ logEntryMessage }}</span>
   </span>
 </template>
 
@@ -24,11 +33,21 @@ export default {
     message: {
       type: String,
       required: true
+    },
+    subject: {
+      type: [Object, Array],
+      required: false,
+      default: function() {
+        return {}
+      }
     }
   },
   computed: {
     logEntryMessage() {
-      return this.message.split(this.actor.nickname)[1]
+      return this.actor.nickname ? this.message.split(this.actor.nickname)[1] : this.message
+    },
+    logEntryMessageWithoutId() {
+      return this.logEntryMessage.split(`#${this.subject.id}`)
     }
   },
   methods: {

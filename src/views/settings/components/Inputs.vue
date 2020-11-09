@@ -42,6 +42,14 @@
           @change="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"
         />
         <el-input
+          v-if="textareaInput"
+          :value="inputValue"
+          :placeholder="setting.suggestions ? setting.suggestions[0] : null"
+          :data-search="setting.key || setting.group"
+          type="textarea"
+          class="input"
+          @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
+        <el-input
           v-else-if="setting.type === 'string' ||
           (Array.isArray(setting.type) && setting.type.includes('string') && setting.type.includes('atom'))"
           :value="inputValue"
@@ -291,6 +299,9 @@ export default {
     },
     settings() {
       return this.$store.state.settings.settings
+    },
+    textareaInput() {
+      return this.settingGroup.key === ':welcome' && this.setting.key === ':message'
     },
     updatedSettings() {
       return this.$store.state.settings.updatedSettings

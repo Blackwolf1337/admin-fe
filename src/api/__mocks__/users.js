@@ -1,8 +1,12 @@
+import userChats from './chat'
+
 export let users = [
   { active: true, approval_pending: false, deactivated: false, id: '2', nickname: 'allis', local: true, external: false, roles: { admin: true, moderator: false }, tags: [], actor_type: 'Person' },
-  { active: true, approval_pending: false, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'], actor_type: 'Person' },
+  { active: true, approval_pending: false, deactivated: false, id: '10', nickname: 'bob', local: true, external: false, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'], actor_type: 'Person' },
+  { active: true, approval_pending: true, deactivated: false, id: '567', nickname: 'ded', local: false, external: true, roles: { admin: false, moderator: false }, tags: [], actor_type: 'Person' },
   { active: false, approval_pending: false, deactivated: true, id: 'abc', nickname: 'john', local: true, external: false, roles: { admin: false, moderator: false }, tags: ['mrf_tag:media-strip'], actor_type: 'Person' },
-  { active: true, approval_pending: true, deactivated: false, id: '100', nickname: 'sally', local: true, external: false, roles: { admin: false, moderator: false }, tags: [], actor_type: 'Service' }
+  { active: true, approval_pending: true, deactivated: false, id: '100', nickname: 'sally', local: true, external: false, roles: { admin: false, moderator: false }, tags: [], actor_type: 'Service' },
+  { active: true, approval_pending: true, deactivated: false, id: '123', nickname: 'bot', local: true, external: false, roles: { admin: false, moderator: false }, tags: [], actor_type: 'Application' }
 ]
 
 const userProfile = { avatar: 'avatar.jpg', nickname: 'allis', id: '2', tags: [], roles: { admin: true, moderator: false }, local: true, external: false }
@@ -29,6 +33,10 @@ const filterUsers = (str) => {
   return applyFilters([], filters, users)
 }
 
+const filterUsersByActorType = filters => {
+  return users.filter(user => filters.includes(user.actor_type))
+}
+
 export async function fetchUser(id, authHost, token) {
   return Promise.resolve({ data: userProfile })
 }
@@ -37,11 +45,13 @@ export async function fetchUserCredentials(nickname, authHost, token) {
   return Promise.resolve({ data: {}})
 }
 
-export async function fetchUsers(filters, authHost, token, page = 1) {
+export async function fetchUsers(filters, actorTypeFilters, authHost, token, page = 1) {
   const filteredUsers = filterUsers(filters)
+  const filteredByActorTypeUsers = filterUsersByActorType(actorTypeFilters)
+  const response = actorTypeFilters.length === 0 ? filteredUsers : filteredByActorTypeUsers
   return Promise.resolve({ data: {
-    users: filteredUsers,
-    count: filteredUsers.length,
+    users: response,
+    count: response.length,
     page_size: 50
   }})
 }
@@ -50,16 +60,21 @@ export async function fetchUserStatuses(id, authHost, godmode, token) {
   return Promise.resolve({ data: userStatuses })
 }
 
+export async function fetchUserChats(id, authHost, godmode, token) {
+  return Promise.resolve({ data: userChats })
+}
+
 export async function getPasswordResetToken(nickname, authHost, token) {
   return Promise.resolve({ data: { token: 'g05lxnBJQnL', link: 'http://url/api/pleroma/password_reset/g05lxnBJQnL' }})
 }
 
-export async function searchUsers(query, filters, authHost, token, page = 1) {
+export async function searchUsers(query, filters, actorTypeFilters, authHost, token, page = 1) {
   const filteredUsers = filterUsers(filters)
-  const response = filteredUsers.filter(user => user.nickname === query)
+  const filteredByActorTypeUsers = filterUsersByActorType(actorTypeFilters)
+  const response = actorTypeFilters.length === 0 ? filteredUsers : filteredByActorTypeUsers
   return Promise.resolve({ data: {
-    users: response,
-    count: response.length,
+    users: response.filter(user => user.nickname === query),
+    count: response.filter(user => user.nickname === query).length,
     page_size: 50
   }})
 }
