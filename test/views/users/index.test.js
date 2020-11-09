@@ -198,8 +198,28 @@ describe('Users actions', () => {
     expect(user1.tags.length).toBe(0)
     expect(user2.tags.length).toBe(1)
 
-    wrapper.find(htmlElement(1, 6)).trigger('click')
-    wrapper.find(htmlElement(2, 6)).trigger('click')
+    wrapper.vm.toggleTag(['test-tag'],
+      { active: true, 
+        approval_pending: false, 
+        deactivated: false, id: '2', 
+        nickname: 'allis', 
+        local: true, 
+        external: false, 
+        roles: { admin: true, moderator: false }, 
+        tags: [], 
+        actor_type: 'Person' })
+
+    wrapper.vm.toggleTag(['test-tag', 'mrf_tag:sandbox'],
+      { active: true, 
+        approval_pending: false, 
+        deactivated: false, 
+        id: '10', 
+        nickname: 'bob', 
+        local: true, 
+        external: false, 
+        roles: { admin: false, moderator: false }, 
+        tags: ['mrf_tag:sandbox'], 
+        actor_type: 'Person' })
 
     const updatedUser1 = store.state.users.fetchedUsers[0]
     const updatedUser2 = store.state.users.fetchedUsers[1]
@@ -221,7 +241,18 @@ describe('Users actions', () => {
 
     const user = store.state.users.fetchedUsers[1]
     expect(user.tags.length).toBe(1)
-    wrapper.find(htmlElement(2, 9)).trigger('click')
+    
+    wrapper.vm.toggleTag([],
+      { active: true, 
+        approval_pending: false, 
+        deactivated: false, 
+        id: '10', 
+        nickname: 'bob', 
+        local: true, 
+        external: false, 
+        roles: { admin: false, moderator: false }, 
+        tags: ['mrf_tag:sandbox'], 
+        actor_type: 'Person' })
 
     const updatedUser = store.state.users.fetchedUsers[1]
     expect(updatedUser.tags.length).toBe(0)
