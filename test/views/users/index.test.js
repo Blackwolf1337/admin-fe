@@ -138,7 +138,7 @@ describe('Users actions', () => {
     const dropdownMenuItems = wrapper.findAll(
       `.el-table__fixed-body-wrapper table tr:nth-child(2) ul.el-dropdown-menu > li`
     )
-    expect(dropdownMenuItems.length).toBe(7)
+    expect(dropdownMenuItems.length).toBe(3)
     done()
   })
 
@@ -271,7 +271,7 @@ describe('Users actions', () => {
     expect(wrapper.vm.resetPasswordDialogOpen).toBe(false)
     expect(store.state.users.passwordResetToken.token).toBe('')
 
-    wrapper.find(htmlElement(1, 12)).trigger('click')
+    wrapper.find(htmlElement(1, 6)).trigger('click')
     await flushPromises()
 
     expect(wrapper.vm.resetPasswordDialogOpen).toBe(true)
