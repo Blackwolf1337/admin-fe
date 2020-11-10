@@ -192,6 +192,7 @@ export default {
     search: 'Search',
     id: 'ID',
     name: 'Name',
+    label: 'Label',
     status: 'Status',
     local: 'Local',
     external: 'External',
@@ -279,9 +280,12 @@ export default {
     registrationReason: 'Registration Reason',
     service: 'Service',
     person: 'Person',
-    enableTagPolicy: 'Enable MRF TagPolicy to manage user tags',
+    enableTagPolicy: 'Enable MRF TagPolicy to manage tags',
     confirmEnablingTagPolicy: 'Are you sure you want to add TagPolicy to the list of enabled MRF policies?',
-    enableTagPolicySuccessMessage: 'MRF TagPolicy was enabled'
+    enableTagPolicySuccessMessage: 'MRF TagPolicy was enabled',
+    customTags: 'Custom Tags',
+    defaultTags: 'Default Tags',
+    tags: 'Tags'
   },
   statuses: {
     statuses: 'Statuses',
