@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Hide Tag actions on Users tab if MRF TagPolicy is disabled. Add ability to enable TagPolicy from Moderation menu
 - Move `:restrict_unauthenticated` settings from Authentication tab to Instance tab
 - Replace regular inputs with textareas for setting welcome messages in the Settings section
+- Move tag moderation from Moderation menu to separate column in the Users table, add ability to add custom tags
 
 ### Fixed
 
