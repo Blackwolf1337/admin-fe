@@ -78,7 +78,7 @@ export const tabs = description => {
     },
     'other': {
       label: 'settings.other',
-      settings: [':mime', 'Pleroma.Plugs.RemoteIp', ':modules', 'Pleroma.Web.ApiSpec.CastAndValidate', ':terms_of_services']
+      settings: [':mime', 'Pleroma.User.Backup', 'Pleroma.Web.Plugs.RemoteIp', ':modules', 'Pleroma.Web.ApiSpec.CastAndValidate', ':terms_of_services']
     }
   }
 }
