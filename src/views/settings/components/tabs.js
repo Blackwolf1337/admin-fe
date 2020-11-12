@@ -26,7 +26,7 @@ export const tabs = description => {
     },
     'http': {
       label: 'settings.http',
-      settings: [':cors_plug', ':http', ':http_security', ':web_cache_ttl']
+      settings: [':cors_plug', ':http', ':fed_sockets', ':http_security', ':web_cache_ttl']
     },
     'instance': {
       label: 'settings.instance',
