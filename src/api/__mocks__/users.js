@@ -121,10 +121,6 @@ export async function deleteUsers(nicknames, authHost, token) {
   })
 }
 
-export async function listAllTags(authHost, token) {
-  return Promise.resolve({ data: ['verify', 'mrf_tag:media-force-nsfw'] })
-}
-
 export async function tagUser(nickname, tag, authHost, token) {
   return Promise.resolve()
 }

@@ -22,26 +22,6 @@ export async function addRight(nicknames, right, authHost, token) {
   })
 }
 
-export async function approveUserAccount(nicknames, authHost, token) {
-  return await request({
-    baseURL: baseName(authHost),
-    url: '/api/pleroma/admin/users/approve',
-    method: 'patch',
-    headers: authHeaders(token),
-    data: { nicknames }
-  })
-}
-
-export async function confirmUserEmail(nicknames, authHost, token) {
-  return await request({
-    baseURL: baseName(authHost),
-    url: '/api/pleroma/admin/users/confirm_email',
-    method: 'patch',
-    headers: authHeaders(token),
-    data: { nicknames }
-  })
-}
-
 export async function createNewAccount(nickname, email, password, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
@@ -101,21 +81,22 @@ export async function fetchUser(id, authHost, token) {
   })
 }
 
-export async function fetchUserChats(id, authHost, token) {
-  return await request({
-    baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users/${id}/chats`,
-    method: 'get',
-    headers: authHeaders(token)
-  })
-}
-
 export async function fetchUserCredentials(nickname, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
     url: `/api/pleroma/admin/users/${nickname}/credentials`,
     method: 'get',
     headers: authHeaders(token)
+  })
+}
+
+export async function updateUserCredentials(nickname, credentials, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/users/${nickname}/credentials`,
+    method: 'patch',
+    headers: authHeaders(token),
+    data: credentials
   })
 }
 
@@ -135,25 +116,6 @@ export async function fetchUsers(filters, actorTypeFilters, authHost, token, pag
   })
 }
 
-export async function fetchUserStatuses(id, authHost, godmode, token) {
-  return await request({
-    baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users/${id}/statuses?godmode=${godmode}`,
-    method: 'get',
-    headers: authHeaders(token)
-  })
-}
-
-export async function forcePasswordReset(nicknames, authHost, token) {
-  return await request({
-    baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users/force_password_reset`,
-    method: 'patch',
-    headers: authHeaders(token),
-    data: { nicknames }
-  })
-}
-
 export async function getPasswordResetToken(nickname, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
@@ -163,19 +125,10 @@ export async function getPasswordResetToken(nickname, authHost, token) {
   })
 }
 
-export async function listAllTags(authHost, token) {
+export async function forcePasswordReset(nicknames, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users/tag`,
-    method: 'get',
-    headers: authHeaders(token)
-  })
-}
-
-export async function resendConfirmationEmail(nicknames, authHost, token) {
-  return await request({
-    baseURL: baseName(authHost),
-    url: '/api/pleroma/admin/users/resend_confirmation_email',
+    url: `/api/pleroma/admin/users/force_password_reset`,
     method: 'patch',
     headers: authHeaders(token),
     data: { nicknames }
@@ -218,13 +171,51 @@ export async function untagUser(nicknames, tags, authHost, token) {
   })
 }
 
-export async function updateUserCredentials(nickname, credentials, authHost, token) {
+export async function fetchUserStatuses(id, authHost, godmode, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users/${nickname}/credentials`,
+    url: `/api/pleroma/admin/users/${id}/statuses?godmode=${godmode}`,
+    method: 'get',
+    headers: authHeaders(token)
+  })
+}
+
+export async function fetchUserChats(id, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/users/${id}/chats`,
+    method: 'get',
+    headers: authHeaders(token)
+  })
+}
+
+export async function approveUserAccount(nicknames, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: '/api/pleroma/admin/users/approve',
     method: 'patch',
     headers: authHeaders(token),
-    data: credentials
+    data: { nicknames }
+  })
+}
+
+export async function confirmUserEmail(nicknames, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: '/api/pleroma/admin/users/confirm_email',
+    method: 'patch',
+    headers: authHeaders(token),
+    data: { nicknames }
+  })
+}
+
+export async function resendConfirmationEmail(nicknames, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: '/api/pleroma/admin/users/resend_confirmation_email',
+    method: 'patch',
+    headers: authHeaders(token),
+    data: { nicknames }
   })
 }
 

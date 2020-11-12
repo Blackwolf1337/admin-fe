@@ -43,7 +43,6 @@ export default {
     this.$store.dispatch('NeedReboot')
     this.$store.dispatch('FetchTagPolicySetting')
     this.$store.dispatch('FetchReports', 1)
-    this.$store.dispatch('ListTags')
   }
 }
 </script>

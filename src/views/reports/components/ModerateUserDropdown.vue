@@ -15,17 +15,49 @@
         @click.native="handleDeletion(account)">
         {{ $t('users.deleteAccount') }}
       </el-dropdown-item>
-      <el-dropdown-item divided/>
-      <div v-if="tagPolicyEnabled">
-        <el-dropdown-item
-          v-for="option in tags"
-          :key="option.tag"
-          :class="{ 'active-tag': account.tags.includes(option.tag) }"
-          @click.native="toggleTag(account, option.tag)">
-          {{ option.label }}
-          <i v-if="account.tags.includes(option.tag)" class="el-icon-check"/>
-        </el-dropdown-item>
-      </div>
+      <el-dropdown-item
+        v-if="tagPolicyEnabled"
+        :divided="true"
+        :class="{ 'active-tag': tags.includes('mrf_tag:media-force-nsfw') }"
+        @click.native="toggleTag(account, 'mrf_tag:media-force-nsfw')">
+        {{ $t('users.forceNsfw') }}
+        <i v-if="tags.includes('mrf_tag:media-force-nsfw')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="tagPolicyEnabled"
+        :class="{ 'active-tag': tags.includes('mrf_tag:media-strip') }"
+        @click.native="toggleTag(account, 'mrf_tag:media-strip')">
+        {{ $t('users.stripMedia') }}
+        <i v-if="tags.includes('mrf_tag:media-strip')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="tagPolicyEnabled"
+        :class="{ 'active-tag': tags.includes('mrf_tag:force-unlisted') }"
+        @click.native="toggleTag(account, 'mrf_tag:force-unlisted')">
+        {{ $t('users.forceUnlisted') }}
+        <i v-if="tags.includes('mrf_tag:force-unlisted')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="tagPolicyEnabled"
+        :class="{ 'active-tag': tags.includes('mrf_tag:sandbox') }"
+        @click.native="toggleTag(account, 'mrf_tag:sandbox')">
+        {{ $t('users.sandbox') }}
+        <i v-if="tags.includes('mrf_tag:sandbox')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="tagPolicyEnabled && account.local"
+        :class="{ 'active-tag': tags.includes('mrf_tag:disable-remote-subscription') }"
+        @click.native="toggleTag(account, 'mrf_tag:disable-remote-subscription')">
+        {{ $t('users.disableRemoteSubscription') }}
+        <i v-if="tags.includes('mrf_tag:disable-remote-subscription')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="tagPolicyEnabled && account.local"
+        :class="{ 'active-tag': tags.includes('mrf_tag:disable-any-subscription') }"
+        @click.native="toggleTag(account, 'mrf_tag:disable-any-subscription')">
+        {{ $t('users.disableAnySubscription') }}
+        <i v-if="tags.includes('mrf_tag:disable-any-subscription')" class="el-icon-check"/>
+      </el-dropdown-item>
       <el-dropdown-item
         v-if="!tagPolicyEnabled"
         divided
@@ -55,28 +87,11 @@ export default {
     }
   },
   computed: {
-    mapTags() {
-      return {
-        'mrf_tag:media-force-nsfw': 'Force posts to be NSFW',
-        'mrf_tag:media-strip': 'Force posts to not have media',
-        'mrf_tag:force-unlisted': 'Force posts to be unlisted',
-        'mrf_tag:sandbox': 'Force posts to be followers-only',
-        'mrf_tag:verified': 'Verified',
-        'mrf_tag:disable-remote-subscription': 'Disallow following user from remote instances',
-        'mrf_tag:disable-any-subscription': 'Disallow following user at all'
-      }
-    },
     tagPolicyEnabled() {
       return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
     },
     tags() {
-      return this.$store.state.users.tags.map(tag => {
-        if (this.mapTags[tag]) {
-          return { tag, label: this.mapTags[tag] }
-        } else {
-          return { tag, label: tag.charAt(0).toUpperCase() + tag.slice(1) }
-        }
-      }, {})
+      return this.account.tags || []
     }
   },
   methods: {

@@ -68,6 +68,56 @@
         {{ $t('users.resendConfirmation') }}
       </el-dropdown-item>
       <el-dropdown-item
+        v-if="tagPolicyEnabled"
+        :divided="showAdminAction(user)"
+        :class="{ 'active-tag': user.tags.includes('mrf_tag:media-force-nsfw') }"
+        @click.native="toggleTag(user, 'mrf_tag:media-force-nsfw')">
+        {{ $t('users.forceNsfw') }}
+        <i v-if="user.tags.includes('mrf_tag:media-force-nsfw')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="tagPolicyEnabled"
+        :class="{ 'active-tag': user.tags.includes('mrf_tag:media-strip') }"
+        @click.native="toggleTag(user, 'mrf_tag:media-strip')">
+        {{ $t('users.stripMedia') }}
+        <i v-if="user.tags.includes('mrf_tag:media-strip')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="tagPolicyEnabled"
+        :class="{ 'active-tag': user.tags.includes('mrf_tag:force-unlisted') }"
+        @click.native="toggleTag(user, 'mrf_tag:force-unlisted')">
+        {{ $t('users.forceUnlisted') }}
+        <i v-if="user.tags.includes('mrf_tag:force-unlisted')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="tagPolicyEnabled"
+        :class="{ 'active-tag': user.tags.includes('mrf_tag:sandbox') }"
+        @click.native="toggleTag(user, 'mrf_tag:sandbox')">
+        {{ $t('users.sandbox') }}
+        <i v-if="user.tags.includes('mrf_tag:sandbox')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="user.local && tagPolicyEnabled"
+        :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-remote-subscription') }"
+        @click.native="toggleTag(user, 'mrf_tag:disable-remote-subscription')">
+        {{ $t('users.disableRemoteSubscription') }}
+        <i v-if="user.tags.includes('mrf_tag:disable-remote-subscription')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="user.local && tagPolicyEnabled"
+        :class="{ 'active-tag': user.tags.includes('mrf_tag:disable-any-subscription') }"
+        @click.native="toggleTag(user, 'mrf_tag:disable-any-subscription')">
+        {{ $t('users.disableAnySubscription') }}
+        <i v-if="user.tags.includes('mrf_tag:disable-any-subscription')" class="el-icon-check"/>
+      </el-dropdown-item>
+      <el-dropdown-item
+        v-if="!tagPolicyEnabled"
+        divided
+        class="no-hover"
+        @click.native="enableTagPolicy">
+        {{ $t('users.enableTagPolicy') }}
+      </el-dropdown-item>
+      <el-dropdown-item
         v-if="user.local"
         divided
         @click.native="getPasswordResetToken(user.nickname)">
@@ -122,11 +172,34 @@ export default {
     },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
+    },
+    tagPolicyEnabled() {
+      return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
     }
   },
   methods: {
     disableMfa(nickname) {
       this.$store.dispatch('DisableMfa', nickname)
+    },
+    enableTagPolicy() {
+      this.$confirm(
+        this.$t('users.confirmEnablingTagPolicy'),
+        {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        this.$message({
+          type: 'success',
+          message: this.$t('users.enableTagPolicySuccessMessage')
+        })
+        this.$store.dispatch('EnableTagPolicy')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Canceled'
+        })
+      })
     },
     getPasswordResetToken(nickname) {
       this.$emit('open-reset-token-dialog')
@@ -192,6 +265,11 @@ export default {
         ? this.$store.dispatch('ActivateUsers', { users: [user], _userId: user.id })
         : this.$store.dispatch('DeactivateUsers', { users: [user], _userId: user.id })
     },
+    toggleTag(user, tag) {
+      user.tags.includes(tag)
+        ? this.$store.dispatch('RemoveTag', { users: [user], tag, _userId: user.id, _statusId: this.statusId })
+        : this.$store.dispatch('AddTag', { users: [user], tag, _userId: user.id, _statusId: this.statusId })
+    },
     toggleUserRight(user, right) {
       user.roles[right]
         ? this.$store.dispatch('DeleteRight', { users: [user], right, _userId: user.id, _statusId: this.statusId })
@@ -233,14 +311,8 @@ export default {
     }
   }
   .actor-type-select .el-input.is-focus .el-input__inner {
-    border-color: transparent;
-  }
-  .custom-tags-titile {
-    padding-left: 20px;
-    font-size: 12px;
-    color: #909399;
-    line-height: 30px;
-  }
+      border-color: transparent;
+    }
   .moderate-user-button {
     text-align: left;
     width: 350px;
@@ -252,9 +324,6 @@ export default {
   }
   .moderation-dropdown-menu {
     width: 350px;
-    .el-dropdown-menu--small .el-dropdown-menu__item.el-dropdown-menu__item--divided {
-      margin-top: 0;
-    }
   }
   @media only screen and (max-width:480px) {
     .moderate-user-button {

@@ -61,27 +61,83 @@
         @click.native="requirePasswordReset">
         {{ $t('users.requirePasswordReset') }}
       </el-dropdown-item>
-      <el-dropdown-item v-if="tagPolicyEnabled" divided>
-        <el-dropdown class="multiple-tags-moderation">
-          <div>
-            {{ $t('users.tags') }}<i class="el-icon-arrow-down el-icon--right" />
-          </div>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="option in tags" :key="option.tag" class="no-hover">
-              <div class="tag-container">
-                <span class="tag-text">{{ option.label }}</span>
-                <el-button-group class="tag-button-group">
-                  <el-button size="mini" @click.native="addTagForMultipleUsers(option.tag)">
-                    {{ $t('users.apply') }}
-                  </el-button>
-                  <el-button size="mini" @click.native="removeTagFromMultipleUsers(option.tag)">
-                    {{ $t('users.remove') }}
-                  </el-button>
-                </el-button-group>
-              </div>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+      <el-dropdown-item v-if="tagPolicyEnabled" divided class="no-hover">
+        <div class="tag-container">
+          <span class="tag-text">{{ $t('users.forceNsfw') }}</span>
+          <el-button-group class="tag-button-group">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:media-force-nsfw')">
+              {{ $t('users.apply') }}
+            </el-button>
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:media-force-nsfw')">
+              {{ $t('users.remove') }}
+            </el-button>
+          </el-button-group>
+        </div>
+      </el-dropdown-item>
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
+        <div class="tag-container">
+          <span class="tag-text">{{ $t('users.stripMedia') }}</span>
+          <el-button-group class="tag-button-group">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:media-strip')">
+              {{ $t('users.apply') }}
+            </el-button>
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:media-strip')">
+              {{ $t('users.remove') }}
+            </el-button>
+          </el-button-group>
+        </div>
+      </el-dropdown-item>
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
+        <div class="tag-container">
+          <span class="tag-text">{{ $t('users.forceUnlisted') }}</span>
+          <el-button-group class="tag-button-group">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:force-unlisted')">
+              {{ $t('users.apply') }}
+            </el-button>
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:force-unlisted')">
+              {{ $t('users.remove') }}
+            </el-button>
+          </el-button-group>
+        </div>
+      </el-dropdown-item>
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
+        <div class="tag-container">
+          <span class="tag-text">{{ $t('users.sandbox') }}</span>
+          <el-button-group class="tag-button-group">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:sandbox')">
+              {{ $t('users.apply') }}
+            </el-button>
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:sandbox')">
+              {{ $t('users.remove') }}
+            </el-button>
+          </el-button-group>
+        </div>
+      </el-dropdown-item>
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
+        <div class="tag-container">
+          <span class="tag-text">{{ $t('users.disableRemoteSubscriptionForMultiple') }}</span>
+          <el-button-group class="tag-button-group">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:disable-remote-subscription')">
+              {{ $t('users.apply') }}
+            </el-button>
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:disable-remote-subscription')">
+              {{ $t('users.remove') }}
+            </el-button>
+          </el-button-group>
+        </div>
+      </el-dropdown-item>
+      <el-dropdown-item v-if="tagPolicyEnabled" class="no-hover">
+        <div class="tag-container">
+          <span class="tag-text">{{ $t('users.disableAnySubscriptionForMultiple') }}</span>
+          <el-button-group class="tag-button-group">
+            <el-button size="mini" @click.native="addTagForMultipleUsers('mrf_tag:disable-any-subscription')">
+              {{ $t('users.apply') }}
+            </el-button>
+            <el-button size="mini" @click.native="removeTagFromMultipleUsers('mrf_tag:disable-any-subscription')">
+              {{ $t('users.remove') }}
+            </el-button>
+          </el-button-group>
+        </div>
       </el-dropdown-item>
       <el-dropdown-item
         v-if="!tagPolicyEnabled"
@@ -112,31 +168,11 @@ export default {
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
-    mapTags() {
-      return {
-        'mrf_tag:media-force-nsfw': 'NSFW',
-        'mrf_tag:media-strip': 'Strip Media',
-        'mrf_tag:force-unlisted': 'Unlisted',
-        'mrf_tag:sandbox': 'Sandbox',
-        'mrf_tag:verified': 'Verified',
-        'mrf_tag:disable-remote-subscription': 'Disable remote subscription',
-        'mrf_tag:disable-any-subscription': 'Disable any subscription'
-      }
-    },
     showDropdownForMultipleUsers() {
       return this.$props.selectedUsers.length > 0
     },
     tagPolicyEnabled() {
       return this.$store.state.users.mrfPolicies.includes('Pleroma.Web.ActivityPub.MRF.TagPolicy')
-    },
-    tags() {
-      return this.$store.state.users.tags.map(tag => {
-        if (this.mapTags[tag]) {
-          return { tag, label: this.mapTags[tag] }
-        } else {
-          return { tag, label: tag.charAt(0).toUpperCase() + tag.slice(1) }
-        }
-      }, {})
     }
   },
   methods: {
@@ -370,14 +406,6 @@ export default {
   .el-icon-edit {
     margin-right: 5px;
   }
-  .multiple-tags-moderation {
-    width: 100%;
-  }
-  .no-hover:hover {
-    color: #606266;
-    background-color: white;
-    cursor: auto;
-  }
   .tag-container {
     display: flex;
     justify-content: space-between;
@@ -385,5 +413,10 @@ export default {
   }
   .tag-text {
     padding-right: 20px;
+  }
+  .no-hover:hover {
+    color: #606266;
+    background-color: white;
+    cursor: auto;
   }
 </style>

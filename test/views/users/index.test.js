@@ -138,7 +138,7 @@ describe('Users actions', () => {
     const dropdownMenuItems = wrapper.findAll(
       `.el-table__fixed-body-wrapper table tr:nth-child(3) ul.el-dropdown-menu > li`
     )
-    expect(dropdownMenuItems.length).toBe(3)
+    expect(dropdownMenuItems.length).toBe(7)
     done()
   })
 
@@ -198,28 +198,8 @@ describe('Users actions', () => {
     expect(user1.tags.length).toBe(0)
     expect(user2.tags.length).toBe(1)
 
-    wrapper.vm.toggleTag(['test-tag'],
-      { active: true, 
-        approval_pending: false, 
-        deactivated: false, id: '2', 
-        nickname: 'allis', 
-        local: true, 
-        external: false, 
-        roles: { admin: true, moderator: false }, 
-        tags: [], 
-        actor_type: 'Person' })
-
-    wrapper.vm.toggleTag(['test-tag', 'mrf_tag:sandbox'],
-      { active: true, 
-        approval_pending: false, 
-        deactivated: false, 
-        id: '10', 
-        nickname: 'bob', 
-        local: true, 
-        external: false, 
-        roles: { admin: false, moderator: false }, 
-        tags: ['mrf_tag:sandbox'], 
-        actor_type: 'Person' })
+    wrapper.find(htmlElement(1, 6)).trigger('click')
+    wrapper.find(htmlElement(2, 6)).trigger('click')
 
     const updatedUser1 = store.state.users.fetchedUsers[0]
     const updatedUser2 = store.state.users.fetchedUsers[1]
@@ -241,18 +221,7 @@ describe('Users actions', () => {
 
     const user = store.state.users.fetchedUsers[1]
     expect(user.tags.length).toBe(1)
-    
-    wrapper.vm.toggleTag([],
-      { active: true, 
-        approval_pending: false, 
-        deactivated: false, 
-        id: '10', 
-        nickname: 'bob', 
-        local: true, 
-        external: false, 
-        roles: { admin: false, moderator: false }, 
-        tags: ['mrf_tag:sandbox'], 
-        actor_type: 'Person' })
+    wrapper.find(htmlElement(2, 9)).trigger('click')
 
     const updatedUser = store.state.users.fetchedUsers[1]
     expect(updatedUser.tags.length).toBe(0)
@@ -302,7 +271,7 @@ describe('Users actions', () => {
     expect(wrapper.vm.resetPasswordDialogOpen).toBe(false)
     expect(store.state.users.passwordResetToken.token).toBe('')
 
-    wrapper.find(htmlElement(1, 6)).trigger('click')
+    wrapper.find(htmlElement(1, 12)).trigger('click')
     await flushPromises()
 
     expect(wrapper.vm.resetPasswordDialogOpen).toBe(true)
