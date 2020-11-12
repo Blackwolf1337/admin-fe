@@ -213,7 +213,7 @@ const valueExists = (type, value, path) => {
   }
 }
 
-export const valueHasTuples = (key, value) => {
+export const valueOfNonTuples = (key, value) => {
   const valueIsArrayOfNonObjects = Array.isArray(value) && value.length > 0 && value.every(el => typeof el !== 'object')
   return key === ':meta' ||
     key === ':types' ||
