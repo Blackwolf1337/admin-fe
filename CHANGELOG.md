@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add Report show page and link Moderation log references to the respective reports
 - Add Unconfimed filter for Users table
 - Filter users by actor type: Person, Bot or Application
-- Add ability to configure Media Preview Proxy, User Backup, Websocket based federation and Pleroma.Web.Endpoint.MetricsExporter settings
+- Add ability to configure User Backup, Websocket based federation and Pleroma.Web.Endpoint.MetricsExporter settings
 - Mobile and Tablet UI for Single Report show page
 ### Changed
 
@@ -29,8 +29,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Fix depricatied action names in Reports, move actions that manage users from Reports to reports module
 - Allow using underscores and hyphens in new account's usernames
-- Fix wrapping `:icons` setting and parsing tuples in settings with key `:headers`
-- Update keys for Pleroma.Web.Plugs.RemoteIp and PurgeExpiredActivity settings
 - Update switching between local and remote emoji packs panels: the panel with the pack's metadata will be closed when another panel is opened
 
 ## [2.2] - 2020-11-18
