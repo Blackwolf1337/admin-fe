@@ -17,9 +17,13 @@
     <el-form :model="modulesData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="modules" :data="modulesData"/>
     </el-form>
-    <el-divider v-if="castAndValidate" class="divider thick-line"/>
+    <el-divider v-if="modules" class="divider thick-line"/>
     <el-form :model="castAndValidateData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="castAndValidate" :data="castAndValidateData"/>
+    </el-form>
+    <el-divider v-if="metricsExporter" class="divider thick-line"/>
+    <el-form :model="metricsExporterData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="metricsExporter" :data="metricsExporterData"/>
     </el-form>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
@@ -81,6 +85,12 @@ export default {
     },
     loading() {
       return this.settings.loading
+    },
+    metricsExporter() {
+      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.Endpoint.MetricsExporter')
+    },
+    metricsExporterData() {
+      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.Endpoint.MetricsExporter']) || {}
     },
     mimeTypes() {
       return this.settings.description.find(setting => setting.group === ':mime')
