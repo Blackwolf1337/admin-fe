@@ -4,6 +4,10 @@
       <setting :setting-group="mediaProxy" :data="mediaProxyData"/>
     </el-form>
     <el-divider v-if="mediaProxy" class="divider thick-line"/>
+    <el-form v-if="!loading" :model="mediaPreviewProxyData" :label-position="labelPosition" :label-width="labelWidth">
+      <setting :setting-group="mediaPreviewProxy" :data="mediaPreviewProxyData"/>
+    </el-form>
+    <el-divider v-if="mediaPreviewProxy" class="divider thick-line"/>
     <el-form v-if="!loading" :model="httpInvalidationData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="httpInvalidation" :data="httpInvalidationData"/>
     </el-form>
@@ -59,6 +63,12 @@ export default {
     },
     loading() {
       return this.settings.loading
+    },
+    mediaPreviewProxy() {
+      return this.settings.description.find(setting => setting.key === ':media_preview_proxy')
+    },
+    mediaPreviewProxyData() {
+      return _.get(this.settings.settings, [':pleroma', ':media_preview_proxy']) || {}
     },
     mediaProxy() {
       return this.settings.description.find(setting => setting.key === ':media_proxy')

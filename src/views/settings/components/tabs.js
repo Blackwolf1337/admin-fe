@@ -50,7 +50,7 @@ export const tabs = description => {
     },
     'media-proxy': {
       label: 'settings.mediaProxy',
-      settings: [':media_proxy', 'Pleroma.Web.MediaProxy.Invalidation.Http', 'Pleroma.Web.MediaProxy.Invalidation.Script']
+      settings: [':media_proxy', ':media_preview_proxy', 'Pleroma.Web.MediaProxy.Invalidation.Http', 'Pleroma.Web.MediaProxy.Invalidation.Script']
     },
     'metadata': {
       label: 'settings.metadata',
