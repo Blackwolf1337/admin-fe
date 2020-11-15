@@ -1,8 +1,17 @@
 <template>
   <div :class="rebootIsSidebarOpen" class="settings-container">
+    <el-button
+      :class="needReboot ? 'restore-settings-button-margin' : 'restore-settings-button-margin'"
+      icon="el-icon-setting"
+      @click="openBackupVersionsDialog">
+      {{ $t('settings.restoreSettings') }}
+    </el-button>
     <div class="reboot-button-container">
       <reboot-button/>
     </div>
+    <backup-versions-dialog
+      :backup-versions-dialog-open="backupVersionsDialogOpen"
+      @close-backup-versions-dialog="closeBackupVersionsDialog"/>
     <div v-if="isDesktop">
       <div :class="isSidebarOpen" class="settings-header-container">
         <h1 class="settings-header">{{ $t('settings.settings') }}</h1>
@@ -117,11 +126,13 @@ import {
   WebPush
 } from './components'
 import RebootButton from '@/components/RebootButton'
+import BackupVersionsDialog from './components/BackupVersionsDialog'
 
 export default {
   components: {
     ActivityPub,
     Authentication,
+    BackupVersionsDialog,
     Captcha,
     Esshd,
     Frontend,
@@ -144,6 +155,7 @@ export default {
   },
   data() {
     return {
+      backupVersionsDialogOpen: false,
       options: [
         { value: 'activityPub', label: i18n.t('settings.activityPub') },
         { value: 'auth', label: i18n.t('settings.auth') },
@@ -193,6 +205,9 @@ export default {
     isTablet() {
       return this.$store.state.app.device === 'tablet'
     },
+    needReboot() {
+      return this.$store.state.app.needReboot
+    },
     rebootIsSidebarOpen() {
       return this.$store.state.app.sidebar.opened ? 'reboot-sidebar-opened' : 'reboot-sidebar-closed'
     },
@@ -209,6 +224,9 @@ export default {
     this.$store.dispatch('FetchSettings')
   },
   methods: {
+    closeBackupVersionsDialog() {
+      this.backupVersionsDialogOpen = false
+    },
     async handleSearchSelect(selectedValue) {
       const tab = Object.keys(this.tabs).find(tab => {
         return this.tabs[tab].settings.includes(selectedValue.group === ':pleroma' ? selectedValue.key : selectedValue.group)
@@ -218,6 +236,9 @@ export default {
       if (selectedSetting) {
         selectedSetting.scrollIntoView({ block: 'start', behavior: 'smooth' })
       }
+    },
+    openBackupVersionsDialog() {
+      this.backupVersionsDialogOpen = true
     },
     querySearch(queryString, cb) {
       const results = this.searchData.filter(searchObj => searchObj.search.find(el => el.includes(queryString.toLowerCase())))

@@ -455,7 +455,11 @@ export default {
     uploadImage: 'Upload image',
     remove: 'Remove',
     instancePanel: 'Instance Panel Document',
-    termsOfServices: 'Terms of Service'
+    termsOfServices: 'Terms of Service',
+    restoreSettings: 'Restore settings from the backup',
+    backupVersions: 'Backup versions',
+    currentVersion: 'Current Version',
+    restore: 'Restore'
   },
   invites: {
     inviteTokens: 'Invite tokens',

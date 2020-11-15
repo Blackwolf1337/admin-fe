@@ -3,6 +3,7 @@ import {
   fetchDescription,
   fetchSettings,
   getInstanceDocument,
+  listRollbackVersions,
   removeSettings,
   updateInstanceDocument,
   updateSettings } from '@/api/settings'
@@ -12,6 +13,7 @@ import _ from 'lodash'
 const settings = {
   state: {
     activeTab: 'instance',
+    backupVersions: [],
     configDisabled: true,
     db: {},
     description: [],
@@ -73,6 +75,9 @@ const settings = {
     SET_TERMS_OF_SERVICES: (state, data) => {
       state.termsOfServices = data
     },
+    SET_VERSIONS: (state, versions) => {
+      state.backupVersions = versions
+    },
     TOGGLE_TABS: (state, status) => {
       state.configDisabled = status
     },
@@ -115,6 +120,16 @@ const settings = {
       }
       commit('TOGGLE_TABS', false)
       commit('SET_LOADING', false)
+    },
+    async ListRollbackVersions({ commit, getters }) {
+      commit('SET_LOADING', true)
+      try {
+        const { data } = await listRollbackVersions(getters.authHost, getters.token)
+        commit('SET_VERSIONS', data.versions)
+      } catch (_e) {
+        commit('SET_LOADING', false)
+        return
+      }
     },
     async RemoveInstanceDocument({ dispatch, getters }, name) {
       await deleteInstanceDocument(name, getters.authHost, getters.token)

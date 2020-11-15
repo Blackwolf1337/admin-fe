@@ -20,6 +20,15 @@ export async function fetchDescription(authHost, token) {
   })
 }
 
+export async function fetchRollbackVersionById(id, authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/config/rollback/${id}`,
+    method: 'get',
+    headers: authHeaders(token)
+  })
+}
+
 export async function fetchSettings(authHost, token) {
   return await request({
     baseURL: baseName(authHost),
@@ -33,6 +42,15 @@ export async function getInstanceDocument(name, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
     url: `/api/pleroma/admin/instance_document/${name}`,
+    method: 'get',
+    headers: authHeaders(token)
+  })
+}
+
+export async function listRollbackVersions(authHost, token) {
+  return await request({
+    baseURL: baseName(authHost),
+    url: `/api/pleroma/admin/config/versions`,
     method: 'get',
     headers: authHeaders(token)
   })
