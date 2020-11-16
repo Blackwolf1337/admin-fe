@@ -1,6 +1,7 @@
 import {
   deleteInstanceDocument,
   fetchDescription,
+  fetchRollbackVersionById,
   fetchSettings,
   getInstanceDocument,
   listRollbackVersions,
@@ -142,6 +143,10 @@ const settings = {
       commit('SET_SETTINGS', response.data.configs)
       commit('TOGGLE_REBOOT', response.data.need_reboot)
       commit('REMOVE_SETTING_FROM_UPDATED', { group, key, subkeys: subkeys || [] })
+    },
+    async RestoreSettings({ dispatch, getters }, id) {
+      await fetchRollbackVersionById(id, getters.authHost, getters.token)
+      dispatch('FetchSettings')
     },
     SetActiveTab({ commit }, tab) {
       commit('SET_ACTIVE_TAB', tab)

@@ -11,7 +11,7 @@
       <el-table-column property="currentVersion">
         <template slot-scope="scope">
           <span v-if="scope.row.currentVersion">{{ $t('settings.currentVersion') }}</span>
-          <el-button v-else plain>{{ $t('settings.restore') }}</el-button>
+          <el-button v-else plain @click="restoreSettings(scope.row.id)">{{ $t('settings.restore') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -50,6 +50,10 @@ export default {
   },
   methods: {
     closeDialog() {
+      this.$emit('close-backup-versions-dialog')
+    },
+    restoreSettings(id) {
+      this.$store.dispatch('RestoreSettings', id)
       this.$emit('close-backup-versions-dialog')
     }
   }

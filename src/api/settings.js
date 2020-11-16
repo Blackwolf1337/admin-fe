@@ -23,7 +23,7 @@ export async function fetchDescription(authHost, token) {
 export async function fetchRollbackVersionById(id, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/config/rollback/${id}`,
+    url: `/api/pleroma/admin/config/versions/rollback/${id}`,
     method: 'get',
     headers: authHeaders(token)
   })
