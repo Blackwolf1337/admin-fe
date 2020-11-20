@@ -4,11 +4,12 @@
     :visible="dialogOpen"
     :title="$t('settings.backupVersions')"
     custom-class="backup-versions-dialog"
+    @opened="listVersions"
     @close="closeDialog">
-    <el-table :data="versions">
-      <el-table-column property="date" label="Date" width="150"/>
-      <el-table-column property="id" label="ID" width="200"/>
-      <el-table-column property="currentVersion">
+    <el-table :data="versions" max-height="400">
+      <el-table-column property="date" label="Date" width="170"/>
+      <el-table-column property="id" label="ID" width="150"/>
+      <el-table-column property="currentVersion" width="140">
         <template slot-scope="scope">
           <span v-if="scope.row.currentVersion">{{ $t('settings.currentVersion') }}</span>
           <el-button v-else plain @click="restoreSettings(scope.row.id)">{{ $t('settings.restore') }}</el-button>
@@ -34,7 +35,7 @@ export default {
       return this.backupVersionsDialogOpen
     },
     loading() {
-      return this.$store.state.settings.loading
+      return this.$store.state.settings.versionsLoading
     },
     versions() {
       return this.$store.state.settings.backupVersions.map(version => {
@@ -52,9 +53,13 @@ export default {
     closeDialog() {
       this.$emit('close-backup-versions-dialog')
     },
+    async listVersions() {
+      await this.$store.dispatch('ListRollbackVersions')
+    },
     restoreSettings(id) {
       this.$store.dispatch('RestoreSettings', id)
       this.$emit('close-backup-versions-dialog')
+      this.$store.dispatch('ListRollbackVersions')
     }
   }
 }

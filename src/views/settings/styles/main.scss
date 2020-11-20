@@ -2,6 +2,9 @@
   a {
     text-decoration: underline;
   }
+  .backup-versions-dialog {
+    width: 500px;
+  }
   .center-label label {
     text-align: center;
     span {
@@ -268,6 +271,8 @@
   .restore-settings-button-margin {
     float: right;
     margin-right: 185px;
+    z-index: 3000;
+    position: relative;
   }
   .sender-input {
     display: flex;

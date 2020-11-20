@@ -23,7 +23,8 @@ const settings = {
     searchData: {},
     settings: {},
     termsOfServices: '',
-    updatedSettings: {}
+    updatedSettings: {},
+    versionsLoading: true
   },
   mutations: {
     CLEAR_UPDATED_SETTINGS: (state) => {
@@ -79,6 +80,9 @@ const settings = {
     SET_VERSIONS: (state, versions) => {
       state.backupVersions = versions
     },
+    SET_VERSIONS_LOADING: (state, status) => {
+      state.versionsLoading = status
+    },
     TOGGLE_TABS: (state, status) => {
       state.configDisabled = status
     },
@@ -123,14 +127,14 @@ const settings = {
       commit('SET_LOADING', false)
     },
     async ListRollbackVersions({ commit, getters }) {
-      commit('SET_LOADING', true)
+      commit('SET_VERSIONS_LOADING', true)
       try {
         const { data } = await listRollbackVersions(getters.authHost, getters.token)
         commit('SET_VERSIONS', data.versions)
       } catch (_e) {
-        commit('SET_LOADING', false)
         return
       }
+      commit('SET_VERSIONS_LOADING', false)
     },
     async RemoveInstanceDocument({ dispatch, getters }, name) {
       await deleteInstanceDocument(name, getters.authHost, getters.token)

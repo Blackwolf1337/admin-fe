@@ -1,7 +1,7 @@
 <template>
   <div :class="rebootIsSidebarOpen" class="settings-container">
     <el-button
-      :class="needReboot ? 'restore-settings-button-margin' : 'restore-settings-button-margin'"
+      :class="needReboot ? 'restore-settings-button-margin' : 'restore-settings-button'"
       icon="el-icon-setting"
       @click="openBackupVersionsDialog">
       {{ $t('settings.restoreSettings') }}
