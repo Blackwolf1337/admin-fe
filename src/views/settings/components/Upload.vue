@@ -70,7 +70,7 @@ export default {
       return this.settings.description.find(setting => setting.key === ':s3')
     },
     s3Data() {
-      return _.get(this.settings.settings, [':ex_aws', ':s3']) || {}
+      return _.get(this.settings.settings, [':ex_aws']) || {}
     },
     showUploadersS3() {
       const uploader = _.get(this.settings.settings, [':pleroma', 'Pleroma.Upload', ':uploader'])
