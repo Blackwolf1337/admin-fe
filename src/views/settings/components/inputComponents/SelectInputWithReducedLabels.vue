@@ -55,7 +55,7 @@ export default {
   computed: {
     inputValue() {
       if (this.setting.key === 'Pleroma.Web.Auth.Authenticator') {
-        return this.data.value
+        return this.data
       } else if (this.setting.key === ':policies') {
         return typeof this.data[this.setting.key] === 'string'
           ? [this.data[this.setting.key]]

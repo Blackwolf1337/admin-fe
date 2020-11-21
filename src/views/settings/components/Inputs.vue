@@ -237,19 +237,15 @@ export default {
       return Array.isArray(this.data) ? this.data : []
     },
     inputValue() {
-      if ([':esshd', ':cors_plug', ':quack', ':tesla', ':swoosh'].includes(this.settingGroup.group) &&
-        this.data[this.setting.key]) {
-        return this.setting.type === 'atom' && this.data[this.setting.key].value[0] === ':'
-          ? this.data[this.setting.key].value.substr(1)
-          : this.data[this.setting.key].value
-      } else if ((this.settingGroup.group === ':logger' && this.setting.key === ':backends') ||
-        this.setting.key === 'Pleroma.Web.Auth.Authenticator' ||
+      if (this.setting.key === 'Pleroma.Web.Auth.Authenticator' ||
         this.setting.key === ':admin_token') {
-        return this.data.value
+        return this.data
       } else if (this.settingGroup.group === ':mime' && this.settingParent[0].key === ':types') {
-        return this.data.value ? this.data.value[this.setting.key] : []
+        return this.data ? this.data[this.setting.key] : []
       } else if (this.setting.type === 'atom') {
-        return this.data[this.setting.key] && this.data[this.setting.key][0] === ':' ? this.data[this.setting.key].substr(1) : this.data[this.setting.key]
+        return this.data[this.setting.key] && this.data[this.setting.key][0] === ':'
+          ? this.data[this.setting.key].substr(1)
+          : this.data[this.setting.key]
       } else if (Array.isArray(this.setting.type) &&
           this.setting.type.find(el => Array.isArray(el) && el.includes('list'))) {
         return typeof this.data[this.setting.key] === 'string' ? [this.data[this.setting.key]] : this.data[this.setting.key]
@@ -386,6 +382,7 @@ export default {
         : this.updateSetting(updatedValue, group, key, input, type)
     },
     updateSetting(value, group, key, input, type) {
+      console.log(this.setting)
       this.$store.dispatch('UpdateSettings', { group, key, input, value, type })
       this.$store.dispatch('UpdateState', { group, key, input, value })
     }

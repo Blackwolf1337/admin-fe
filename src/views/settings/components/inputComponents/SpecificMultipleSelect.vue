@@ -2,7 +2,7 @@
   <div class="multiple-select-container">
     <el-select
       v-if="setting.key === ':backends'"
-      :value="data.value"
+      :value="data"
       :data-search="setting.key || setting.group"
       multiple
       class="input"
