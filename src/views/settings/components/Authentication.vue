@@ -80,7 +80,7 @@ export default {
       return this.settings.description.find(setting => setting.children && setting.children[0].key === 'Pleroma.Web.Auth.Authenticator')
     },
     pleromaAuthenticatorData() {
-      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.Auth.Authenticator']) || {}
+      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.Auth.Authenticator']) || ''
     },
     searchQuery() {
       return this.$store.state.settings.searchQuery

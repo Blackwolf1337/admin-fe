@@ -1,47 +1,47 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form :model="instanceData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="instance" :data="instanceData"/>
     </el-form>
     <editor-input v-model="instancePanelContent" :name="'instance-panel'" @input="handleEditorUpdate"/>
     <el-divider v-if="instance" class="divider thick-line"/>
-    <el-form :model="restrictUnauthenticatedData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="restrictUnauthenticated" :data="restrictUnauthenticatedData"/>
     </el-form>
     <el-divider v-if="restrictUnauthenticated" class="divider thick-line"/>
-    <el-form :model="adminTokenData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="adminToken" :data="adminTokenData"/>
     </el-form>
     <el-divider v-if="adminToken" class="divider thick-line"/>
-    <el-form :model="welcomeData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="welcome" :data="welcomeData"/>
     </el-form>
     <el-divider v-if="welcome" class="divider thick-line"/>
-    <el-form :model="scheduledActivityData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="scheduledActivity" :data="scheduledActivityData"/>
     </el-form>
     <el-divider v-if="scheduledActivity" class="divider thick-line"/>
-    <el-form :model="manifestData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="manifest" :data="manifestData"/>
     </el-form>
     <el-divider v-if="manifest" class="divider thick-line"/>
-    <el-form :model="pleromaUserData" :label-position="labelPosition" :label-width="labelWidth" data-search="Pleroma.User">
+    <el-form :label-position="labelPosition" :label-width="labelWidth" data-search="Pleroma.User">
       <setting :setting-group="pleromaUser" :data="pleromaUserData"/>
     </el-form>
     <el-divider v-if="pleromaUser" class="divider thick-line"/>
-    <el-form :model="faviconsData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="favicons" :data="faviconsData"/>
     </el-form>
     <el-divider v-if="favicons" class="divider thick-line"/>
-    <el-form :model="uriSchemesData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="uriSchemes" :data="uriSchemesData"/>
     </el-form>
     <el-divider v-if="uriSchemes" class="divider thick-line"/>
-    <el-form :model="feedData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="feed" :data="feedData"/>
     </el-form>
     <el-divider v-if="feed" class="divider thick-line"/>
-    <el-form :model="streamerData" :label-position="labelPosition" :label-width="labelWidth">
+    <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="streamer" :data="streamerData"/>
     </el-form>
     <div class="submit-button-container">
@@ -76,7 +76,7 @@ export default {
       return this.settings.description.find(setting => setting.children && setting.children[0].key === ':admin_token')
     },
     adminTokenData() {
-      return _.get(this.settings.settings, [':pleroma', ':admin_token']) || {}
+      return _.get(this.settings.settings, [':pleroma', ':admin_token']) || ''
     },
     instancePanelContent: {
       get() {
