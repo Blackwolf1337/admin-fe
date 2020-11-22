@@ -87,7 +87,7 @@ export default {
       }
     },
     data: {
-      type: Object,
+      type: [String, Array, Object],
       default: function() {
         return {}
       }
