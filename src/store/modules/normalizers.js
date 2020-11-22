@@ -27,21 +27,21 @@ const getCurrentValue = (type, value, path) => {
   }
 }
 
-const getValueWithoutKey = (key, [type, value]) => {
-  if (prependWithСolon(type, value)) {
-    return `:${value}`
-  } else if (key === ':backends') {
-    const index = value.findIndex(el => el === ':ex_syslogger')
-    const updatedArray = value.slice()
-    if (index !== -1) {
-      updatedArray[index] = { 'tuple': ['ExSyslogger', ':ex_syslogger'] }
-    }
-    return updatedArray
-  } else if (key === ':types') {
-    return Object.keys(value).reduce((acc, key) => { return { ...acc, [key]: value[key][1] } }, {})
-  }
-  return value
-}
+// const getValueWithoutKey = (key, [type, value]) => {
+//   if (prependWithСolon(type, value)) {
+//     return `:${value}`
+//   } else if (key === ':backends') {
+//     const index = value.findIndex(el => el === ':ex_syslogger')
+//     const updatedArray = value.slice()
+//     if (index !== -1) {
+//       updatedArray[index] = { 'tuple': ['ExSyslogger', ':ex_syslogger'] }
+//     }
+//     return updatedArray
+//   } else if (key === ':types') {
+//     return Object.keys(value).reduce((acc, key) => { return { ...acc, [key]: value[key][1] } }, {})
+//   }
+//   return value
+// }
 
 export const parseNonTuples = (key, value) => {
   if (key === ':backends') {
@@ -229,8 +229,8 @@ export const valueOfNonTuples = (key, value) => {
 
 export const wrapUpdatedSettings = (group, settings, currentState) => {
   return Object.keys(settings).map((key) => {
-    return settings[key]._value
-      ? { group, key, value: getValueWithoutKey(key, settings[key]._value) }
+    return key === 'null'
+      ? { group, key: null, value: wrapValues(settings[key], currentState[group][key]) }
       : { group, key, value: wrapValues(settings[key], currentState[group][key]) }
   })
 }
