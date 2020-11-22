@@ -87,9 +87,14 @@ const settings = {
       state.updatedSettings[group] = { ...state.updatedSettings[group], ...updatedSetting }
     },
     UPDATE_STATE: (state, { group, key, input, value }) => {
-      const updatedState = key === 'Pleroma.Emails.Mailer' && input === ':adapter'
-        ? { [key]: { [input]: value }}
-        : { [key]: { ...state.settings[group][key], ...{ [input]: value }}}
+      let updatedState
+      if (key === 'Pleroma.Emails.Mailer' && input === ':adapter') {
+        updatedState = { [key]: { [input]: value }}
+      } else if (key === null) {
+        updatedState = { [input]: value }
+      } else {
+        updatedState = { [key]: { ...state.settings[group][key], ...{ [input]: value }}}
+      }
       state.settings[group] = { ...state.settings[group], ...updatedState }
     }
   },
@@ -157,7 +162,7 @@ const settings = {
     UpdateSettings({ commit }, { group, key, input, value, type }) {
       key
         ? commit('UPDATE_SETTINGS', { group, key, input, value, type })
-        : commit('UPDATE_SETTINGS', { group, key: input, input: '_value', value, type })
+        : commit('UPDATE_SETTINGS', { group, key: null, input, value, type })
     },
     async UpdateState({ commit, getters, state }, { group, key, input, value }) {
       if (key === 'Pleroma.Emails.Mailer' && input === ':adapter') {
@@ -169,7 +174,7 @@ const settings = {
       }
       key
         ? commit('UPDATE_STATE', { group, key, input, value })
-        : commit('UPDATE_STATE', { group, key: input, input: 'value', value })
+        : commit('UPDATE_STATE', { group, key: null, input, value })
     }
   }
 }
