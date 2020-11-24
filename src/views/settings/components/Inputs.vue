@@ -179,7 +179,7 @@ export default {
       required: false
     },
     data: {
-      type: [Object, Array],
+      type: [Object, Array, String],
       default: function() {
         return {}
       }
