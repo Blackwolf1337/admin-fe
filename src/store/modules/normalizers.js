@@ -175,13 +175,14 @@ export const processNested = (valueForState, valueForUpdatedSettings, group, par
     : { [key]: [type, valueForUpdatedSettings] }
 
   if (group === ':mime' && parents[0].key === ':types') {
-    updatedValueForState = settings[group][parents[0].key]
-      ? { ...settings[group][parents[0].key].value, ...updatedValueForState }
+    const currentValue = settings[group][parents[0].key]
+    updatedValueForState = currentValue
+      ? { ...currentValue, ...updatedValueForState }
       : updatedValueForState
-    updatedValueForUpdatedSettings = settings[group][parents[0].key]
-      ? { ...Object.keys(settings[group][parents[0].key].value)
+    updatedValueForUpdatedSettings = currentValue
+      ? { ...Object.keys(currentValue)
         .reduce((acc, el) => {
-          return { ...acc, [el]: [type, settings[group][parents[0].key].value[el]] }
+          return { ...acc, [el]: [type, currentValue[el]] }
         }, {}),
       ...updatedValueForUpdatedSettings }
       : updatedValueForUpdatedSettings
@@ -259,7 +260,9 @@ const wrapValues = (settings, currentState) => {
         acc[key] = value[key][1]
         return acc
       }, {})
-      return { 'tuple': [setting, { ...currentState[setting], ...mapValue }] }
+      return currentState && currentState[setting]
+        ? { 'tuple': [setting, { ...currentState[setting], ...mapValue }] }
+        : { 'tuple': [setting, mapValue] }
     } else if (type.includes('map') && !type.includes('list')) {
       const mapValue = Object.keys(value).reduce((acc, key) => {
         acc[key] = value[key][1]

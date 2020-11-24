@@ -34,7 +34,7 @@ export default {
   name: 'SelectInputWithReducedLabels',
   props: {
     data: {
-      type: [Array, Object],
+      type: [Array, Object, String],
       default: function() {
         return {}
       }
