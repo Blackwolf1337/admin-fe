@@ -98,7 +98,7 @@ export const parseTuples = (tuples, key) => {
       accum[item.tuple[0]] = item.tuple[1] === ':disabled' ? [item.tuple[1]] : item.tuple[1].tuple
     } else if (item.tuple[0] === ':proxy_url' || item.tuple[0] === ':sender') {
       accum[item.tuple[0]] = parseStringOrTupleValue(item.tuple[0], item.tuple[1])
-    } else if (item.tuple[0] === ':args') {
+    } else if (item.tuple[0] === ':args' || item.tuple[0] === ':backends') {
       accum[item.tuple[0]] = parseNonTuples(item.tuple[0], item.tuple[1])
     } else if (item.tuple[0] === ':ip_whitelist') {
       accum[item.tuple[0]] = item.tuple[1].map(ip => typeof ip === 'string' ? ip : ip.tuple.join('.'))
@@ -214,19 +214,19 @@ const valueExists = (type, value, path) => {
   }
 }
 
-export const valueOfNonTuples = (key, value) => {
-  const valueIsArrayOfNonObjects = Array.isArray(value) && value.length > 0 && value.every(el => typeof el !== 'object')
-  return key === ':meta' ||
-    key === ':types' ||
-    key === ':backends' ||
-    key === ':compiled_template_engines' ||
-    key === ':compiled_format_encoders' ||
-    typeof value === 'string' ||
-    typeof value === 'number' ||
-    typeof value === 'boolean' ||
-    value === null ||
-    valueIsArrayOfNonObjects
-}
+// export const valueOfNonTuples = (key, value) => {
+//   const valueIsArrayOfNonObjects = Array.isArray(value) && value.length > 0 && value.every(el => typeof el !== 'object')
+//   return key === ':meta' ||
+//     key === ':types' ||
+//     key === ':backends' ||
+//     key === ':compiled_template_engines' ||
+//     key === ':compiled_format_encoders' ||
+//     typeof value === 'string' ||
+//     typeof value === 'number' ||
+//     typeof value === 'boolean' ||
+//     value === null ||
+//     valueIsArrayOfNonObjects
+// }
 
 export const wrapUpdatedSettings = (group, settings, currentState) => {
   return Object.keys(settings).map((key) => {
@@ -249,7 +249,7 @@ const wrapValues = (settings, currentState) => {
     } else if (prependWithСolon(type, value)) {
       return { 'tuple': [setting, `:${value}`] }
     } else if (type.includes('tuple') &&
-      (type.includes('string') || type.includes('atom') || type.includes('boolean'))) {
+      (type.includes('string') || type.includes('boolean'))) {
       return typeof value === 'string' || typeof value === 'boolean'
         ? { 'tuple': [setting, value] }
         : { 'tuple': [setting, { 'tuple': value }] }

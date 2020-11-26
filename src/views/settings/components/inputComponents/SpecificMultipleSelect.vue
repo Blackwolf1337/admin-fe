@@ -54,8 +54,18 @@ export default {
   },
   methods: {
     updateSetting(value, group, key, input, type) {
-      this.$store.dispatch('UpdateSettings', { group, key, input, value, type })
-      this.$store.dispatch('UpdateState', { group, key, input, value })
+      if (input === ':backends') {
+        const index = value.findIndex(el => el === ':ex_syslogger')
+        const updatedValue = value.slice()
+        if (index !== -1) {
+          updatedValue[index] = { 'tuple': ['ExSyslogger', ':ex_syslogger'] }
+        }
+        this.$store.dispatch('UpdateSettings', { group, key, input, value: updatedValue, type })
+        this.$store.dispatch('UpdateState', { group, key, input, value })
+      } else {
+        this.$store.dispatch('UpdateSettings', { group, key, input, value, type })
+        this.$store.dispatch('UpdateState', { group, key, input, value })
+      }
     }
   }
 }
