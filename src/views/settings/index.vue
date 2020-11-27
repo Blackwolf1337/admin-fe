@@ -138,7 +138,7 @@ export default {
         if ([':esshd', ':cors_plug', ':quack', ':logger', ':swoosh', ':mime'].includes(setting)) {
           return this.$store.state.settings.description.findIndex(el => el.group === setting) !== -1
         } else if (setting === 'Pleroma.Web.Auth.Authenticator' || setting === ':admin_token') {
-          return this.$store.state.settings.description.findIndex(el => el.children[0].key === setting) !== -1
+          return this.$store.state.settings.description.findIndex(el => el.key === setting) !== -1
         } else {
           return this.$store.state.settings.description.findIndex(el => el.key === setting) !== -1
         }

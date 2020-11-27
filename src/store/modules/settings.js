@@ -79,9 +79,14 @@ const settings = {
       state.configDisabled = status
     },
     UPDATE_SETTINGS: (state, { group, key, input, value, type }) => {
-      const updatedSetting = !state.updatedSettings[group] || (key === 'Pleroma.Emails.Mailer' && input === ':adapter')
-        ? { [key]: { [input]: [type, value] }}
-        : { [key]: { ...state.updatedSettings[group][key], ...{ [input]: [type, value] }}}
+      let updatedSetting
+      if (!input) {
+        updatedSetting = { [key]: [type, value] }
+      } else if (!state.updatedSettings[group] || (key === 'Pleroma.Emails.Mailer' && input === ':adapter')) {
+        updatedSetting = { [key]: { [input]: [type, value] }}
+      } else {
+        updatedSetting = { [key]: { ...state.updatedSettings[group][key], ...{ [input]: [type, value] }}}
+      }
       state.updatedSettings[group] = { ...state.updatedSettings[group], ...updatedSetting }
     },
     UPDATE_STATE: (state, { group, key, input, value }) => {
@@ -90,6 +95,8 @@ const settings = {
         updatedState = { [key]: { [input]: value }}
       } else if (key === null) {
         updatedState = { [input]: value }
+      } else if (input === null) {
+        updatedState = { [key]: value }
       } else {
         updatedState = { [key]: { ...state.settings[group][key], ...{ [input]: value }}}
       }

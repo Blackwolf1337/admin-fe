@@ -73,7 +73,7 @@ export default {
       'settings'
     ]),
     adminToken() {
-      return this.settings.description.find(setting => setting.children && setting.children[0].key === ':admin_token')
+      return this.settings.description.find(setting => setting.key === ':admin_token')
     },
     adminTokenData() {
       return _.get(this.settings.settings, [':pleroma', ':admin_token']) || ''

@@ -50,7 +50,7 @@
           class="input"
           @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
         <el-input
-          v-else-if="setting.type === 'string' ||
+          v-if="setting.type === 'string' ||
           (Array.isArray(setting.type) && setting.type.includes('string') && setting.type.includes('atom'))"
           :value="inputValue"
           :placeholder="setting.suggestions ? setting.suggestions[0] : null"
@@ -382,8 +382,13 @@ export default {
         : this.updateSetting(updatedValue, group, key, input, type)
     },
     updateSetting(value, group, key, input, type) {
-      this.$store.dispatch('UpdateSettings', { group, key, input, value, type })
-      this.$store.dispatch('UpdateState', { group, key, input, value })
+      if (this.settingGroup.type !== 'group') {
+        this.$store.dispatch('UpdateSettings', { group, key, input: null, value, type })
+        this.$store.dispatch('UpdateState', { group, key, input: null, value })
+      } else {
+        this.$store.dispatch('UpdateSettings', { group, key, input, value, type })
+        this.$store.dispatch('UpdateState', { group, key, input, value })
+      }
     }
   }
 }
