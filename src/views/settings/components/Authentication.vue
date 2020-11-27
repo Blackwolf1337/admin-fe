@@ -77,7 +77,7 @@ export default {
       return _.get(this.settings.settings, [':pleroma', ':oauth2']) || {}
     },
     pleromaAuthenticator() {
-      return this.settings.description.find(setting => setting.children && setting.children[0].key === 'Pleroma.Web.Auth.Authenticator')
+      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.Auth.Authenticator')
     },
     pleromaAuthenticatorData() {
       return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.Auth.Authenticator']) || ''

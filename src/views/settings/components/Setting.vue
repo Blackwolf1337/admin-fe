@@ -20,6 +20,13 @@
           :data="data"/>
       </div>
     </div>
+    <div v-else-if="settingGroup.type !== 'group' && !settingGroup.children">
+      <inputs
+        :setting-group="settingGroup"
+        :setting="settingGroup"
+        :data="data"
+        :nested="false"/>
+    </div>
     <div v-else>
       <div v-for="setting in settingGroup.children" :key="setting.key">
         <div v-if="!compound(setting)">
