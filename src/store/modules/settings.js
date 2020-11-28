@@ -50,7 +50,11 @@ const settings = {
     },
     SET_SETTINGS: (state, data) => {
       const newSettings = data.reduce((acc, { group, key, value }) => {
-        const parsedValue = parseTuples(value, key)
+        const settingDescription = state.description.find(setting => setting.key === key)
+        const parsedValue = settingDescription && settingDescription.type !== 'group'
+          ? value
+          : parseTuples(value, key)
+
         if (acc[group]) {
           acc[group] = key ? { ...acc[group], [key]: parsedValue } : { ...acc[group], ...parsedValue }
         } else {
