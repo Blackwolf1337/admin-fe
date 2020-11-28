@@ -102,8 +102,13 @@ export default {
     },
     updateSetting(value, group, key, input, type) {
       const updatedValue = getBooleanValue(value)
-      this.$store.dispatch('UpdateSettings', { group, key, input, value: updatedValue, type })
-      this.$store.dispatch('UpdateState', { group, key, input, value: updatedValue })
+      if (this.settingGroup.type !== 'group') {
+        this.$store.dispatch('UpdateSettings', { group, key, input: null, value: updatedValue, type })
+        this.$store.dispatch('UpdateState', { group, key, input: null, value: updatedValue })
+      } else {
+        this.$store.dispatch('UpdateSettings', { group, key, input, value: updatedValue, type })
+        this.$store.dispatch('UpdateState', { group, key, input, value: updatedValue })
+      }
     }
   }
 }

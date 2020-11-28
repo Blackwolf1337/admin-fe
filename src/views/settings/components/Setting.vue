@@ -2,7 +2,7 @@
   <div v-if="!loading">
     <el-form-item v-if="settingGroup.label || settingGroup.description" :data-search="settingGroup.key || settingGroup.group" class="description-container">
       <span v-if="settingGroup.label" class="setting-label">{{ settingGroup.label }}</span>
-      <span v-if="settingGroup.description" class="expl no-top-margin" v-html="getFormattedDescription(settingGroup.description)"/>
+      <span v-if="settingGroup.description && settingGroup.type === 'group'" class="expl no-top-margin" v-html="getFormattedDescription(settingGroup.description)"/>
     </el-form-item>
     <div v-if="settingGroup.key === 'Pleroma.Emails.Mailer'">
       <div v-for="setting in settingGroup.children.filter(setting => !setting.group)" :key="setting.key">
