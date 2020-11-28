@@ -228,11 +228,15 @@ const valueExists = (type, value, path) => {
 //     valueIsArrayOfNonObjects
 // }
 
-export const wrapUpdatedSettings = (group, settings, currentState) => {
+export const wrapUpdatedSettings = (group, settings, currentState, description) => {
   return Object.keys(settings).map((key) => {
-    return key === 'null'
-      ? { group, key: null, value: wrapValues(settings[key], currentState[group][key]) }
-      : { group, key, value: wrapValues(settings[key], currentState[group][key]) }
+    if (description.find(setting => setting.key === key).type !== 'group') {
+      return { group, key, value: settings[key][1] }
+    } else if (key === 'null') {
+      return { group, key: null, value: wrapValues(settings[key], currentState[group][key]) }
+    } else {
+      return { group, key, value: wrapValues(settings[key], currentState[group][key]) }
+    }
   })
 }
 

@@ -148,7 +148,7 @@ const settings = {
     },
     async SubmitChanges({ getters, commit, state }) {
       const configs = Object.keys(state.updatedSettings).reduce((acc, group) => {
-        return [...acc, ...wrapUpdatedSettings(group, state.updatedSettings[group], state.settings)]
+        return [...acc, ...wrapUpdatedSettings(group, state.updatedSettings[group], state.settings, state.description)]
       }, [])
 
       await updateSettings(configs, getters.authHost, getters.token)
