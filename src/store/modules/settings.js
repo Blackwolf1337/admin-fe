@@ -155,11 +155,13 @@ const settings = {
         return [...acc, ...wrapUpdatedSettings(group, state.updatedSettings[group], state.settings, state.description)]
       }, [])
 
-      await updateSettings(configs, getters.authHost, getters.token)
-      const response = await fetchSettings(getters.authHost, getters.token)
-      commit('SET_SETTINGS', response.data.configs)
-      commit('TOGGLE_REBOOT', response.data.need_reboot)
-      commit('CLEAR_UPDATED_SETTINGS')
+      if (configs.length > 0) {
+        await updateSettings(configs, getters.authHost, getters.token)
+        const response = await fetchSettings(getters.authHost, getters.token)
+        commit('SET_SETTINGS', response.data.configs)
+        commit('TOGGLE_REBOOT', response.data.need_reboot)
+        commit('CLEAR_UPDATED_SETTINGS')
+      }
     },
     async UpdateInstanceDocs({ commit, getters }, { name, content }) {
       commit('SET_INSTANCE_PANEL', content)
