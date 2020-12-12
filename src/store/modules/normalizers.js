@@ -193,6 +193,21 @@ export const processNested = (valueForState, valueForUpdatedSettings, group, par
     : processNested(updatedValueForState, updatedValueForUpdatedSettings, group, parentKey, otherParents, settings, updatedSettings)
 }
 
+export const processNestedWithNullKey = (valueForState, valueForUpdatedSettings, group, parents, settings, updatedSettings) => {
+  const [{ key, type }, ...otherParents] = parents
+  const path = [group, ...parents.reverse().map(parent => parent.key).slice(0, -1)]
+  const updatedValueForState = valueExists('state', settings, path)
+    ? { ...getCurrentValue('state', settings[group], parents.map(el => el.key).slice(0, -1)),
+      ...{ [key]: valueForState }}
+    : { [key]: valueForState }
+  const updatedValueForUpdatedSettings = valueExists('updatedSettings', updatedSettings, path)
+    ? { ...getCurrentValue('updatedSettings', updatedSettings[group], parents.map(el => el.key).slice(0, -1))[1],
+      ...{ [key]: [type, valueForUpdatedSettings] }}
+    : { [key]: [type, valueForUpdatedSettings] }
+
+  return { valueForState: updatedValueForState, valueForUpdatedSettings: updatedValueForUpdatedSettings, setting: otherParents[0] }
+}
+
 const valueExists = (type, value, path) => {
   if (type === 'state') {
     return _.get(value, path)

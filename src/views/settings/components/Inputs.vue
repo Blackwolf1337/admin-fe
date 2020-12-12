@@ -150,7 +150,7 @@ import {
   SelectInputWithReducedLabels,
   SenderInput,
   SpecificMultipleSelect } from './inputComponents'
-import { getBooleanValue, processNested } from '@/store/modules/normalizers'
+import { getBooleanValue, processNested, processNestedWithNullKey } from '@/store/modules/normalizers'
 import _ from 'lodash'
 import marked from 'marked'
 
@@ -323,7 +323,9 @@ export default {
     processNestedData(value, group, parentKey, parents) {
       const { valueForState,
         valueForUpdatedSettings,
-        setting } = processNested(value, value, group, parentKey, parents.reverse(), this.settings, this.updatedSettings)
+        setting } = parentKey
+        ? processNested(value, value, group, parentKey, parents.reverse(), this.settings, this.updatedSettings)
+        : processNestedWithNullKey(value, value, group, parents.reverse(), this.settings, this.updatedSettings)
 
       this.$store.dispatch('UpdateSettings',
         { group, key: parentKey, input: setting.key, value: valueForUpdatedSettings, type: setting.type })

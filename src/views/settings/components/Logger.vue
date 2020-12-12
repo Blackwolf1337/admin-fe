@@ -3,15 +3,7 @@
     <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="logger" :data="loggerData"/>
     </el-form>
-    <el-divider v-if="logger" class="divider thick-line"/>
-    <el-form :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="console" :data="consoleData"/>
-    </el-form>
-    <el-divider v-if="console" class="divider thick-line"/>
-    <el-form :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="exsyslogger" :data="exsysloggerData"/>
-    </el-form>
-    <el-divider v-if="exsyslogger" class="divider thick-line"/>
+    <el-divider v-if="quack" class="divider thick-line"/>
     <el-form :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="quack" :data="quackData"/>
     </el-form>
@@ -34,18 +26,6 @@ export default {
     ...mapGetters([
       'settings'
     ]),
-    console() {
-      return this.settings.description.find(setting => setting.key === ':console')
-    },
-    consoleData() {
-      return _.get(this.settings.settings, [':logger', ':console']) || {}
-    },
-    exsyslogger() {
-      return this.settings.description.find(setting => setting.key === ':ex_syslogger')
-    },
-    exsysloggerData() {
-      return _.get(this.settings.settings, [':logger', ':ex_syslogger']) || {}
-    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -74,7 +54,7 @@ export default {
       return this.settings.description.find(setting => setting.group === ':logger')
     },
     loggerData() {
-      return _.get(this.settings.settings, [':logger', ':backends']) || {}
+      return _.get(this.settings.settings, [':logger']) || {}
     },
     quack() {
       return this.settings.description.find(setting => setting.group === ':quack')
