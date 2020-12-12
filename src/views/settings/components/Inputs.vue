@@ -338,7 +338,7 @@ export default {
           cancelButtonText: this.$t('users.cancel'),
           type: 'warning'
         }).then(async() => {
-        const config = this.settingGroup.key
+        const config = this.settingGroup.key && this.settingGroup.key !== this.setting.key
           ? [{ group: this.settingGroup.group, key: this.settingGroup.key, delete: true, subkeys: [this.setting.key] }]
           : [{ group: this.settingGroup.group, key: this.setting.key, delete: true }]
         try {
