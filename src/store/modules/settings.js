@@ -195,6 +195,9 @@ const settings = {
         : commit('UPDATE_SETTINGS', { group, key: null, input, value, type })
     },
     async UpdateState({ commit, getters, state }, { group, key, input, value }) {
+      key
+        ? commit('UPDATE_STATE', { group, key, input, value })
+        : commit('UPDATE_STATE', { group, key: null, input, value })
       if (key === 'Pleroma.Emails.Mailer' && input === ':adapter') {
         const subkeys = Object.keys(state.settings[group][key]).filter(el => el !== ':adapter')
         await removeSettings([{ group, key, delete: true, subkeys }], getters.authHost, getters.token)
@@ -202,9 +205,6 @@ const settings = {
         const deletedKey = value === 'Pleroma.Uploaders.Local' ? 'Pleroma.Uploaders.S3' : 'Pleroma.Uploaders.Local'
         await removeSettings([{ group, key: deletedKey, delete: true }], getters.authHost, getters.token)
       }
-      key
-        ? commit('UPDATE_STATE', { group, key, input, value })
-        : commit('UPDATE_STATE', { group, key: null, input, value })
     }
   }
 }
