@@ -70,7 +70,7 @@ export default {
       return this.settings.description.find(setting => setting.key === ':s3')
     },
     s3Data() {
-      return _.get(this.settings.settings, [':ex_aws']) || {}
+      return _.get(this.settings.settings, [':ex_aws', ':s3']) || {}
     },
     searchQuery() {
       return this.$store.state.settings.searchQuery
