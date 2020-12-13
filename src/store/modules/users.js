@@ -3,20 +3,21 @@ import i18n from '@/lang'
 import {
   activateUsers,
   addRight,
+  approveUserAccount,
+  confirmUserEmail,
   createNewAccount,
   deactivateUsers,
   deleteRight,
   deleteUsers,
   disableMfa,
   fetchUsers,
+  forcePasswordReset,
   getPasswordResetToken,
+  listAllTags,
+  resendConfirmationEmail,
   searchUsers,
   tagUser,
   untagUser,
-  forcePasswordReset,
-  approveUserAccount,
-  confirmUserEmail,
-  resendConfirmationEmail,
   updateUserCredentials
 } from '@/api/users'
 import { fetchSettings, updateSettings } from '@/api/settings'
@@ -35,7 +36,8 @@ const users = {
     passwordResetToken: {
       token: '',
       link: ''
-    }
+    },
+    tags: []
   },
   mutations: {
     SET_ACTOR_TYPE_FILTERS: (state, actorTypeFilters) => {
@@ -80,6 +82,9 @@ const users = {
     },
     SET_TAG_POLICY: (state, mrfPolicies) => {
       state.mrfPolicies = mrfPolicies
+    },
+    SET_TAGS: (state, tags) => {
+      state.tags = tags
     },
     SET_USERS_FILTERS: (state, filters) => {
       state.filters = filters
@@ -243,6 +248,10 @@ const users = {
     },
     RemovePasswordToken({ commit }) {
       commit('SET_PASSWORD_RESET_TOKEN', { link: '', token: '' })
+    },
+    async ListTags({ commit, getters }) {
+      const { data } = await listAllTags(getters.authHost, getters.token)
+      commit('SET_TAGS', data)
     },
     async RemoveTag({ dispatch, getters }, { users, tag, _userId, _statusId }) {
       const updatedUsers = users.map(user => {
