@@ -105,7 +105,9 @@
                 {{ option.label }}
               </el-option>
             </el-option-group>
-            <el-option-group :label="$t('users.customTags')">
+            <el-option-group
+              v-if="customTags().length > 0"
+              :label="$t('users.customTags')">
               <el-option
                 v-for="option in customTags()"
                 :value="option.tag"

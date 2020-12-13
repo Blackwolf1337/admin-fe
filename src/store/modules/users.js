@@ -133,7 +133,8 @@ const users = {
       const nicknames = users.map(user => user.nickname)
       const callApiFn = async() => await tagUser(nicknames, [tag], getters.authHost, getters.token)
 
-      dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
+      await dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
+      dispatch('ListTags')
     },
     async ApproveUsersAccount({ dispatch, getters }, { users, _userId, _statusId }) {
       const updatedUsers = users.map(user => {
