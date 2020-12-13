@@ -166,7 +166,7 @@ export async function getPasswordResetToken(nickname, authHost, token) {
 export async function listAllTags(authHost, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users/tag`,
+    url: `/api/pleroma/admin/users/tags`,
     method: 'get',
     headers: authHeaders(token)
   })
@@ -201,8 +201,8 @@ export async function searchUsers(query, filters, actorTypeFilters, authHost, to
 export async function tagUser(nicknames, tags, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: '/api/pleroma/admin/users/tag',
-    method: 'put',
+    url: '/api/pleroma/admin/users/tags',
+    method: 'patch',
     headers: authHeaders(token),
     data: { nicknames, tags }
   })
@@ -211,7 +211,7 @@ export async function tagUser(nicknames, tags, authHost, token) {
 export async function untagUser(nicknames, tags, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: '/api/pleroma/admin/users/tag',
+    url: '/api/pleroma/admin/users/tags',
     method: 'delete',
     headers: authHeaders(token),
     data: { nicknames, tags }
