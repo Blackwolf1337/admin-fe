@@ -240,32 +240,6 @@ describe('Wrap settings', () => {
     expect(_.isEqual(result2, expectedResult2)).toBeTruthy()
   })
 
-  it('wraps settings with type atom and tuple', () => {
-    const settings1 = { 'Oban': { ':prune': [['atom', 'tuple'], ':disabled']}}
-    const state1 = { ':pleroma': { 'Oban': {}}}
-    const description = [{ group: ':pleroma', key: 'Oban', label: 'Oban', type: 'group' }]
-    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1, description)
-    const expectedResult1 = [{
-      group: ':pleroma',
-      key: 'Oban',
-      value: [{ tuple: [':prune', ':disabled']}]
-    }]
-
-    const settings2 = { 'Oban': { ':prune':
-      [['atom', 'tuple'], [':maxlen', 1500]]
-    }}
-    const state2 = { ':pleroma': { 'Oban': {}}}
-    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2, description)
-    const expectedResult2 = [{
-      group: ':pleroma',
-      key: 'Oban',
-      value: [{ tuple: [':prune', {tuple: [':maxlen', 1500]}]}]
-    }]
-
-    expect(_.isEqual(result1, expectedResult1)).toBeTruthy()
-    expect(_.isEqual(result2, expectedResult2)).toBeTruthy()
-  })
-
   it('wraps settings with type map', () => {
     const settings1 = { ':instance': { ':poll_limits': ['map', { ':min_expiration': ['integer', 100] }]}}
     const state1 = { ':pleroma': { ':instance': { ':poll_limits': {

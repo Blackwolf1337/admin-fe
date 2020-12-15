@@ -105,32 +105,6 @@ describe('Parse tuples', () => {
     expect(_.isEqual(expectedResult, result)).toBeTruthy()
   })
 
-  it('parses prune setting that is a tuple', () => {
-    const tuples = [
-      { tuple: [':verbose', false]},
-      { tuple: [':prune', { tuple: [':maxlen', 1500] }]},
-      { tuple: [':queues', [
-        { tuple: [':activity_expiration', 10]},
-        { tuple: [':federator_incoming', 50]}
-      ] ]}
-    ]
-    const expectedResult = {
-      ':verbose': false,
-      ':prune': [':maxlen', 1500],
-      ':queues': { ':activity_expiration': 10, ':federator_incoming': 50 } }
-
-    const result = parseTuples(tuples, 'Oban')
-    expect(_.isEqual(expectedResult, result)).toBeTruthy()
-  })
-
-  it('parses prune setting that is an atom', () => {
-    const tuples = [{ tuple: [':prune', ':disabled' ]}]
-    const expectedResult = { ':prune': [':disabled'] }
-
-    const result = parseTuples(tuples, 'Oban')
-    expect(_.isEqual(expectedResult, result)).toBeTruthy()
-  })
-
   it('parses mrf_keyword settings', () => {
     const tuples = [
       { tuple: [':reject', ['foo', '~r/foo/iu'] ]},
