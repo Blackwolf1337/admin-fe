@@ -4,7 +4,8 @@ import _ from 'lodash'
 describe('Wrap settings', () => {
   it('wraps values without keys with type atom', () => {
     const settings = { ':level': { _value: ['atom', 'warn'] }}
-    const result = wrapUpdatedSettings(':quack', settings, {})
+    const description = [{ group: ':quack', label: 'Quack Logger', type: 'group' }]
+    const result = wrapUpdatedSettings(':quack', settings, {}, description)
     const expectedResult = [{ group: ':quack', key: ':level', value: ':warn' }]
     expect(_.isEqual(result, expectedResult)).toBeTruthy()
   })
@@ -13,7 +14,8 @@ describe('Wrap settings', () => {
     const settings = { ':backends': { _value:
       [['atom', 'tuple', 'module'], [':console', 'Quack.Logger', ':ex_syslogger']]
     }}
-    const result = wrapUpdatedSettings(':logger', settings, {})
+    const description = [{ group: ':logger', label: 'Logger', type: 'group' }]
+    const result = wrapUpdatedSettings(':logger', settings, {}, description)
     const expectedResult = [{
       group: ':logger',
       key: ':backends',
@@ -28,7 +30,8 @@ describe('Wrap settings', () => {
       'application/xml': [['list', 'string'], ['xml']],
       'application/xrd+xml': [['list', 'string'], ['xrd+xml']]
     }]}}
-    const result = wrapUpdatedSettings(':mime', settings, {})
+    const description = [{ group: ':mime', label: 'Mime Types', type: 'group' }]
+    const result = wrapUpdatedSettings(':mime', settings, {}, description)
     const expectedResult = [{
       group: ':mime',
       key: ':types',
@@ -47,7 +50,8 @@ describe('Wrap settings', () => {
       ':pleroma_fox_tan': ['', { ':mime_type': 'image/png', ':url': '/images/pleroma-fox-tan-smol.png' }],
     }]}}
     const state = { ':pleroma': { ':assets': {}}}
-    const result = wrapUpdatedSettings(':pleroma', settings, state)
+    const description = [{ group: ':pleroma', key: ':assets', label: 'Assets', type: 'group' }]
+    const result = wrapUpdatedSettings(':pleroma', settings, state, description)
     const expectedResult = [{
       group: ':pleroma',
       key: ':assets',
@@ -67,7 +71,8 @@ describe('Wrap settings', () => {
       }]
     }}
     const state1 = { ':pleroma': { 'Pleroma.Upload': {}}}
-    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1)
+    const description1 = [{ group: ':pleroma', key: 'Pleroma.Upload', label: 'Pleroma.Upload', type: 'group' }]
+    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1, description1)
     const expectedResult1 = [{
       group: ':pleroma',
       key: 'Pleroma.Upload',
@@ -91,7 +96,8 @@ describe('Wrap settings', () => {
       }]
     }}
     const state2 = { ':pleroma': { ':media_proxy': {}}}
-    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2)
+    const description2 = [{ group: ':pleroma', key: ':media_proxy', label: 'Media proxy', type: 'group' }]
+    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2, description2)
     const expectedResult2 = [{
       group: ':pleroma',
       key: ':media_proxy',
@@ -118,7 +124,8 @@ describe('Wrap settings', () => {
         ':federator_incoming': ['integer', 30]}
     ]}}
     const state1 = { ':pleroma': { 'Oban': {}}}
-    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1)
+    const description1 = [{ group: ':pleroma', key: 'Oban', label: 'Oban', type: 'group' }]
+    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1, description1)
     const expectedResult1 = [{
       group: ':pleroma',
       key: 'Oban',
@@ -135,7 +142,8 @@ describe('Wrap settings', () => {
         ':another_group': ['list', ['/custom_emoji/*.png']]}
     ]}}
     const state2 = { ':pleroma': { ':emoji': {}}}
-    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2)
+    const description2 = [{ group: ':pleroma', key: ':emoji', label: 'Emoji', type: 'group' }]
+    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2, description2)
     const expectedResult2 = [{
       group: ':pleroma',
       key: ':emoji',
@@ -156,7 +164,8 @@ describe('Wrap settings', () => {
         '/\w+/': ['list', 'test_replacement']}
     ]}}
     const state = { ':pleroma': { ':mrf_keyword': {}}}
-    const result = wrapUpdatedSettings(':pleroma', settings, state)
+    const description = [{ group: ':pleroma', key: ':mrf_keyword', label: 'MRF Keyword', type: 'group' }]
+    const result = wrapUpdatedSettings(':pleroma', settings, state, description)
     const expectedResult = [{
       group: ':pleroma',
       key: ':mrf_keyword',
@@ -175,7 +184,9 @@ describe('Wrap settings', () => {
       ':assets': { ':default_mascot': ['atom', 'pleroma_fox_tan_test']}
     }
     const state = { ':pleroma': { ':sslopts': {}, ':assets': {}}}
-    const result = wrapUpdatedSettings(':pleroma', settings, state)
+    const description = [{ group: ':pleroma', key: ':ldap', label: 'LDAP', type: 'group' },
+     { group: ':pleroma', key: ':assets', label: 'Assets', type: 'group' }]
+    const result = wrapUpdatedSettings(':pleroma', settings, state, description)
     const expectedResult = [{
       group: ':pleroma',
       key: ':ldap',
@@ -196,7 +207,8 @@ describe('Wrap settings', () => {
       }]
     }}
     const state1 = { ':pleroma': { ':media_proxy': {}}}
-    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1)
+    const description = [{ group: ':pleroma', key: ':media_proxy', label: 'Media proxy', type: 'group' }]
+    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1, description)
     const expectedResult1 = [{
       group: ':pleroma',
       key: ':media_proxy',
@@ -213,7 +225,7 @@ describe('Wrap settings', () => {
       }]
     }}
     const state2 = { ':pleroma': { ':media_proxy': {}}}
-    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2)
+    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2, description)
     const expectedResult2 = [{
       group: ':pleroma',
       key: ':media_proxy',
@@ -231,7 +243,8 @@ describe('Wrap settings', () => {
   it('wraps settings with type atom and tuple', () => {
     const settings1 = { 'Oban': { ':prune': [['atom', 'tuple'], ':disabled']}}
     const state1 = { ':pleroma': { 'Oban': {}}}
-    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1)
+    const description = [{ group: ':pleroma', key: 'Oban', label: 'Oban', type: 'group' }]
+    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1, description)
     const expectedResult1 = [{
       group: ':pleroma',
       key: 'Oban',
@@ -242,7 +255,7 @@ describe('Wrap settings', () => {
       [['atom', 'tuple'], [':maxlen', 1500]]
     }}
     const state2 = { ':pleroma': { 'Oban': {}}}
-    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2)
+    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2, description)
     const expectedResult2 = [{
       group: ':pleroma',
       key: 'Oban',
@@ -261,7 +274,8 @@ describe('Wrap settings', () => {
       ':max_options': 20,
       ':min_expiration': 100
     }}}}
-    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1)
+    const description1 = [{ group: ':pleroma', key: ':instance', label: 'Instance', type: 'group' }]
+    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1, description1)
     const expectedResult1 = [{
       group: ':pleroma',
       key: ':instance',
@@ -284,7 +298,8 @@ describe('Wrap settings', () => {
       ':interval': 7,
       ':schedule': '0 0  0'
     }}}}
-    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2)
+    const description2 = [{ group: ':pleroma', key: ':email_notifications', label: 'Email notifications', type: 'group' }]
+    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2, description2)
     const expectedResult2 = [{
       group: ':pleroma',
       key: ':email_notifications',
@@ -310,8 +325,8 @@ describe('Wrap settings', () => {
       { '~r/https:\/\/test.com': { value: ['Elixir.Pleroma.Web.ActivityPub.MRF.TestPolicy'], id: '5678' } }
     ]
     }}}
-
-    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1)
+    const description1 = [{ group: ':pleroma', key: ':mrf_subchain', label: 'MRF Subchain', type: 'group' }]
+    const result1 = wrapUpdatedSettings(':pleroma', settings1, state1, description1)
     const expectedResult1 = [{
       group: ':pleroma',
       key: ':mrf_subchain',
@@ -327,8 +342,8 @@ describe('Wrap settings', () => {
     const state2 = { ':pleroma': { 'Pleroma.Web.MediaProxy.Invalidation.Http': { 
       ':options': { ':params': [{ aaa: { value: 'bbb', id: '1' }, xxx: { value: 'zzz', id: '2' }}] }
     }}}
-
-    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2)
+    const description2 = [{ group: ':pleroma', key: 'Pleroma.Web.MediaProxy.Invalidation.Http', label: 'Pleroma.Web.MediaProxy.Invalidation.Http', type: 'group' }]
+    const result2 = wrapUpdatedSettings(':pleroma', settings2, state2, description2)
     const expectedResult2 = [{
       group: ':pleroma',
       key: 'Pleroma.Web.MediaProxy.Invalidation.Http',
@@ -393,8 +408,8 @@ describe('Wrap settings', () => {
         ]
       ]
     }}}
-
-    const result = wrapUpdatedSettings(':pleroma', settings, state)
+    const description = [{ group: ':pleroma', key: ':manifest', label: 'Manifest', type: 'group' }]
+    const result = wrapUpdatedSettings(':pleroma', settings, state, description)
     const expectedResult = [{
       group: ':pleroma',
       key: ':manifest',
@@ -411,7 +426,8 @@ describe('Wrap settings', () => {
   it('wraps IP setting', () => {
     const settings = { ':gopher': { ':ip': ['tuple', '127.0.0.1']}}
     const state = { ':pleroma': { ':gopher': {}}}
-    const result = wrapUpdatedSettings(':pleroma', settings, state)
+    const description = [{ group: ':pleroma', key: ':gopher', label: 'Gopher', type: 'group' }]
+    const result = wrapUpdatedSettings(':pleroma', settings, state, description)
     const expectedResult = [{
       group: ':pleroma',
       key: ':gopher',
@@ -427,7 +443,8 @@ describe('Wrap settings', () => {
       ['strip', '{ "implode", "1"]}']
     ]}}
     const state = { ':pleroma': { 'Pleroma.Upload.Filter.Mogrify': {}}}
-    const result = wrapUpdatedSettings(':pleroma', settings, state)
+    const description = [{ group: ':pleroma', key: 'Pleroma.Upload.Filter.Mogrify', label: 'Pleroma.Upload.Filter.Mogrify', type: 'group' }]
+    const result = wrapUpdatedSettings(':pleroma', settings, state, description)
     const expectedResult = [{
       group: ':pleroma',
       key: 'Pleroma.Upload.Filter.Mogrify',
@@ -445,7 +462,8 @@ describe('Wrap settings', () => {
       ':methods': [['list', 'string'], ['POST', 'PUT', 'PATCH']]
     }}
     const state = { ':pleroma': { ':http_security': {}}}
-    const result = wrapUpdatedSettings(':pleroma', settings, state)
+    const description = [{ group: ':pleroma', key: ':http_security', label: 'HTTP security', type: 'group' }]
+    const result = wrapUpdatedSettings(':pleroma', settings, state, description)
     const expectedResult = [{
       group: ':pleroma',
       key: ':http_security',
