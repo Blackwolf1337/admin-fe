@@ -3,43 +3,44 @@ import _ from 'lodash'
 
 describe('Wrap settings', () => {
   it('wraps values without keys with type atom', () => {
-    const settings = { ':level': { _value: ['atom', 'warn'] }}
+    const settings = { 'null': { ':level': ['atom', 'warn'] }}
     const description = [{ group: ':quack', label: 'Quack Logger', type: 'group' }]
     const result = wrapUpdatedSettings(':quack', settings, {}, description)
-    const expectedResult = [{ group: ':quack', key: ':level', value: ':warn' }]
+    const expectedResult = [{ group: ':quack', key: null, value: [{ tuple: [':level', ':warn'] }]}]
     expect(_.isEqual(result, expectedResult)).toBeTruthy()
   })
 
   it('wraps :backends setting in group :logger', () => {
-    const settings = { ':backends': { _value:
-      [['atom', 'tuple', 'module'], [':console', 'Quack.Logger', ':ex_syslogger']]
+    const settings = { 'null': { ':backends':
+      [['atom', 'tuple', 'module'], [':console', 'Quack.Logger', { 'tuple': ['ExSyslogger', ':ex_syslogger'] }]]
     }}
     const description = [{ group: ':logger', label: 'Logger', type: 'group' }]
     const result = wrapUpdatedSettings(':logger', settings, {}, description)
     const expectedResult = [{
       group: ':logger',
-      key: ':backends',
-      value: [':console', 'Quack.Logger', { 'tuple': ['ExSyslogger', ':ex_syslogger'] }]
+      key: null,
+      value: [{ tuple: [':backends', [':console', 'Quack.Logger', { 'tuple': ['ExSyslogger', ':ex_syslogger'] }]]}]
     }]
     expect(_.isEqual(result, expectedResult)).toBeTruthy()
   })
 
   it('wraps :types setting in group :mime', () => {
-    const settings = { ':types': { _value: ['map', {
+    const settings = { 'null': { ':types': ['map', {
       'application/ld+json': [['list', 'string'], ['activity+json']],
       'application/xml': [['list', 'string'], ['xml']],
       'application/xrd+xml': [['list', 'string'], ['xrd+xml']]
     }]}}
+    const state = { ':mime': { ':types': {}}}
     const description = [{ group: ':mime', label: 'Mime Types', type: 'group' }]
-    const result = wrapUpdatedSettings(':mime', settings, {}, description)
+    const result = wrapUpdatedSettings(':mime', settings, state, description)
     const expectedResult = [{
       group: ':mime',
-      key: ':types',
-      value: {
+      key: null,
+      value: [{ tuple: [':types', {
         'application/ld+json': ['activity+json'],
         'application/xml': ['xml'],
         'application/xrd+xml': ['xrd+xml']
-      }
+      }]}]
     }]
     expect(_.isEqual(result, expectedResult)).toBeTruthy()
   })
@@ -330,39 +331,6 @@ describe('Wrap settings', () => {
     expect(_.isEqual(result2, expectedResult2)).toBeTruthy()
   })
   
-  it('wraps settings with type [`list`, `map`]', () => {
-    const settings = { ':manifest': { ':icons': [['map', 'list'], [
-      { ':src': '/static/logo.png', ':type': 'image/png' },
-      { ':src': '/static/icon.png', ':type': 'image/png' }
-    ]]}}
-    
-    const state = { ':pleroma': { ':manifest': { 
-      ':background_color': '#191b22',
-      ':theme_color': '#282c37',
-      ':icons': [
-        [
-          { 'id': 'f21318c4', 'key': ':src', 'value': '/static/logo.png' },
-          { 'id': 'f4b87549', 'key': ':type', 'value': 'image/png' }
-        ], [
-          { 'id': 'f31d351e', 'key': ':src', 'value': '/static/icon.png' },
-          { 'id': 'f1455852', 'key': ':type', 'value': 'image/png' }
-        ]
-      ]
-    }}}
-
-    const result = wrapUpdatedSettings(':pleroma', settings, state)
-    const expectedResult = [{
-      group: ':pleroma',
-      key: ':manifest',
-      value: [{ tuple: [':icons', [
-        { ':src': '/static/logo.png', ':type': 'image/png' },
-        { ':src': '/static/icon.png', ':type': 'image/png' }
-      ]]}]
-    }]
-
-    expect(_.isEqual(result, expectedResult)).toBeTruthy()
-  })
-
   it('wraps settings with type [`list`, `map`]', () => {
     const settings = { ':manifest': { ':icons': [['map', 'list'], [
       { ':src': '/static/logo.png', ':type': 'image/png' },

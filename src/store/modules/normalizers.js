@@ -245,7 +245,7 @@ export const wrapUpdatedSettings = (group, settings, currentState, description) 
   return Object.keys(settings).map((key) => {
     const settingDescription = description.find(setting => setting.key === key)
     if (key === 'null') {
-      return { group, key: null, value: wrapValues(settings[key], currentState[group][key]) }
+      return { group, key: null, value: wrapValues(settings[key], currentState[group]) }
     } else if (settingDescription && settingDescription.type !== 'group') {
       return { group, key, value: settings[key][1] }
     } else {
