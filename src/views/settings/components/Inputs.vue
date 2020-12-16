@@ -50,7 +50,7 @@
           class="input"
           @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
         <el-input
-          v-if="setting.type === 'string' ||
+          v-if="!textareaInput && setting.type === 'string' ||
           (Array.isArray(setting.type) && setting.type.includes('string') && setting.type.includes('atom'))"
           :value="inputValue"
           :placeholder="setting.suggestions ? setting.suggestions[0] : null"
