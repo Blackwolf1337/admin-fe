@@ -9,18 +9,18 @@ export const getBooleanValue = value => {
   return value
 }
 
-const getCurrentValue = (type, value, path) => {
+const getCurrentValue = (type, settings, path) => {
   if (type === 'state') {
-    return _.get(value, path)
+    return _.get(settings, path)
   } else {
     const [firstSettingName, ...restKeys] = path
-    const firstSegment = value[firstSettingName]
+    const firstSegment = settings[firstSettingName]
     if (restKeys.length === 0 || !firstSegment) {
       return firstSegment || false
     } else {
-      const secondSegment = (value, keys) => {
+      const secondSegment = (settings, keys) => {
         const [element, ...rest] = keys
-        return keys.length === 0 ? value : secondSegment(value[1][element], rest)
+        return keys.length === 0 ? settings : secondSegment(settings[1][element], rest)
       }
       return secondSegment(firstSegment, restKeys)
     }
@@ -193,34 +193,36 @@ export const processNested = (valueForState, valueForUpdatedSettings, group, par
 
 export const processNestedWithNullKey = (valueForState, valueForUpdatedSettings, group, parents, settings, updatedSettings) => {
   const [{ key, type }, ...otherParents] = parents
-  const path = [group, ...parents.reverse().map(parent => parent.key).slice(0, -1)]
-  const updatedValueForState = valueExists('state', settings, path)
+  const pathForState = [group, ...parents.reverse().map(parent => parent.key).slice(0, -1)]
+  const updatedValueForState = valueExists('state', settings, pathForState)
     ? { ...getCurrentValue('state', settings[group], parents.map(el => el.key).slice(0, -1)),
       ...{ [key]: valueForState }}
     : { [key]: valueForState }
-  const updatedValueForUpdatedSettings = valueExists('updatedSettings', updatedSettings, path)
-    ? { ...getCurrentValue('updatedSettings', updatedSettings[group], parents.map(el => el.key).slice(0, -1))[1],
+
+  const pathForUpdatedSettings = [group, 'null', ...parents.map(parent => parent.key).slice(0, -1)]
+  const updatedValueForUpdatedSettings = valueExists('updatedSettings', updatedSettings, pathForUpdatedSettings)
+    ? { ...getCurrentValue('updatedSettings', updatedSettings[group]['null'], parents.map(el => el.key).slice(0, -1))[1],
       ...{ [key]: [type, valueForUpdatedSettings] }}
     : { [key]: [type, valueForUpdatedSettings] }
 
   return { valueForState: updatedValueForState, valueForUpdatedSettings: updatedValueForUpdatedSettings, setting: otherParents[0] }
 }
 
-const valueExists = (type, value, path) => {
+const valueExists = (type, settings, path) => {
   if (type === 'state') {
-    return _.get(value, path)
+    return _.get(settings, path)
   } else {
     const [group, key, firstSettingName, ...restKeys] = path
-    const firstSegment = _.get(value, [group, key, firstSettingName])
+    const firstSegment = _.get(settings, [group, key, firstSettingName])
     if (restKeys.length === 0 || !firstSegment) {
       return firstSegment || false
     } else {
-      const secondSegment = (value, keys) => {
+      const secondSegment = (settings, keys) => {
         if (keys.length === 0) {
           return true
         }
         const [element, ...rest] = keys
-        return value[1][element] ? secondSegment(value[1][element], rest) : false
+        return settings[1][element] ? secondSegment(settings[1][element], rest) : false
       }
       return secondSegment(firstSegment, restKeys)
     }
