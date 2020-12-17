@@ -27,22 +27,6 @@ const getCurrentValue = (type, settings, path) => {
   }
 }
 
-// const getValueWithoutKey = (key, [type, value]) => {
-//   if (prependWithСolon(type, value)) {
-//     return `:${value}`
-//   } else if (key === ':backends') {
-//     const index = value.findIndex(el => el === ':ex_syslogger')
-//     const updatedArray = value.slice()
-//     if (index !== -1) {
-//       updatedArray[index] = { 'tuple': ['ExSyslogger', ':ex_syslogger'] }
-//     }
-//     return updatedArray
-//   } else if (key === ':types') {
-//     return Object.keys(value).reduce((acc, key) => { return { ...acc, [key]: value[key][1] } }, {})
-//   }
-//   return value
-// }
-
 export const parseNonTuples = (key, value) => {
   if (key === ':backends') {
     const index = value.findIndex(el => typeof el === 'object' && el.tuple.includes(':ex_syslogger'))
@@ -228,20 +212,6 @@ const valueExists = (type, settings, path) => {
     }
   }
 }
-
-// export const valueOfNonTuples = (key, value) => {
-//   const valueIsArrayOfNonObjects = Array.isArray(value) && value.length > 0 && value.every(el => typeof el !== 'object')
-//   return key === ':meta' ||
-//     key === ':types' ||
-//     key === ':backends' ||
-//     key === ':compiled_template_engines' ||
-//     key === ':compiled_format_encoders' ||
-//     typeof value === 'string' ||
-//     typeof value === 'number' ||
-//     typeof value === 'boolean' ||
-//     value === null ||
-//     valueIsArrayOfNonObjects
-// }
 
 export const wrapUpdatedSettings = (group, settings, currentState, description) => {
   return Object.keys(settings).map((key) => {
