@@ -166,7 +166,7 @@ export async function getPasswordResetToken(nickname, authHost, token) {
 export async function listAllTags(authHost, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users/tags`,
+    url: `/api/pleroma/admin/user_tags`,
     method: 'get',
     headers: authHeaders(token)
   })
