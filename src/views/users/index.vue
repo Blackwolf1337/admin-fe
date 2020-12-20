@@ -85,7 +85,7 @@
       </el-table-column>
       <el-table-column :min-width="width" :label="$t('users.tags')">
         <template slot-scope="scope">
-          <tags-select :tags="scope.row.tags" :user="scope.row"/>
+          <tags-select :tags="scope.row.tags" :user="scope.row" :page="'index'"/>
         </template>
       </el-table-column>
       <el-table-column v-if="pendingView && isDesktop" :label="$t('users.registrationReason')">
@@ -289,9 +289,6 @@ export default {
     color: #bbb;
   }
 }
-.capitalize {
-  text-transform: capitalize;
-}
 .el-dropdown-link:hover {
     cursor: pointer;
     color: #409EFF;
@@ -340,10 +337,6 @@ export default {
     width: 350px;
     float: right;
     margin-left: 10px;
-  }
-  .select-tags {
-    padding-right: 10px;
-    width: 100%;
   }
   .filter-container {
     display: flex;

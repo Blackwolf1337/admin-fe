@@ -44,6 +44,10 @@ const userProfile = {
       dispatch('FetchUserStatuses', { userId, godmode })
       dispatch('FetchUserChats', { userId })
     },
+    FetchUserTags({ commit, state }, tag) {
+      const updatedUser = { ...state.user, tags: [...state.user.tags, tag] }
+      commit('SET_USER', updatedUser)
+    },
     FetchUserStatuses({ commit, dispatch, getters }, { userId, godmode }) {
       commit('SET_STATUSES_LOADING', true)
 
@@ -69,6 +73,12 @@ const userProfile = {
     },
     SetChats({ commit }, chats) {
       commit('SET_CHATS', chats)
+    },
+    UpdateSingleUserOnTagToggle({ commit, dispatch, state }, updatedUser) {
+      commit('SET_USER', updatedUser)
+
+      dispatch('ListTags')
+      dispatch('SuccessMessage')
     },
     async UpdateUserCredentials({ dispatch, getters }, { nickname, credentials }) {
       await updateUserCredentials(nickname, credentials, getters.authHost, getters.token)

@@ -44,10 +44,16 @@
 export default {
   name: 'TagsSelect',
   props: {
+    page: {
+      type: String,
+      default: function() {
+        return ''
+      }
+    },
     tags: {
       type: Array,
       default: function() {
-        return {}
+        return []
       }
     },
     user: {
@@ -121,19 +127,33 @@ export default {
           }
         }, {})
     },
-    toggleTag(tags, user) {
+    async toggleTag(tags, user) {
       if (tags.length > user.tags.length) {
         const tag = tags.filter(tag => !user.tags.includes(tag))[0]
         const updatedUser = { ...user, tags: [...user.tags, tag] }
-        this.$store.dispatch('AddTag', { users: [user], tag })
-        this.$store.dispatch('UpdateUsersOnTagToggle', [updatedUser])
+        await this.$store.dispatch('AddTag', { users: [user], tag })
+        this.page === 'index'
+          ? this.$store.dispatch('UpdateUsersOnTagToggle', [updatedUser])
+          : this.$store.dispatch('UpdateSingleUserOnTagToggle', updatedUser)
       } else {
         const tag = user.tags.filter(tag => !tags.includes(tag))[0]
         const updatedUser = { ...user, tags: user.tags.filter(userTag => userTag !== tag) }
-        this.$store.dispatch('RemoveTag', { users: [user], tag })
-        this.$store.dispatch('UpdateUsersOnTagToggle', [updatedUser])
+        await this.$store.dispatch('RemoveTag', { users: [user], tag })
+        this.page === 'index'
+          ? this.$store.dispatch('UpdateUsersOnTagToggle', [updatedUser])
+          : this.$store.dispatch('UpdateSingleUserOnTagToggle', updatedUser)
       }
     }
   }
 }
 </script>
+
+<style rel='stylesheet/scss' lang='scss'>
+.capitalize {
+  text-transform: capitalize;
+}
+.select-tags {
+  padding-right: 10px;
+  width: stretch;
+}
+</style>

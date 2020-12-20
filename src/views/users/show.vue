@@ -63,8 +63,7 @@
                 <tr class="el-table__row">
                   <td>{{ $t('userProfile.tags') }}</td>
                   <td>
-                    <span v-if="user.tags.length === 0 || !propertyExists(user, 'tags')">—</span>
-                    <el-tag v-for="tag in user.tags" v-else :key="tag" class="user-profile-tag">{{ humanizeTag(tag) }}</el-tag>
+                    <tags-select :tags="user.tags" :user="user" :page="'show'"/>
                   </td>
                 </tr>
                 <tr class="el-table__row">
@@ -167,10 +166,11 @@ import ModerationDropdown from './components/ModerationDropdown'
 import SecuritySettingsModal from './components/SecuritySettingsModal'
 import RebootButton from '@/components/RebootButton'
 import ResetPasswordDialog from './components/ResetPasswordDialog'
+import TagsSelect from './components/TagsSelect'
 
 export default {
   name: 'UsersShow',
-  components: { ModerationDropdown, RebootButton, ResetPasswordDialog, Status, SecuritySettingsModal },
+  components: { ModerationDropdown, RebootButton, ResetPasswordDialog, Status, SecuritySettingsModal, TagsSelect },
   data() {
     return {
       showPrivate: false,
@@ -216,7 +216,9 @@ export default {
   mounted: function() {
     this.$store.dispatch('NeedReboot')
     this.$store.dispatch('GetNodeInfo')
+    this.$store.dispatch('FetchTagPolicySetting')
     this.$store.dispatch('FetchUserProfile', { userId: this.$route.params.id, godmode: false })
+    this.$store.dispatch('ListTags')
   },
   methods: {
     closeResetPasswordDialog() {
