@@ -183,7 +183,13 @@ export default {
             tag === 'mrf_tag:disable-remote-subscription' || tag === 'mrf_tag:disable-any-subscription'
               ? this.isLocalUser(user) && !user.tags.includes(tag)
               : user.nickname && !user.tags.includes(tag))
-          const addTagFn = async(users) => await this.$store.dispatch('AddTag', { users, tag })
+          const updatedUsers = filtered.map(user => {
+            return { ...user, tags: [...user.tags, tag] }
+          })
+          const addTagFn = async(users) => {
+            await this.$store.dispatch('AddTag', { users, tag })
+            await this.$store.dispatch('UpdateUsersOnTagToggle', updatedUsers)
+          }
           applyAction(filtered, addTagFn)
         },
         removeTag: (tag) => async() => {
@@ -191,8 +197,13 @@ export default {
             tag === 'mrf_tag:disable-remote-subscription' || tag === 'mrf_tag:disable-any-subscription'
               ? this.isLocalUser(user) && user.tags.includes(tag)
               : user.nickname && user.tags.includes(tag))
-          const removeTagFn = async(users) => await this.$store.dispatch('RemoveTag', { users, tag })
-
+          const updatedUsers = filtered.map(user => {
+            return { ...user, tags: user.tags.filter(userTag => userTag !== tag) }
+          })
+          const removeTagFn = async(users) => {
+            await this.$store.dispatch('RemoveTag', { users, tag })
+            await this.$store.dispatch('UpdateUsersOnTagToggle', updatedUsers)
+          }
           applyAction(filtered, removeTagFn)
         },
         requirePasswordReset: () => {

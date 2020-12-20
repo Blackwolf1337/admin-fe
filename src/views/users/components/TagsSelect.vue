@@ -122,9 +122,17 @@ export default {
         }, {})
     },
     toggleTag(tags, user) {
-      tags.length > user.tags.length
-        ? this.$store.dispatch('AddTag', { users: [user], tag: tags.filter(tag => !user.tags.includes(tag))[0] })
-        : this.$store.dispatch('RemoveTag', { users: [user], tag: user.tags.filter(tag => !tags.includes(tag))[0] })
+      if (tags.length > user.tags.length) {
+        const tag = tags.filter(tag => !user.tags.includes(tag))[0]
+        const updatedUser = { ...user, tags: [...user.tags, tag] }
+        this.$store.dispatch('AddTag', { users: [user], tag })
+        this.$store.dispatch('UpdateUsersOnTagToggle', [updatedUser])
+      } else {
+        const tag = user.tags.filter(tag => !tags.includes(tag))[0]
+        const updatedUser = { ...user, tags: user.tags.filter(userTag => userTag !== tag) }
+        this.$store.dispatch('RemoveTag', { users: [user], tag })
+        this.$store.dispatch('UpdateUsersOnTagToggle', [updatedUser])
+      }
     }
   }
 }

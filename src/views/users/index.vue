@@ -254,11 +254,6 @@ export default {
     },
     showDeactivatedButton(id) {
       return this.$store.state.user.id !== id
-    },
-    toggleTag(tags, user) {
-      tags.length > user.tags.length
-        ? this.$store.dispatch('AddTag', { users: [user], tag: tags.filter(tag => !user.tags.includes(tag))[0] })
-        : this.$store.dispatch('RemoveTag', { users: [user], tag: user.tags.filter(tag => !tags.includes(tag))[0] })
     }
   }
 }

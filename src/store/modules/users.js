@@ -126,15 +126,13 @@ const users = {
 
       dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
     },
-    async AddTag({ dispatch, getters }, { users, tag, _userId, _statusId }) {
-      const updatedUsers = users.map(user => {
-        return { ...user, tags: [...user.tags, tag] }
-      })
+    async AddTag({ getters }, { users, tag }) {
       const nicknames = users.map(user => user.nickname)
-      const callApiFn = async() => await tagUser(nicknames, [tag], getters.authHost, getters.token)
-
-      await dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
-      dispatch('ListTags')
+      try {
+        await tagUser(nicknames, [tag], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      }
     },
     async ApproveUsersAccount({ dispatch, getters }, { users, _userId, _statusId }) {
       const updatedUsers = users.map(user => {
@@ -254,14 +252,13 @@ const users = {
       const { data } = await listAllTags(getters.authHost, getters.token)
       commit('SET_TAGS', data)
     },
-    async RemoveTag({ dispatch, getters }, { users, tag, _userId, _statusId }) {
-      const updatedUsers = users.map(user => {
-        return { ...user, tags: user.tags.filter(userTag => userTag !== tag) }
-      })
+    async RemoveTag({ dispatch, getters }, { users, tag }) {
       const nicknames = users.map(user => user.nickname)
-      const callApiFn = async() => await untagUser(nicknames, [tag], getters.authHost, getters.token)
-
-      dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
+      try {
+        await untagUser(nicknames, [tag], getters.authHost, getters.token)
+      } catch (_e) {
+        return
+      }
     },
     async RequirePasswordReset({ dispatch, getters }, users) {
       const nicknames = users.map(user => user.nickname)
@@ -316,6 +313,13 @@ const users = {
       const callApiFn = async() => await updateUserCredentials(user.nickname, credentials, getters.authHost, getters.token)
 
       dispatch('ApplyChanges', { updatedUsers, callApiFn, userId: _userId, statusId: _statusId })
+    },
+    UpdateUsersOnTagToggle({ commit, dispatch, state }, updatedUsers) {
+      commit('SWAP_USERS', updatedUsers)
+
+      dispatch('SearchUsers', { query: state.searchQuery, page: state.currentPage })
+      dispatch('ListTags')
+      dispatch('SuccessMessage')
     }
   }
 }
