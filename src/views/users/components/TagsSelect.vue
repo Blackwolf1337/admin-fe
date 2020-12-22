@@ -153,7 +153,7 @@ export default {
   text-transform: capitalize;
 }
 .select-tags {
-  padding-right: 10px;
+  padding: 10px 10px 10px 0;
   width: stretch;
 }
 </style>
