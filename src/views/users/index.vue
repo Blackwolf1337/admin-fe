@@ -45,16 +45,22 @@
         reserve-selection
         width="44"
         align="center"/>
-      <el-table-column :min-width="width" :label="$t('users.id')" prop="id" />
-      <el-table-column :label="$t('users.name')" prop="nickname">
+      <el-table-column v-if="!isMobile" :label="$t('users.id')" prop="id" />
+      <el-table-column v-if="!isMobile" :label="$t('users.name')" prop="nickname">
         <template slot-scope="scope">
           {{ scope.row.nickname }}
-          <el-tag v-if="isDesktop" type="info" size="mini">
+          <el-tag type="info" size="mini">
             <span>{{ scope.row.local ? $t('users.local') : $t('users.external') }}</span>
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column :min-width="width" :label="$t('users.status')" width="200px">
+      <el-table-column v-if="isMobile" :label="$t('users.userId')" width="150px">
+        <template slot-scope="scope">
+          <span class="user-nickname-column">{{ scope.row.nickname }}</span>
+          <h5 class="user-id-column">ID: {{ scope.row.id }}</h5>
+        </template>
+      </el-table-column>
+      <el-table-column :width="isMobile ? 65 : 200" :label="$t('users.status')" class-name="user-status-column">
         <template slot-scope="scope">
           <el-tag v-if="!scope.row.deactivated & !scope.row.approval_pending" type="success">
             <span v-if="isDesktop">{{ $t('users.active') }}</span>
@@ -83,7 +89,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column :min-width="width" :label="$t('users.tags')">
+      <el-table-column :width="isMobile ? 230 : false" :label="$t('users.tags')" class-name="no-padding">
         <template slot-scope="scope">
           <tags-select :tags="scope.row.tags" :user="scope.row" :page="'index'"/>
         </template>
@@ -320,6 +326,7 @@ export default {
   }
   .cell {
     word-break: break-word;
+    padding: 0 10px;
   }
   .el-table__row:hover {
     cursor: pointer;
@@ -380,7 +387,7 @@ export default {
       flex-direction: column;
       margin: 0 10px
     }
-    .el-table__row {
+    .user-status-column {
       .el-tag {
         display: flex;
         align-items: center;
@@ -390,8 +397,24 @@ export default {
         font-weight: bold;
       }
     }
+    .no-padding {
+      .cell {
+        padding: 0;
+      }
+    }
     .reboot-button {
       margin: 0;
+    }
+    .user-id-column {
+      color: gray;
+      margin: 0;
+      font-weight: 400;
+    }
+    .user-nickname-column {
+      display: block;
+    }
+    .user-tag-column {
+      margin: auto;
     }
     .users-header-container {
       margin: 7px 10px 12px 10px;

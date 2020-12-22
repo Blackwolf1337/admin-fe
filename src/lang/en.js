@@ -191,6 +191,7 @@ export default {
     localUsersOnly: 'Local users only',
     search: 'Search',
     id: 'ID',
+    userId: 'User / ID',
     name: 'Name',
     label: 'Label',
     status: 'Status',
