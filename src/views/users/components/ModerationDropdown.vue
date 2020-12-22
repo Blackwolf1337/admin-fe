@@ -1,10 +1,13 @@
 <template>
   <el-dropdown :hide-on-click="false" size="small" trigger="click" placement="top-start" @click.native.stop>
     <div>
-      <el-button v-if="page === 'users'" type="text" class="el-dropdown-link">
-        {{ $t('users.moderation') }}
-        <i v-if="isDesktop" class="el-icon-arrow-down el-icon--right"/>
-      </el-button>
+      <span v-if="page === 'users'">
+        <i v-if="isMobile" class="el-icon-more" />
+        <el-button v-else type="text" class="el-dropdown-link">
+          {{ $t('users.moderation') }}
+          <i v-if="isDesktop" class="el-icon-arrow-down el-icon--right"/>
+        </el-button>
+      </span>
       <el-button v-if="page === 'userPage' || page === 'statusPage'" class="moderate-user-button">
         <span class="moderate-user-button-container">
           <span>
@@ -122,6 +125,9 @@ export default {
     },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
+    },
+    isMobile() {
+      return this.$store.state.app.device === 'mobile'
     }
   },
   methods: {

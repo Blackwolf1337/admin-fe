@@ -37,6 +37,7 @@
       :data="users"
       row-key="id"
       style="width: 100%"
+      header-cell-class-name="users-table-header"
       @row-click="handleRowClick($event)"
       @selection-change="handleSelectionChange">
       <el-table-column
@@ -107,7 +108,11 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('users.actions')" fixed="right">
+      <el-table-column
+        :label="isMobile ? '' : $t('users.actions')"
+        :width="isMobile ? 50 : false"
+        :align="isMobile ? 'center' : 'left'"
+        fixed="right">
         <template slot-scope="scope">
           <moderation-dropdown
             v-if="propertyExists(scope.row, 'nickname')"
@@ -394,7 +399,7 @@ export default {
         justify-content: center;
         width: 30px;
         margin-bottom: 4px;
-        font-weight: bold;
+        font-weight: 400;
       }
     }
     .no-padding {
@@ -418,6 +423,9 @@ export default {
     }
     .users-header-container {
       margin: 7px 10px 12px 10px;
+    }
+    .users-table-header {
+      font-weight: 500;
     }
     .user-count {
       color: gray;
