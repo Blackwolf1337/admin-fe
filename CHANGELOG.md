@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Update rendering Moderation Log Messages so that all usernames are links to the pages of the corresponding users in Admin-FE
 - Remove Websocket based federation settings
 - Move tag moderation from Moderation menu to separate column in the Users table, add ability to add custom tags
+- Refresh mobile UI for the Users table
 
 ### Fixed
 
