@@ -457,7 +457,8 @@ table {
     margin: 0 10px 20px;
     width: 95%;
     td {
-      width: 80px;
+      width: 50px;
+      margin-right: 7px;
     }
   }
   .user-profile-container {

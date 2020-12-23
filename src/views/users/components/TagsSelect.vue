@@ -153,7 +153,15 @@ export default {
   text-transform: capitalize;
 }
 .select-tags {
-  padding: 10px 10px 10px 0;
+  padding: 10px 0;
   width: stretch;
+}
+
+@media only screen and (max-width:480px) {
+  .user-profile-card {
+    .el-card__body {
+      padding: 15px;
+    }
+  }
 }
 </style>
