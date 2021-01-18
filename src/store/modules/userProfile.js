@@ -2,10 +2,13 @@ import { fetchUser, fetchUserStatuses, fetchUserChats, fetchUserCredentials, upd
 
 const userProfile = {
   state: {
-    statuses: [],
-    statusesLoading: true,
     chats: [],
     chatsLoading: true,
+    currentPage: 1,
+    pageSize: 20,
+    statuses: [],
+    statusesLoading: true,
+    totalStatusesCount: 0,
     user: {},
     userCredentials: {},
     userProfileLoading: true

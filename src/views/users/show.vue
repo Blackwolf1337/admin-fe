@@ -156,6 +156,16 @@
           </el-timeline-item>
           <p v-if="statuses.length === 0" class="no-statuses">{{ $t('userProfile.noStatuses') }}</p>
         </el-timeline>
+        <div v-if="!statusesLoading" class="recent-statuses-pagination">
+          <el-pagination
+            :total="totalStatusesCount"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            background
+            layout="prev, pager, next"
+            @current-change="handlePageChange"
+          />
+        </div>
       </div>
     </div>
   </main>
@@ -179,6 +189,15 @@ export default {
     }
   },
   computed: {
+    chats() {
+      return this.$store.state.userProfile.chats
+    },
+    chatsLoading() {
+      return this.$store.state.userProfile.chatsLoading
+    },
+    currentPage() {
+      return this.$store.state.userProfile.currentPage
+    },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
@@ -191,17 +210,17 @@ export default {
     loading() {
       return this.$store.state.users.loading
     },
+    pageSize() {
+      return this.$store.state.userProfile.pageSize
+    },
     statuses() {
       return this.$store.state.userProfile.statuses
     },
     statusesLoading() {
       return this.$store.state.userProfile.statusesLoading
     },
-    chats() {
-      return this.$store.state.userProfile.chats
-    },
-    chatsLoading() {
-      return this.$store.state.userProfile.chatsLoading
+    totalStatusesCount() {
+      return this.$store.state.userProfile.totalStatusesCount
     },
     user() {
       return this.$store.state.userProfile.user
@@ -222,6 +241,9 @@ export default {
     closeResetPasswordDialog() {
       this.resetPasswordDialogOpen = false
       this.$store.dispatch('RemovePasswordToken')
+    },
+    handlePageChange(page) {
+      this.$store.dispatch('FetchUserStatuses', { page, userId: this.$route.params.id, godmode: this.showPrivate })
     },
     humanizeTag(tag) {
       const mapTags = {
@@ -323,6 +345,10 @@ table {
 }
 .recent-statuses-header {
   margin-top: 10px;
+}
+.recent-statuses-pagination {
+  margin: 25px 0;
+  text-align: center;
 }
 .reset-password-link {
   text-decoration: underline;
