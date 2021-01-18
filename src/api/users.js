@@ -171,10 +171,10 @@ export async function untagUser(nicknames, tags, authHost, token) {
   })
 }
 
-export async function fetchUserStatuses(id, authHost, godmode, token) {
+export async function fetchUserStatuses(page, pageSize, id, authHost, godmode, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/users/${id}/statuses?godmode=${godmode}`,
+    url: `/api/pleroma/admin/users/${id}/statuses?godmode=${godmode}&page=${page}&page_size=${pageSize}`,
     method: 'get',
     headers: authHeaders(token)
   })

@@ -5,7 +5,7 @@ const userProfile = {
     chats: [],
     chatsLoading: true,
     currentPage: 1,
-    pageSize: 20,
+    pageSize: 10,
     statuses: [],
     statusesLoading: true,
     totalStatusesCount: 0,
@@ -16,6 +16,7 @@ const userProfile = {
   mutations: {
     SET_STATUSES: (state, statuses) => {
       state.statuses = statuses
+      state.totalStatusesCount = 26
     },
     SET_STATUSES_LOADING: (state, status) => {
       state.statusesLoading = status
@@ -44,13 +45,13 @@ const userProfile = {
       commit('SET_USER', userResponse.data)
       commit('SET_USER_PROFILE_LOADING', false)
 
-      dispatch('FetchUserStatuses', { userId, godmode })
+      dispatch('FetchUserStatuses', { page: 1, userId, godmode })
       dispatch('FetchUserChats', { userId })
     },
-    FetchUserStatuses({ commit, dispatch, getters }, { userId, godmode }) {
+    FetchUserStatuses({ commit, dispatch, getters, state }, { page, userId, godmode }) {
       commit('SET_STATUSES_LOADING', true)
 
-      fetchUserStatuses(userId, getters.authHost, godmode, getters.token)
+      fetchUserStatuses(page, state.pageSize, userId, getters.authHost, godmode, getters.token)
         .then(statuses => dispatch('SetStatuses', statuses.data))
 
       commit('SET_STATUSES_LOADING', false)

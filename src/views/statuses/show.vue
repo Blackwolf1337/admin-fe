@@ -114,7 +114,7 @@ export default {
       this.$store.dispatch('RemovePasswordToken')
     },
     onTogglePrivate() {
-      this.$store.dispatch('FetchUserStatuses', { userId: this.user.id, godmode: this.showPrivate })
+      this.$store.dispatch('FetchUserStatuses', { page: 1, userId: this.user.id, godmode: this.showPrivate })
     },
     openResetPasswordDialog() {
       this.resetPasswordDialogOpen = true
