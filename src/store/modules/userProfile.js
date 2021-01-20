@@ -61,12 +61,11 @@ const userProfile = {
       dispatch('SetStatuses', data)
       commit('SET_STATUSES_LOADING', false)
     },
-    FetchUserChats({ commit, dispatch, getters }, { userId }) {
+    async FetchUserChats({ commit, dispatch, getters }, { userId }) {
       commit('SET_CHATS_LOADING', true)
 
-      fetchUserChats(userId, getters.authHost, getters.token)
-        .then(chats => dispatch('SetChats', chats.data))
-
+      const { data } = await fetchUserChats(userId, getters.authHost, getters.token)
+      dispatch('SetChats', data)
       commit('SET_CHATS_LOADING', false)
     },
     async FetchUserCredentials({ commit, getters }, { nickname }) {
