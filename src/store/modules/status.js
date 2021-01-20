@@ -93,7 +93,7 @@ const status = {
       commit('SET_STATUS', status.data)
       commit('SET_STATUS_AUTHOR', status.data.account)
       commit('SET_LOADING', false)
-      dispatch('FetchUserStatuses', { userId: state.fetchedStatus.account.id, godmode: false })
+      dispatch('FetchUserStatuses', { _page: 1, userId: state.fetchedStatus.account.id, godmode: false })
     },
     FetchStatusAfterUserModeration({ commit, dispatch, getters, state }, id) {
       commit('SET_LOADING', true)

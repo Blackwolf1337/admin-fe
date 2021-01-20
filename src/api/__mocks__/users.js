@@ -56,7 +56,7 @@ export async function fetchUsers(filters, actorTypeFilters, authHost, token, pag
   }})
 }
 
-export async function fetchUserStatuses(id, authHost, godmode, token) {
+export async function fetchUserStatuses(id, page, pageSize, godmode, authHost, token) {
   return Promise.resolve({ data: userStatuses })
 }
 

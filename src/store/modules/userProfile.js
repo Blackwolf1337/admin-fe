@@ -27,6 +27,9 @@ const userProfile = {
     SET_CHATS_LOADING: (state, chat) => {
       state.chatsLoading = chat
     },
+    SET_CURRENT_PAGE: (state, page) => {
+      state.currentPage = page
+    },
     SET_USER: (state, user) => {
       state.user = user
     },
@@ -45,15 +48,17 @@ const userProfile = {
       commit('SET_USER', userResponse.data)
       commit('SET_USER_PROFILE_LOADING', false)
 
-      dispatch('FetchUserStatuses', { page: 1, userId, godmode })
+      dispatch('FetchUserStatuses', { _page: 1, userId, godmode })
       dispatch('FetchUserChats', { userId })
     },
-    FetchUserStatuses({ commit, dispatch, getters, state }, { page, userId, godmode }) {
+    async FetchUserStatuses({ commit, dispatch, getters, state }, { _page, userId, godmode }) {
       commit('SET_STATUSES_LOADING', true)
+      if (_page) {
+        commit('SET_CURRENT_PAGE', _page)
+      }
 
-      fetchUserStatuses(page, state.pageSize, userId, getters.authHost, godmode, getters.token)
-        .then(statuses => dispatch('SetStatuses', statuses.data))
-
+      const { data } = await fetchUserStatuses(userId, state.currentPage, state.pageSize, godmode, getters.authHost, getters.token)
+      dispatch('SetStatuses', data)
       commit('SET_STATUSES_LOADING', false)
     },
     FetchUserChats({ commit, dispatch, getters }, { userId }) {

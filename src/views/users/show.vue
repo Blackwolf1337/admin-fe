@@ -243,7 +243,7 @@ export default {
       this.$store.dispatch('RemovePasswordToken')
     },
     handlePageChange(page) {
-      this.$store.dispatch('FetchUserStatuses', { page, userId: this.$route.params.id, godmode: this.showPrivate })
+      this.$store.dispatch('FetchUserStatuses', { _page: page, userId: this.$route.params.id, godmode: this.showPrivate })
     },
     humanizeTag(tag) {
       const mapTags = {
