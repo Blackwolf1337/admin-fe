@@ -58,6 +58,16 @@
         </el-timeline-item>
         <p v-if="statuses.length === 0" class="no-statuses">{{ $t('userProfile.noStatuses') }}</p>
       </el-timeline>
+      <div v-if="!statusesLoading" class="recent-statuses-pagination">
+        <el-pagination
+          :total="totalStatusesCount"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          background
+          layout="prev, pager, next"
+          @current-change="handlePageChange"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -78,6 +88,9 @@ export default {
     }
   },
   computed: {
+    currentPage() {
+      return this.$store.state.userProfile.currentPage
+    },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
@@ -90,6 +103,9 @@ export default {
     loading() {
       return this.$store.state.status.loading
     },
+    pageSize() {
+      return this.$store.state.userProfile.pageSize
+    },
     status() {
       return this.$store.state.status.fetchedStatus
     },
@@ -98,6 +114,9 @@ export default {
     },
     statusesLoading() {
       return this.$store.state.userProfile.statusesLoading
+    },
+    totalStatusesCount() {
+      return this.$store.state.userProfile.totalStatusesCount
     },
     user() {
       return this.$store.state.status.statusAuthor
@@ -112,6 +131,9 @@ export default {
     closeResetPasswordDialog() {
       this.resetPasswordDialogOpen = false
       this.$store.dispatch('RemovePasswordToken')
+    },
+    handlePageChange(page) {
+      this.$store.dispatch('FetchUserStatuses', { _page: page, userId: this.user.id, godmode: this.showPrivate })
     },
     onTogglePrivate() {
       this.$store.dispatch('FetchUserStatuses', { _page: 1, userId: this.user.id, godmode: this.showPrivate })
@@ -158,7 +180,10 @@ export default {
   padding: 10px;
   margin-left: 6px;
 }
-
+.recent-statuses-pagination {
+  margin: 25px 0;
+  text-align: center;
+}
 .recent-statuses-container-show {
   display: flex;
   flex-direction: column;
