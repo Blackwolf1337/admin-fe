@@ -51,6 +51,11 @@ const userProfile = {
       dispatch('FetchUserStatuses', { _page: 1, userId, godmode })
       dispatch('FetchUserChats', { userId })
     },
+    UpdateStatusInFetchedStatuses({ commit, state }, status) {
+      const updatedStatuses = state.statuses.map(fetchedStatus =>
+        fetchedStatus.id === status.id ? status : fetchedStatus)
+      commit('SET_STATUSES', updatedStatuses)
+    },
     async FetchUserStatuses({ commit, dispatch, getters, state }, { _page, userId, godmode }) {
       commit('SET_STATUSES_LOADING', true)
       if (_page) {

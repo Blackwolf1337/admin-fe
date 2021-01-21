@@ -12,10 +12,10 @@
               @click.native.stop>
               <div class="status-card-header">
                 <img v-if="propertyExists(account, 'avatar')" :src="account.avatar" class="status-avatar-img">
-                <span v-if="propertyExists(account, 'nickname')" class="status-account-name">{{ account.nickname }}</span>
+                <span v-if="propertyExists(account, 'display_name')" class="status-account-name">{{ account.display_name }}</span>
                 <span v-else>
-                  <span v-if="propertyExists(account, 'nickname')" class="status-account-name">
-                    {{ account.nickname }}
+                  <span v-if="propertyExists(account, 'display_name')" class="status-account-name">
+                    {{ account.display_name }}
                   </span>
                   <span v-else class="status-account-name deactivated">({{ $t('users.invalidNickname') }})</span>
                 </span>

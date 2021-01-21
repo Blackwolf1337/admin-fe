@@ -57,11 +57,11 @@ const status = {
   },
   actions: {
     async ChangeStatusScope({ dispatch, getters }, { statusId, isSensitive, visibility, reportCurrentPage, userId, godmode, fetchStatusesByInstance }) {
-      await changeStatusScope(statusId, isSensitive, visibility, getters.authHost, getters.token)
+      const { data } = await changeStatusScope(statusId, isSensitive, visibility, getters.authHost, getters.token)
       if (reportCurrentPage !== 0) { // called from Reports
         dispatch('FetchReports', reportCurrentPage)
       } else if (userId.length > 0) { // called from User profile
-        dispatch('FetchUserStatuses', { userId, godmode })
+        dispatch('UpdateStatusInFetchedStatuses', data)
       } else if (fetchStatusesByInstance) { // called from Statuses by Instance
         dispatch('FetchStatusesByInstance')
       } else { // called from Status show page
