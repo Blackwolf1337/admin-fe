@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Replace regular inputs with textareas for setting welcome messages in the Settings section
 - Update rendering Moderation Log Messages so that all usernames are links to the pages of the corresponding users in Admin-FE
 - Remove Websocket based federation settings
+- The Service account type has been renamed to Bot so it's consistent with the termoniology used by most fediverse software.
 
 ### Fixed
 

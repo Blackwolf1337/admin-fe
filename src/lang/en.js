@@ -277,7 +277,7 @@ export default {
     passwordResetTokenGenerated: 'Password reset token was generated:',
     linkToResetPassword: 'You can also use this link to reset password:',
     registrationReason: 'Registration Reason',
-    service: 'Service',
+    service: 'Bot',
     person: 'Person',
     enableTagPolicy: 'Enable MRF TagPolicy to manage user tags',
     confirmEnablingTagPolicy: 'Are you sure you want to add TagPolicy to the list of enabled MRF policies?',
