@@ -150,7 +150,7 @@
         <el-checkbox v-model="showPrivate" class="show-private-statuses" @change="onTogglePrivate">
           {{ $t('statuses.showPrivateStatuses') }}
         </el-checkbox>
-        <el-timeline v-if="!statusesLoading" class="statuses">
+        <el-timeline v-if="!statusesLoading" :reverse="true" class="statuses">
           <el-timeline-item v-for="status in statuses" :key="status.id">
             <status :status="status" :account="status.account" :show-checkbox="false" :user-id="user.id" :godmode="showPrivate"/>
           </el-timeline-item>

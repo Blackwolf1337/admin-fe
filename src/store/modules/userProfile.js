@@ -14,9 +14,9 @@ const userProfile = {
     userProfileLoading: true
   },
   mutations: {
-    SET_STATUSES: (state, statuses) => {
-      state.statuses = statuses
-      state.totalStatusesCount = 26
+    SET_STATUSES: (state, { activities, total }) => {
+      state.statuses = activities
+      state.totalStatusesCount = total
     },
     SET_STATUSES_LOADING: (state, status) => {
       state.statusesLoading = status
@@ -54,7 +54,7 @@ const userProfile = {
     UpdateStatusInFetchedStatuses({ commit, state }, status) {
       const updatedStatuses = state.statuses.map(fetchedStatus =>
         fetchedStatus.id === status.id ? status : fetchedStatus)
-      commit('SET_STATUSES', updatedStatuses)
+      commit('SET_STATUSES', { activities: updatedStatuses, total: state.totalStatusesCount })
     },
     async FetchUserStatuses({ commit, dispatch, getters, state }, { _page, userId, godmode }) {
       commit('SET_STATUSES_LOADING', true)
@@ -77,8 +77,8 @@ const userProfile = {
       const userResponse = await fetchUserCredentials(nickname, getters.authHost, getters.token)
       commit('SET_USER_CREDENTIALS', userResponse.data)
     },
-    SetStatuses({ commit }, statuses) {
-      commit('SET_STATUSES', statuses)
+    SetStatuses({ commit }, data) {
+      commit('SET_STATUSES', data)
     },
     SetChats({ commit }, chats) {
       commit('SET_CHATS', chats)

@@ -28,12 +28,3 @@ export async function createNote(content, reportID, authHost, token) {
 export async function deleteNote(noteID, reportID, authHost, token) {
   return Promise.resolve()
 }
-
-// export async function changeStatusScope(id, sensitive, visibility, authHost, token) {
-//   const status = reports[4].statuses[0]
-//   return Promise.resolve({ data: { ...status, sensitive, visibility }})
-// }
-
-// export async function deleteStatus(statusId, authHost, token) {
-//   return Promise.resolve()
-// }
