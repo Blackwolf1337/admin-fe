@@ -58,10 +58,15 @@
         :fetch-statuses-by-instance="true"
         @status-selection="handleStatusSelection" />
     </div>
-    <div v-if="statuses.length > 0" class="statuses-pagination">
-      <el-button v-if="!allLoaded" :loading="buttonLoading" @click="handleLoadMore">{{ $t('statuses.loadMore') }}</el-button>
-      <el-button v-else icon="el-icon-check" circle/>
-    </div>
+    <el-pagination
+      :total="totalInstanceStatusesCount"
+      :current-page="currentPage"
+      :page-size="pageSize"
+      class="instance-statuses-pagination"
+      background
+      layout="prev, pager, next"
+      @current-change="handlePageChange"
+    />
   </div>
 </template>
 
@@ -84,14 +89,11 @@ export default {
     }
   },
   computed: {
-    allLoaded() {
-      return this.$store.state.status.statusesByInstance.allLoaded
-    },
-    buttonLoading() {
-      return this.$store.state.status.statusesByInstance.buttonLoading
-    },
     currentInstance() {
       return this.selectedInstance === this.$store.state.user.authHost
+    },
+    currentPage() {
+      return this.$store.state.status.statusesByInstance.currentPage
     },
     instances() {
       return [this.$store.state.user.authHost, ...this.$store.state.peers.fetchedPeers]
@@ -107,9 +109,6 @@ export default {
     },
     loadingPeers() {
       return this.$store.state.peers.loading
-    },
-    page() {
-      return this.$store.state.status.statusesByInstance.page
     },
     pageSize() {
       return this.$store.state.status.statusesByInstance.pageSize
@@ -143,6 +142,9 @@ export default {
     },
     statusVisibility() {
       return this.$store.state.status.statusVisibility
+    },
+    totalInstanceStatusesCount() {
+      return this.$store.state.status.statusesByInstance.totalInstanceStatusesCount
     }
   },
   mounted() {
@@ -163,10 +165,8 @@ export default {
       this.$store.dispatch('HandlePageChange', 1)
       this.$store.dispatch('FetchStatusesByInstance')
     },
-    handleLoadMore() {
-      this.$store.dispatch('HandlePageChange', this.page + 1)
-
-      this.$store.dispatch('FetchStatusesPageByInstance')
+    handlePageChange(page) {
+      this.$store.dispatch('FetchStatusesByInstance', page)
     },
     handleStatusSelection(user) {
       if (this.selectedUsers.find(selectedUser => user.id === selectedUser.id) !== undefined) {
@@ -208,6 +208,10 @@ export default {
   align-items: center;
   margin: 22px 0 15px 0;
 }
+.instance-statuses-pagination {
+  margin: 25px 0;
+  text-align: center;
+}
 .reboot-button {
   padding: 10px;
   margin: 0;
@@ -225,10 +229,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.statuses-pagination {
-  padding: 15px 0;
-  text-align: center;
 }
 
 @media only screen and (max-width:480px) {

@@ -29,7 +29,7 @@ export async function fetchStatus(id, authHost, token) {
   return Promise.resolve({ data })
 }
 
-export async function fetchStatusesByInstance({ instance, authHost, token, pageSize, page }) {
+export async function fetchStatusesByInstance({ instance, page, pageSize, authHost, token }) {
   let data
   if (pageSize === 1) {
     data = page === 1 || page === 2
@@ -92,6 +92,3 @@ export async function fetchStatusesCount(instance, authHost, token) {
   return Promise.resolve({ data })
 }
 
-export async function fetchStatuses({ godmode, localOnly, authHost, token, pageSize, page }) {
-  return Promise.resolve()
-}

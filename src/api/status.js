@@ -30,15 +30,6 @@ export async function fetchStatus(id, authHost, token) {
   })
 }
 
-export async function fetchStatuses({ godmode, localOnly, authHost, token, pageSize, page }) {
-  return await request({
-    baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/statuses?godmode=${godmode}&local_only=${localOnly}&page=${page}&page_size=${pageSize}`,
-    method: 'get',
-    headers: authHeaders(token)
-  })
-}
-
 export async function fetchStatusesCount(instance, authHost, token) {
   return await request({
     baseURL: baseName(authHost),
@@ -48,7 +39,7 @@ export async function fetchStatusesCount(instance, authHost, token) {
   })
 }
 
-export async function fetchStatusesByInstance({ instance, authHost, token, pageSize, page }) {
+export async function fetchStatusesByInstance({ instance, page, pageSize, authHost, token }) {
   return await request({
     baseURL: baseName(authHost),
     url: `/api/pleroma/admin/instances/${instance}/statuses?page=${page}&page_size=${pageSize}`,

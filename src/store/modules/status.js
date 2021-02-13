@@ -1,4 +1,4 @@
-import { changeStatusScope, deleteStatus, fetchStatus, fetchStatuses, fetchStatusesCount, fetchStatusesByInstance } from '@/api/status'
+import { changeStatusScope, deleteStatus, fetchStatus, fetchStatusesCount, fetchStatusesByInstance } from '@/api/status'
 
 const status = {
   state: {
@@ -10,10 +10,9 @@ const status = {
       selectedInstance: '',
       showLocal: false,
       showPrivate: false,
-      page: 1,
-      pageSize: 20,
-      buttonLoading: false,
-      allLoaded: false
+      currentPage: 1,
+      pageSize: 5,
+      totalInstanceStatusesCount: 0
     },
     statusVisibility: {}
   },
@@ -24,26 +23,21 @@ const status = {
     CHANGE_LOCAL_CHECKBOX_VALUE: (state, value) => {
       state.statusesByInstance.showLocal = value
     },
-    CHANGE_PAGE: (state, page) => {
-      state.statusesByInstance.page = page
-    },
     CHANGE_SELECTED_INSTANCE: (state, instance) => {
       state.statusesByInstance.selectedInstance = instance
     },
     SET_STATUS: (state, status) => {
       state.fetchedStatus = status
     },
-    SET_STATUSES_BY_INSTANCE: (state, statuses) => {
-      state.fetchedStatuses = statuses
+    SET_STATUSES_BY_INSTANCE: (state, { activities, total }) => {
+      state.fetchedStatuses = activities
+      state.statusesByInstance.totalInstanceStatusesCount = total
     },
     PUSH_STATUSES: (state, statuses) => {
       state.fetchedStatuses = [...state.fetchedStatuses, ...statuses]
     },
-    SET_ALL_LOADED: (state, status) => {
-      state.statusesByInstance.allLoaded = status
-    },
-    SET_BUTTON_LOADING: (state, status) => {
-      state.statusesByInstance.buttonLoading = status
+    SET_CURRENT_PAGE_FOR_STATUSES: (state, page) => {
+      state.statusesByInstance.currentPage = page
     },
     SET_LOADING: (state, status) => {
       state.loading = status
@@ -70,11 +64,10 @@ const status = {
     },
     ClearState({ commit }) {
       commit('CHANGE_SELECTED_INSTANCE', '')
-      commit('SET_STATUSES_BY_INSTANCE', [])
+      commit('SET_STATUSES_BY_INSTANCE', { activities: [], total: 0 })
       commit('CHANGE_LOCAL_CHECKBOX_VALUE', false)
       commit('CHANGE_GODMODE_CHECKBOX_VALUE', false)
-      commit('SET_ALL_LOADED', false)
-      commit('CHANGE_PAGE', 1)
+      commit('SET_CURRENT_PAGE_FOR_STATUSES', 1)
     },
     async DeleteStatus({ dispatch, getters }, { statusId, reportCurrentPage, userId, godmode, fetchStatusesByInstance }) {
       await deleteStatus(statusId, getters.authHost, getters.token)
@@ -107,50 +100,17 @@ const status = {
       commit('SET_STATUS_VISIBILITY', data.status_visibility)
       commit('SET_LOADING', false)
     },
-    async FetchStatusesByInstance({ commit, dispatch, getters, state, rootState }) {
+    async FetchStatusesByInstance({ commit, dispatch, getters, state }, page) {
       commit('SET_LOADING', true)
-      dispatch('FetchStatusesCount', state.statusesByInstance.selectedInstance)
-      if (state.statusesByInstance.selectedInstance === '') {
-        commit('SET_STATUSES_BY_INSTANCE', [])
-      } else {
-        const statuses = state.statusesByInstance.selectedInstance === rootState.user.authHost
-          ? await fetchStatuses(
-            {
-              godmode: state.statusesByInstance.showPrivate,
-              localOnly: state.statusesByInstance.showLocal,
-              authHost: getters.authHost,
-              token: getters.token,
-              pageSize: state.statusesByInstance.pageSize,
-              page: state.statusesByInstance.page
-            })
-          : await fetchStatusesByInstance(
-            {
-              instance: state.statusesByInstance.selectedInstance,
-              authHost: getters.authHost,
-              token: getters.token,
-              pageSize: state.statusesByInstance.pageSize,
-              page: state.statusesByInstance.page
-            })
-        commit('SET_STATUSES_BY_INSTANCE', statuses.data)
-        if (statuses.data.length < state.statusesByInstance.pageSize) {
-          commit('SET_ALL_LOADED', true)
-        }
+      if (page) {
+        commit('SET_CURRENT_PAGE_FOR_STATUSES', page)
       }
-      commit('SET_LOADING', false)
-    },
-    async FetchStatusesPageByInstance({ commit, getters, rootState, state }) {
-      commit('SET_BUTTON_LOADING', true)
-      const statuses = state.statusesByInstance.selectedInstance === rootState.user.authHost
-        ? await fetchStatuses(
-          {
-            godmode: state.statusesByInstance.showPrivate,
-            localOnly: state.statusesByInstance.showLocal,
-            authHost: getters.authHost,
-            token: getters.token,
-            pageSize: state.statusesByInstance.pageSize,
-            page: state.statusesByInstance.page
-          })
-        : await fetchStatusesByInstance(
+      dispatch('FetchStatusesCount', state.statusesByInstance.selectedInstance)
+
+      if (state.statusesByInstance.selectedInstance === '') {
+        commit('SET_STATUSES_BY_INSTANCE', { activities: [], total: 0 })
+      } else {
+        const { data } = await fetchStatusesByInstance(
           {
             instance: state.statusesByInstance.selectedInstance,
             authHost: getters.authHost,
@@ -158,32 +118,22 @@ const status = {
             pageSize: state.statusesByInstance.pageSize,
             page: state.statusesByInstance.page
           })
-      commit('PUSH_STATUSES', statuses.data)
-      commit('SET_BUTTON_LOADING', false)
-      if (statuses.data.length < state.statusesByInstance.pageSize) {
-        commit('SET_ALL_LOADED', true)
+        commit('SET_STATUSES_BY_INSTANCE', data)
       }
+      commit('SET_LOADING', false)
     },
     HandleGodmodeCheckboxChange({ commit, dispatch }, value) {
-      dispatch('HandlePageChange', 1)
-      commit('SET_ALL_LOADED', false)
-
+      commit('SET_CURRENT_PAGE_FOR_STATUSES', 1)
       commit('CHANGE_GODMODE_CHECKBOX_VALUE', value)
       dispatch('FetchStatusesByInstance')
     },
     HandleLocalCheckboxChange({ commit, dispatch }, value) {
-      dispatch('HandlePageChange', 1)
-      commit('SET_ALL_LOADED', false)
-
+      commit('SET_CURRENT_PAGE_FOR_STATUSES', 1)
       commit('CHANGE_LOCAL_CHECKBOX_VALUE', value)
       dispatch('FetchStatusesByInstance')
     },
     HandleFilterChange({ commit }, instance) {
       commit('CHANGE_SELECTED_INSTANCE', instance)
-      commit('SET_ALL_LOADED', false)
-    },
-    HandlePageChange({ commit }, page) {
-      commit('CHANGE_PAGE', page)
     },
     SetStatus({ commit }, status) {
       commit('SET_STATUS', status)
