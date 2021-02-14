@@ -12,6 +12,7 @@ export async function fetchStatus(id, authHost, token) {
       id: '9n1bySks25olxWrku0',
       avatar: 'http://localhost:4000/images/avi.png',
       nickname: 'dolin',
+      display_name: 'dolin',
       tags: ['mrf_tag:media-strip', 'mrf_tag:sandbox', 'mrf_tag:disable-any-subscription', 'mrf_tag:media-force-nsfw'],
       url: 'http://localhost:4000/users/dolin'
     },
@@ -30,9 +31,9 @@ export async function fetchStatus(id, authHost, token) {
 }
 
 export async function fetchStatusesByInstance({ instance, page, pageSize, authHost, token }) {
-  let data
+  let instanceStatuses
   if (pageSize === 1) {
-    data = page === 1 || page === 2
+    instanceStatuses = page === 1 || page === 2
       ? [{
         'account': {
           'avatar': 'http://localhost:4000/images/avi.png',
@@ -48,7 +49,7 @@ export async function fetchStatusesByInstance({ instance, page, pageSize, authHo
       }]
       : []
   } else {
-    data = [
+    instanceStatuses = [
       {
         'account': {
           'avatar': 'http://localhost:4000/images/avi.png',
@@ -76,7 +77,7 @@ export async function fetchStatusesByInstance({ instance, page, pageSize, authHo
         'visibility': 'unlisted'
       }]
   }
-  return Promise.resolve({ data })
+  return Promise.resolve({ data: { activities: instanceStatuses, total: 3 }})
 }
 
 export async function fetchStatusesCount(instance, authHost, token) {

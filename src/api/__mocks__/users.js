@@ -12,9 +12,9 @@ export let users = [
 const userProfile = { avatar: 'avatar.jpg', nickname: 'allis', id: '2', tags: [], roles: { admin: true, moderator: false }, local: true, external: false }
 
 const userStatuses = [
-  { account: { id: '9n1bySks25olxWrku0', nickname: 'dolin' }, content: 'pizza makes everything better', id: '9vJOO3iFPyjNaEhJ5s', created_at: '2020-05-22T17:34:34.000Z', visibility: 'public' },
-  { account: { id: '9n1bySks25olxWrku0', nickname: 'dolin' }, content: 'pizza time', id: '9vJPD5XKOdzQ0bvGLY', created_at: '2020-05-22T17:34:34.000Z', visibility: 'public' },
-  { account: { id: '9n1bySks25olxWrku0', nickname: 'dolin' }, content: 'what is yout favorite pizza?', id: '9jop82OBXeFPYulVjM', created_at: '2020-05-22T17:34:34.000Z', visibility: 'public' }
+  { account: { id: '9n1bySks25olxWrku0', nickname: 'dolin', display_name: 'dolin' }, content: 'pizza makes everything better', id: '9vJOO3iFPyjNaEhJ5s', created_at: '2020-05-22T17:34:34.000Z', visibility: 'public' },
+  { account: { id: '9n1bySks25olxWrku0', nickname: 'dolin', display_name: 'dolin' }, content: 'pizza time', id: '9vJPD5XKOdzQ0bvGLY', created_at: '2020-05-22T17:34:34.000Z', visibility: 'public' },
+  { account: { id: '9n1bySks25olxWrku0', nickname: 'dolin', display_name: 'dolin' }, content: 'what is yout favorite pizza?', id: '9jop82OBXeFPYulVjM', created_at: '2020-05-22T17:34:34.000Z', visibility: 'public' }
 ]
 
 const filterUsers = (str) => {
@@ -57,7 +57,7 @@ export async function fetchUsers(filters, actorTypeFilters, authHost, token, pag
 }
 
 export async function fetchUserStatuses(id, page, pageSize, godmode, authHost, token) {
-  return Promise.resolve({ data: userStatuses })
+  return Promise.resolve({ data: { activities: userStatuses, total: 3 }})
 }
 
 export async function fetchUserChats(id, authHost, godmode, token) {
