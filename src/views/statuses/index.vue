@@ -42,22 +42,24 @@
         @apply-action="clearSelection"/>
     </div>
     <div v-if="currentInstance" class="checkbox-container">
-      <el-checkbox v-model="showLocal" class="show-private-statuses">
+      <!-- <el-checkbox v-model="showLocal" class="show-private-statuses">
         {{ $t('statuses.onlyLocalStatuses') }}
-      </el-checkbox>
+      </el-checkbox> -->
       <el-checkbox v-model="showPrivate" class="show-private-statuses">
         {{ $t('statuses.showPrivateStatuses') }}
       </el-checkbox>
     </div>
     <p v-if="statuses.length === 0" class="no-statuses">{{ $t('userProfile.noStatuses') }}</p>
-    <div v-for="status in statuses" :key="status.id" class="status-container">
-      <status
-        :status="status"
-        :account="status.account"
-        :show-checkbox="isDesktop"
-        :fetch-statuses-by-instance="true"
-        @status-selection="handleStatusSelection" />
-    </div>
+    <el-timeline v-if="!loading" :reverse="true" class="statuses">
+      <el-timeline-item v-for="status in statuses" :key="status.id">
+        <status
+          :status="status"
+          :account="status.account"
+          :show-checkbox="isDesktop"
+          :fetch-statuses-by-instance="true"
+          @status-selection="handleStatusSelection" />
+      </el-timeline-item>
+    </el-timeline>
     <el-pagination
       :total="totalInstanceStatusesCount"
       :current-page="currentPage"
@@ -107,6 +109,9 @@ export default {
     isTablet() {
       return this.$store.state.app.device === 'tablet'
     },
+    loading() {
+      return this.$store.state.status.loading
+    },
     loadingPeers() {
       return this.$store.state.peers.loading
     },
@@ -121,14 +126,14 @@ export default {
         this.$store.dispatch('HandleFilterChange', instance)
       }
     },
-    showLocal: {
-      get() {
-        return this.$store.state.status.statusesByInstance.showLocal
-      },
-      set(value) {
-        this.$store.dispatch('HandleLocalCheckboxChange', value)
-      }
-    },
+    // showLocal: {
+    //   get() {
+    //     return this.$store.state.status.statusesByInstance.showLocal
+    //   },
+    //   set(value) {
+    //     this.$store.dispatch('HandleLocalCheckboxChange', value)
+    //   }
+    // },
     showPrivate: {
       get() {
         return this.$store.state.status.statusesByInstance.showPrivate
@@ -162,8 +167,7 @@ export default {
       this.selectedUsers = []
     },
     handleFilterChange() {
-      this.$store.dispatch('HandlePageChange', 1)
-      this.$store.dispatch('FetchStatusesByInstance')
+      this.$store.dispatch('FetchStatusesByInstance', 1)
     },
     handlePageChange(page) {
       this.$store.dispatch('FetchStatusesByInstance', page)
@@ -187,8 +191,8 @@ export default {
   h1 {
     margin: 10px 0 15px 0;
   }
-  .status-container {
-    margin: 0 0 10px;
+  .statuses {
+    padding: 0 20px 0 0;
   }
 }
 .statuses-header-container {

@@ -88,7 +88,7 @@ const status = {
       commit('SET_LOADING', false)
       dispatch('FetchUserStatuses', { _page: 1, userId: state.fetchedStatus.account.id, godmode: false })
     },
-    FetchStatusAfterUserModeration({ commit, dispatch, getters, state }, id) {
+    FetchStatusAfterUserModeration({ commit, dispatch, getters }, id) {
       commit('SET_LOADING', true)
       fetchStatus(id, getters.authHost, getters.token)
         .then(status => dispatch('SetStatus', status.data))
@@ -113,10 +113,11 @@ const status = {
         const { data } = await fetchStatusesByInstance(
           {
             instance: state.statusesByInstance.selectedInstance,
+            godmode: state.statusesByInstance.showPrivate,
             authHost: getters.authHost,
             token: getters.token,
             pageSize: state.statusesByInstance.pageSize,
-            page: state.statusesByInstance.page
+            page: state.statusesByInstance.currentPage
           })
         commit('SET_STATUSES_BY_INSTANCE', data)
       }

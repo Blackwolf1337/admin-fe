@@ -39,10 +39,10 @@ export async function fetchStatusesCount(instance, authHost, token) {
   })
 }
 
-export async function fetchStatusesByInstance({ instance, page, pageSize, authHost, token }) {
+export async function fetchStatusesByInstance({ instance, godmode, page, pageSize, authHost, token }) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/pleroma/admin/instances/${instance}/statuses?page=${page}&page_size=${pageSize}`,
+    url: `/api/pleroma/admin/instances/${instance}/statuses?godmode=${godmode}&page=${page}&page_size=${pageSize}`,
     method: 'get',
     headers: authHeaders(token)
   })
