@@ -4,7 +4,7 @@
       <div class="status-header">
         <div class="status-account-container">
           <div class="status-account">
-            <el-checkbox v-if="showCheckbox" class="status-checkbox" @change="handleStatusSelection(account)"/>
+            <el-checkbox v-if="showCheckbox" class="status-checkbox" @click.native.stop="handleStatusSelection(account)"/>
             <router-link
               v-if="propertyExists(account, 'id')"
               :to="{ name: 'UsersShow', params: { id: account.id }}"
