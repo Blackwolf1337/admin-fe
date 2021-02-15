@@ -11,8 +11,8 @@ const status = {
       showLocal: false,
       showPrivate: false,
       currentPage: 1,
-      pageSize: 5,
-      totalInstanceStatusesCount: 0
+      pageSize: 20,
+      total: 0
     },
     statusVisibility: {}
   },
@@ -31,7 +31,7 @@ const status = {
     },
     SET_STATUSES_BY_INSTANCE: (state, { activities, total }) => {
       state.fetchedStatuses = activities
-      state.statusesByInstance.totalInstanceStatusesCount = total
+      state.statusesByInstance.total = total
     },
     PUSH_STATUSES: (state, statuses) => {
       state.fetchedStatuses = [...state.fetchedStatuses, ...statuses]
@@ -57,7 +57,7 @@ const status = {
       } else if (userId.length > 0) { // called from User profile
         dispatch('UpdateStatusInFetchedStatuses', data)
       } else if (fetchStatusesByInstance) { // called from Statuses by Instance
-        dispatch('FetchStatusesByInstance')
+        dispatch('UpdateStatusInStatusesByInstance', data)
       } else { // called from Status show page
         dispatch('FetchStatusAfterUserModeration', statusId)
       }
@@ -76,7 +76,7 @@ const status = {
       } else if (userId.length > 0) { // called from User profile
         dispatch('FetchUserStatuses', { userId, godmode })
       } else if (fetchStatusesByInstance) { // called from Statuses by Instance
-        dispatch('FetchStatusesByInstance')
+        dispatch('RemoveStatusFromStatusesByInstance', statusId)
       }
     },
     async FetchStatus({ commit, dispatch, getters, state }, id) {
@@ -136,9 +136,18 @@ const status = {
     HandleFilterChange({ commit }, instance) {
       commit('CHANGE_SELECTED_INSTANCE', instance)
     },
+    RemoveStatusFromStatusesByInstance({ commit, state }, id) {
+      const updatedStatuses = state.fetchedStatuses.filter(status => status.id !== id)
+      commit('SET_STATUSES_BY_INSTANCE', { activities: updatedStatuses, total: state.statusesByInstance.total })
+    },
     SetStatus({ commit }, status) {
       commit('SET_STATUS', status)
       commit('SET_STATUS_AUTHOR', status.account)
+    },
+    UpdateStatusInStatusesByInstance({ commit, state }, status) {
+      const updatedStatuses = state.fetchedStatuses.map(fetchedStatus =>
+        fetchedStatus.id === status.id ? status : fetchedStatus)
+      commit('SET_STATUSES_BY_INSTANCE', { activities: updatedStatuses, total: state.statusesByInstance.total })
     }
   }
 }

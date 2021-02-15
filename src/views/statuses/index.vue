@@ -61,7 +61,7 @@
       </el-timeline-item>
     </el-timeline>
     <el-pagination
-      :total="totalInstanceStatusesCount"
+      :total="total"
       :current-page="currentPage"
       :page-size="pageSize"
       class="instance-statuses-pagination"
@@ -148,8 +148,8 @@ export default {
     statusVisibility() {
       return this.$store.state.status.statusVisibility
     },
-    totalInstanceStatusesCount() {
-      return this.$store.state.status.statusesByInstance.totalInstanceStatusesCount
+    total() {
+      return this.$store.state.status.statusesByInstance.total
     }
   },
   mounted() {
