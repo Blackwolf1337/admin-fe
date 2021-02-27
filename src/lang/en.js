@@ -290,6 +290,7 @@ export default {
     noInstances: 'No other instances found',
     onlyLocalStatuses: 'Show only local statuses',
     showPrivateStatuses: 'Show private statuses',
+    withReblogs: 'Show statuses with reblogs',
     direct: 'Direct',
     private: 'Private',
     public: 'Public',

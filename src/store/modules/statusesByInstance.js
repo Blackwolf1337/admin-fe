@@ -20,6 +20,9 @@ const statusesByInstance = {
     CHANGE_LOCAL_CHECKBOX_VALUE: (state, value) => {
       state.showLocal = value
     },
+    CHANGE_REBLOGS_CHECKBOX_VALUE: (state, value) => {
+      state.withReblogs = value
+    },
     CHANGE_SELECTED_INSTANCE: (state, instance) => {
       state.selectedInstance = instance
     },
@@ -86,6 +89,11 @@ const statusesByInstance = {
     HandleLocalCheckboxChange({ commit, dispatch }, value) {
       commit('SET_CURRENT_PAGE_FOR_STATUSES', 1)
       commit('CHANGE_LOCAL_CHECKBOX_VALUE', value)
+      dispatch('FetchStatusesByInstance')
+    },
+    HandleReblogsCheckboxChange({ commit, dispatch }, value) {
+      commit('SET_CURRENT_PAGE_FOR_STATUSES', 1)
+      commit('CHANGE_REBLOGS_CHECKBOX_VALUE', value)
       dispatch('FetchStatusesByInstance')
     },
     RemoveStatusFromStatusesByInstance({ commit, state }, id) {

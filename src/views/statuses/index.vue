@@ -42,11 +42,14 @@
         @apply-action="clearSelection"/>
     </div>
     <div v-if="currentInstance" class="checkbox-container">
-      <!-- <el-checkbox v-model="showLocal" class="show-private-statuses">
+      <el-checkbox v-model="showLocal" class="show-private-statuses">
         {{ $t('statuses.onlyLocalStatuses') }}
-      </el-checkbox> -->
+      </el-checkbox>
       <el-checkbox v-model="showPrivate" class="show-private-statuses">
         {{ $t('statuses.showPrivateStatuses') }}
+      </el-checkbox>
+      <el-checkbox v-model="withReblogs" class="show-private-statuses">
+        {{ $t('statuses.withReblogs') }}
       </el-checkbox>
     </div>
     <p v-if="statuses.length === 0" class="no-statuses">{{ $t('userProfile.noStatuses') }}</p>
@@ -126,20 +129,28 @@ export default {
         this.$store.dispatch('HandleFilterChange', instance)
       }
     },
-    // showLocal: {
-    //   get() {
-    //     return this.$store.state.statusesByInstance.showLocal
-    //   },
-    //   set(value) {
-    //     this.$store.dispatch('HandleLocalCheckboxChange', value)
-    //   }
-    // },
+    showLocal: {
+      get() {
+        return this.$store.state.statusesByInstance.showLocal
+      },
+      set(value) {
+        this.$store.dispatch('HandleLocalCheckboxChange', value)
+      }
+    },
     showPrivate: {
       get() {
         return this.$store.state.statusesByInstance.showPrivate
       },
       set(value) {
         this.$store.dispatch('HandleGodmodeCheckboxChange', value)
+      }
+    },
+    withReblogs: {
+      get() {
+        return this.$store.state.statusesByInstance.withReblogs
+      },
+      set(value) {
+        this.$store.dispatch('HandleReblogsCheckboxChange', value)
       }
     },
     statuses() {
