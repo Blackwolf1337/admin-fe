@@ -147,9 +147,14 @@
       </div>
       <div class="recent-statuses-container">
         <h2 class="recent-statuses">{{ $t('userProfile.recentStatuses') }}</h2>
-        <el-checkbox v-model="showPrivate" class="show-private-statuses" @change="onTogglePrivate">
-          {{ $t('statuses.showPrivateStatuses') }}
-        </el-checkbox>
+        <div class="checkbox-container">
+          <el-checkbox v-model="showPrivate" class="show-private-statuses">
+            {{ $t('statuses.showPrivateStatuses') }}
+          </el-checkbox>
+          <el-checkbox v-model="withReblogs" class="show-private-statuses">
+            {{ $t('statuses.withReblogs') }}
+          </el-checkbox>
+        </div>
         <el-timeline v-if="!statusesLoading" :reverse="true" class="statuses">
           <el-timeline-item v-for="status in statuses" :key="status.id">
             <status :status="status" :account="status.account" :show-checkbox="false" :user-id="user.id" :godmode="showPrivate"/>
@@ -183,7 +188,6 @@ export default {
   components: { ModerationDropdown, RebootButton, ResetPasswordDialog, Status, SecuritySettingsModal },
   data() {
     return {
-      showPrivate: false,
       resetPasswordDialogOpen: false,
       securitySettingsModalVisible: false
     }
@@ -213,6 +217,15 @@ export default {
     pageSize() {
       return this.$store.state.userProfile.pageSize
     },
+    showPrivate: {
+      get() {
+        return this.$store.state.userProfile.showPrivate
+      },
+      set(value) {
+        this.$store.dispatch('HandleGodmodeChangeFromUserProfile',
+          { checkbox: value, userId: this.$route.params.id })
+      }
+    },
     statuses() {
       return this.$store.state.userProfile.statuses
     },
@@ -230,12 +243,21 @@ export default {
     },
     userCredentials() {
       return this.$store.state.userProfile.userCredentials
+    },
+    withReblogs: {
+      get() {
+        return this.$store.state.userProfile.withReblogs
+      },
+      set(value) {
+        this.$store.dispatch('HandleReblogsChangeFromUserProfile',
+          { checkbox: value, userId: this.$route.params.id })
+      }
     }
   },
   mounted: function() {
     this.$store.dispatch('NeedReboot')
     this.$store.dispatch('GetNodeInfo')
-    this.$store.dispatch('FetchUserProfile', { userId: this.$route.params.id, godmode: false })
+    this.$store.dispatch('FetchUserProfile', this.$route.params.id)
   },
   methods: {
     closeResetPasswordDialog() {
@@ -243,7 +265,7 @@ export default {
       this.$store.dispatch('RemovePasswordToken')
     },
     handlePageChange(page) {
-      this.$store.dispatch('FetchUserStatuses', { _page: page, userId: this.$route.params.id, godmode: this.showPrivate })
+      this.$store.dispatch('FetchUserStatuses', { _page: page, userId: this.$route.params.id })
     },
     humanizeTag(tag) {
       const mapTags = {
@@ -255,9 +277,6 @@ export default {
         'mrf_tag:disable-any-subscription': 'Disable any subscription'
       }
       return mapTags[tag]
-    },
-    onTogglePrivate() {
-      this.$store.dispatch('FetchUserProfile', { userId: this.$route.params.id, godmode: this.showPrivate })
     },
     openResetPasswordDialog() {
       this.resetPasswordDialogOpen = true

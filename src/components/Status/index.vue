@@ -205,7 +205,6 @@ export default {
           statusId,
           reportCurrentPage: this.page,
           userId: this.userId,
-          godmode: this.godmode,
           fetchStatusesByInstance: this.fetchStatusesByInstance
         })
         this.$message({

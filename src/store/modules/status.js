@@ -34,12 +34,12 @@ const status = {
         dispatch('FetchStatusAfterUserModeration', statusId)
       }
     },
-    async DeleteStatus({ dispatch, getters }, { statusId, reportCurrentPage, userId, godmode, fetchStatusesByInstance }) {
+    async DeleteStatus({ dispatch, getters }, { statusId, reportCurrentPage, userId, fetchStatusesByInstance }) {
       await deleteStatus(statusId, getters.authHost, getters.token)
       if (reportCurrentPage !== 0) { // called from Reports
         dispatch('FetchReports', reportCurrentPage)
       } else if (userId.length > 0) { // called from User profile
-        dispatch('FetchUserStatuses', { userId, godmode })
+        dispatch('FetchUserStatuses', { userId })
       } else if (fetchStatusesByInstance) { // called from Statuses by Instance
         dispatch('RemoveStatusFromStatusesByInstance', statusId)
       }
@@ -51,7 +51,7 @@ const status = {
       commit('SET_STATUS', status.data)
       commit('SET_STATUS_AUTHOR', status.data.account)
       commit('SET_LOADING', false)
-      dispatch('FetchUserStatuses', { _page: 1, userId: state.fetchedStatus.account.id, godmode: false })
+      dispatch('FetchUserStatuses', { _page: 1, userId: state.fetchedStatus.account.id })
     },
     FetchStatusAfterUserModeration({ commit, dispatch, getters }, id) {
       commit('SET_LOADING', true)

@@ -133,10 +133,10 @@ export default {
       this.$store.dispatch('RemovePasswordToken')
     },
     handlePageChange(page) {
-      this.$store.dispatch('FetchUserStatuses', { _page: page, userId: this.user.id, godmode: this.showPrivate })
+      this.$store.dispatch('FetchUserStatuses', { _page: page, userId: this.user.id })
     },
     onTogglePrivate() {
-      this.$store.dispatch('FetchUserStatuses', { _page: 1, userId: this.user.id, godmode: this.showPrivate })
+      this.$store.dispatch('FetchUserStatuses', { _page: 1, userId: this.user.id })
     },
     openResetPasswordDialog() {
       this.resetPasswordDialogOpen = true

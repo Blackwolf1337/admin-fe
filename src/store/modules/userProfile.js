@@ -6,12 +6,14 @@ const userProfile = {
     chatsLoading: true,
     currentPage: 1,
     pageSize: 10,
+    showPrivate: false,
     statuses: [],
     statusesLoading: true,
     totalStatusesCount: 0,
     user: {},
     userCredentials: {},
-    userProfileLoading: true
+    userProfileLoading: true,
+    withReblogs: false
   },
   mutations: {
     SET_STATUSES: (state, { activities, total }) => {
@@ -30,6 +32,12 @@ const userProfile = {
     SET_CURRENT_PAGE: (state, page) => {
       state.currentPage = page
     },
+    SET_GODMODE_CHECKBOX_VALUE: (state, value) => {
+      state.showPrivate = value
+    },
+    SET_REBLOGS_CHECKBOX_VALUE: (state, value) => {
+      state.withReblogs = value
+    },
     SET_USER: (state, user) => {
       state.user = user
     },
@@ -41,14 +49,14 @@ const userProfile = {
     }
   },
   actions: {
-    async FetchUserProfile({ commit, dispatch, getters }, { userId, godmode }) {
+    async FetchUserProfile({ commit, dispatch, getters }, userId) {
       commit('SET_USER_PROFILE_LOADING', true)
 
       const userResponse = await fetchUser(userId, getters.authHost, getters.token)
       commit('SET_USER', userResponse.data)
       commit('SET_USER_PROFILE_LOADING', false)
 
-      dispatch('FetchUserStatuses', { _page: 1, userId, godmode })
+      dispatch('FetchUserStatuses', { _page: 1, userId })
       dispatch('FetchUserChats', { userId })
     },
     UpdateStatusInFetchedStatuses({ commit, state }, status) {
@@ -56,13 +64,19 @@ const userProfile = {
         fetchedStatus.id === status.id ? status : fetchedStatus)
       commit('SET_STATUSES', { activities: updatedStatuses, total: state.totalStatusesCount })
     },
-    async FetchUserStatuses({ commit, dispatch, getters, state }, { _page, userId, godmode }) {
+    async FetchUserStatuses({ commit, dispatch, getters, state }, { _page, userId }) {
       commit('SET_STATUSES_LOADING', true)
-      if (_page) {
-        commit('SET_CURRENT_PAGE', _page)
-      }
+      if (_page) commit('SET_CURRENT_PAGE', _page)
 
-      const { data } = await fetchUserStatuses(userId, state.currentPage, state.pageSize, godmode, getters.authHost, getters.token)
+      const { data } = await fetchUserStatuses({
+        id: userId,
+        page: state.currentPage,
+        pageSize: state.pageSize,
+        godmode: state.showPrivate,
+        withReblogs: state.withReblogs,
+        authHost: getters.authHost,
+        token: getters.token
+      })
       dispatch('SetStatuses', data)
       commit('SET_STATUSES_LOADING', false)
     },
@@ -76,6 +90,16 @@ const userProfile = {
     async FetchUserCredentials({ commit, getters }, { nickname }) {
       const userResponse = await fetchUserCredentials(nickname, getters.authHost, getters.token)
       commit('SET_USER_CREDENTIALS', userResponse.data)
+    },
+    HandleGodmodeChangeFromUserProfile({ commit, dispatch }, { checkbox, userId }) {
+      commit('SET_CURRENT_PAGE', 1)
+      commit('SET_GODMODE_CHECKBOX_VALUE', checkbox)
+      dispatch('FetchUserStatuses', { userId })
+    },
+    HandleReblogsChangeFromUserProfile({ commit, dispatch }, { checkbox, userId }) {
+      commit('SET_CURRENT_PAGE', 1)
+      commit('SET_REBLOGS_CHECKBOX_VALUE', checkbox)
+      dispatch('FetchUserStatuses', { userId })
     },
     SetStatuses({ commit }, data) {
       commit('SET_STATUSES', data)

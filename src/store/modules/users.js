@@ -108,7 +108,7 @@ const users = {
       if (statusId) {
         dispatch('FetchStatusAfterUserModeration', statusId)
       } else if (userId) {
-        dispatch('FetchUserProfile', { userId, godmode: false })
+        dispatch('FetchUserProfile', userId)
       }
       dispatch('SuccessMessage')
     },
@@ -205,7 +205,7 @@ const users = {
       commit('SWAP_USERS', updatedUsers)
 
       if (_userId) {
-        dispatch('FetchUserProfile', { userId: _userId, godmode: false })
+        dispatch('FetchUserProfile', _userId)
       }
       dispatch('SuccessMessage')
     },
