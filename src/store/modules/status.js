@@ -1,49 +1,21 @@
-import { changeStatusScope, deleteStatus, fetchStatus, fetchStatusesCount, fetchStatusesByInstance } from '@/api/status'
+import { changeStatusScope, deleteStatus, fetchStatus } from '@/api/status'
 
 const status = {
   state: {
     fetchedStatus: {},
     fetchedStatuses: [],
     loading: false,
-    statusAuthor: {},
-    statusesByInstance: {
-      selectedInstance: '',
-      showLocal: false,
-      showPrivate: false,
-      currentPage: 1,
-      pageSize: 20,
-      total: 0
-    },
-    statusVisibility: {}
+    statusAuthor: {}
   },
   mutations: {
-    CHANGE_GODMODE_CHECKBOX_VALUE: (state, value) => {
-      state.statusesByInstance.showPrivate = value
-    },
-    CHANGE_LOCAL_CHECKBOX_VALUE: (state, value) => {
-      state.statusesByInstance.showLocal = value
-    },
-    CHANGE_SELECTED_INSTANCE: (state, instance) => {
-      state.statusesByInstance.selectedInstance = instance
-    },
     SET_STATUS: (state, status) => {
       state.fetchedStatus = status
-    },
-    SET_STATUSES_BY_INSTANCE: (state, { activities, total }) => {
-      state.fetchedStatuses = activities
-      state.statusesByInstance.total = total
     },
     PUSH_STATUSES: (state, statuses) => {
       state.fetchedStatuses = [...state.fetchedStatuses, ...statuses]
     },
-    SET_CURRENT_PAGE_FOR_STATUSES: (state, page) => {
-      state.statusesByInstance.currentPage = page
-    },
     SET_LOADING: (state, status) => {
       state.loading = status
-    },
-    SET_STATUS_VISIBILITY: (state, visibility) => {
-      state.statusVisibility = visibility
     },
     SET_STATUS_AUTHOR: (state, user) => {
       state.statusAuthor = user
@@ -61,13 +33,6 @@ const status = {
       } else { // called from Status show page
         dispatch('FetchStatusAfterUserModeration', statusId)
       }
-    },
-    ClearState({ commit }) {
-      commit('CHANGE_SELECTED_INSTANCE', '')
-      commit('SET_STATUSES_BY_INSTANCE', { activities: [], total: 0 })
-      commit('CHANGE_LOCAL_CHECKBOX_VALUE', false)
-      commit('CHANGE_GODMODE_CHECKBOX_VALUE', false)
-      commit('SET_CURRENT_PAGE_FOR_STATUSES', 1)
     },
     async DeleteStatus({ dispatch, getters }, { statusId, reportCurrentPage, userId, godmode, fetchStatusesByInstance }) {
       await deleteStatus(statusId, getters.authHost, getters.token)
@@ -94,60 +59,9 @@ const status = {
         .then(status => dispatch('SetStatus', status.data))
       commit('SET_LOADING', false)
     },
-    async FetchStatusesCount({ commit, getters }, instance) {
-      commit('SET_LOADING', true)
-      const { data } = await fetchStatusesCount(instance, getters.authHost, getters.token)
-      commit('SET_STATUS_VISIBILITY', data.status_visibility)
-      commit('SET_LOADING', false)
-    },
-    async FetchStatusesByInstance({ commit, dispatch, getters, state }, page) {
-      commit('SET_LOADING', true)
-      if (page) {
-        commit('SET_CURRENT_PAGE_FOR_STATUSES', page)
-      }
-      dispatch('FetchStatusesCount', state.statusesByInstance.selectedInstance)
-
-      if (state.statusesByInstance.selectedInstance === '') {
-        commit('SET_STATUSES_BY_INSTANCE', { activities: [], total: 0 })
-      } else {
-        const { data } = await fetchStatusesByInstance(
-          {
-            instance: state.statusesByInstance.selectedInstance,
-            godmode: state.statusesByInstance.showPrivate,
-            authHost: getters.authHost,
-            token: getters.token,
-            pageSize: state.statusesByInstance.pageSize,
-            page: state.statusesByInstance.currentPage
-          })
-        commit('SET_STATUSES_BY_INSTANCE', data)
-      }
-      commit('SET_LOADING', false)
-    },
-    HandleGodmodeCheckboxChange({ commit, dispatch }, value) {
-      commit('SET_CURRENT_PAGE_FOR_STATUSES', 1)
-      commit('CHANGE_GODMODE_CHECKBOX_VALUE', value)
-      dispatch('FetchStatusesByInstance')
-    },
-    HandleLocalCheckboxChange({ commit, dispatch }, value) {
-      commit('SET_CURRENT_PAGE_FOR_STATUSES', 1)
-      commit('CHANGE_LOCAL_CHECKBOX_VALUE', value)
-      dispatch('FetchStatusesByInstance')
-    },
-    HandleFilterChange({ commit }, instance) {
-      commit('CHANGE_SELECTED_INSTANCE', instance)
-    },
-    RemoveStatusFromStatusesByInstance({ commit, state }, id) {
-      const updatedStatuses = state.fetchedStatuses.filter(status => status.id !== id)
-      commit('SET_STATUSES_BY_INSTANCE', { activities: updatedStatuses, total: state.statusesByInstance.total })
-    },
     SetStatus({ commit }, status) {
       commit('SET_STATUS', status)
       commit('SET_STATUS_AUTHOR', status.account)
-    },
-    UpdateStatusInStatusesByInstance({ commit, state }, status) {
-      const updatedStatuses = state.fetchedStatuses.map(fetchedStatus =>
-        fetchedStatus.id === status.id ? status : fetchedStatus)
-      commit('SET_STATUSES_BY_INSTANCE', { activities: updatedStatuses, total: state.statusesByInstance.total })
     }
   }
 }

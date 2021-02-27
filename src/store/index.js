@@ -13,6 +13,7 @@ import relays from './modules/relays'
 import reports from './modules/reports'
 import settings from './modules/settings'
 import status from './modules/status'
+import statusesByInstance from './modules/statusesByInstance'
 import chat from './modules/chat'
 import tagsView from './modules/tagsView'
 import user from './modules/user'
@@ -35,6 +36,7 @@ const store = new Vuex.Store({
     reports,
     settings,
     status,
+    statusesByInstance,
     chat,
     tagsView,
     user,

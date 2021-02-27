@@ -95,7 +95,7 @@ export default {
       return this.selectedInstance === this.$store.state.user.authHost
     },
     currentPage() {
-      return this.$store.state.status.statusesByInstance.currentPage
+      return this.$store.state.statusesByInstance.currentPage
     },
     instances() {
       return [this.$store.state.user.authHost, ...this.$store.state.peers.fetchedPeers]
@@ -110,17 +110,17 @@ export default {
       return this.$store.state.app.device === 'tablet'
     },
     loading() {
-      return this.$store.state.status.loading
+      return this.$store.state.statusesByInstance.loading
     },
     loadingPeers() {
       return this.$store.state.peers.loading
     },
     pageSize() {
-      return this.$store.state.status.statusesByInstance.pageSize
+      return this.$store.state.statusesByInstance.pageSize
     },
     selectedInstance: {
       get() {
-        return this.$store.state.status.statusesByInstance.selectedInstance
+        return this.$store.state.statusesByInstance.selectedInstance
       },
       set(instance) {
         this.$store.dispatch('HandleFilterChange', instance)
@@ -128,7 +128,7 @@ export default {
     },
     // showLocal: {
     //   get() {
-    //     return this.$store.state.status.statusesByInstance.showLocal
+    //     return this.$store.state.statusesByInstance.showLocal
     //   },
     //   set(value) {
     //     this.$store.dispatch('HandleLocalCheckboxChange', value)
@@ -136,20 +136,20 @@ export default {
     // },
     showPrivate: {
       get() {
-        return this.$store.state.status.statusesByInstance.showPrivate
+        return this.$store.state.statusesByInstance.showPrivate
       },
       set(value) {
         this.$store.dispatch('HandleGodmodeCheckboxChange', value)
       }
     },
     statuses() {
-      return this.$store.state.status.fetchedStatuses
+      return this.$store.state.statusesByInstance.fetchedStatuses
     },
     statusVisibility() {
-      return this.$store.state.status.statusVisibility
+      return this.$store.state.statusesByInstance.visibility
     },
     total() {
-      return this.$store.state.status.statusesByInstance.total
+      return this.$store.state.statusesByInstance.total
     }
   },
   mounted() {
