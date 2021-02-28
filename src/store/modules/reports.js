@@ -56,7 +56,7 @@ const reports = {
         return
       } finally {
         const updatedReports = state.fetchedReports.map(report => {
-          const updatedAccount = { ...user, deactivated: false }
+          const updatedAccount = { ...user, is_active: true }
           return report.id === reportId ? { ...report, account: updatedAccount } : report
         })
         commit('SET_REPORTS', updatedReports)
@@ -69,7 +69,7 @@ const reports = {
       } catch (_e) {
         return
       } finally {
-        const updatedReport = { ...state.singleReport, account: { ...user, deactivated: false }}
+        const updatedReport = { ...state.singleReport, account: { ...user, is_active: true }}
         commit('SET_SINGLE_REPORT', updatedReport)
       }
       dispatch('SuccessMessage')
@@ -124,7 +124,7 @@ const reports = {
         return
       } finally {
         const updatedReports = state.fetchedReports.map(report => {
-          const updatedAccount = { ...user, deactivated: true }
+          const updatedAccount = { ...user, is_active: false }
           return report.id === reportId ? { ...report, account: updatedAccount } : report
         })
         commit('SET_REPORTS', updatedReports)
@@ -137,7 +137,7 @@ const reports = {
       } catch (_e) {
         return
       } finally {
-        const updatedReport = { ...state.singleReport, account: { ...user, deactivated: true }}
+        const updatedReport = { ...state.singleReport, account: { ...user, is_active: false }}
         commit('SET_SINGLE_REPORT', updatedReport)
       }
       dispatch('SuccessMessage')
@@ -149,7 +149,7 @@ const reports = {
         return
       } finally {
         const updatedReports = state.fetchedReports.map(report => {
-          const updatedAccount = { ...user, deactivated: true }
+          const updatedAccount = { ...user, is_active: false }
           return report.id === reportId ? { ...report, account: updatedAccount } : report
         })
         commit('SET_REPORTS', updatedReports)

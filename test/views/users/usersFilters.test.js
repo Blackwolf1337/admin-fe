@@ -2,9 +2,12 @@ import Vuex from 'vuex'
 import { mount, createLocalVue, config } from '@vue/test-utils'
 import Element from 'element-ui'
 import Filters from '@/views/users/components/UsersFilter'
-import { storeConfig } from './store.conf'
-import { cloneDeep } from 'lodash'
 import flushPromises from 'flush-promises'
+import app from '@/store/modules/app'
+import settings from '@/store/modules/settings'
+import user from '@/store/modules/user'
+import userProfile from '@/store/modules/userProfile'
+import users from '@/store/modules/users'
 
 config.mocks["$t"] = () => {}
 config.stubs.transition = false
@@ -20,138 +23,143 @@ jest.mock('@/api/users')
 
 describe('Filters users', () => {
   let store
+  let actions
 
   beforeEach(async() => {
-    store = new Vuex.Store(cloneDeep(storeConfig))
+    actions = { ...users.actions, ToggleUsersFilter: jest.fn(), ToggleActorTypeFilter: jest.fn() }
+    store = new Vuex.Store(({ 
+      modules: {
+        app,
+        settings,
+        user,
+        userProfile,
+        users: { ...users, actions }
+      },
+      getters: {}
+    }))
     store.dispatch('FetchUsers', { page: 1 })
     await flushPromises()
   })
 
-  it('shows local users when "Local" filter is applied', async (done) => {
+  it('enables local and active filters when component is mounted, toggles local filter on button click', async (done) => {
+    const wrapper = mount(Filters, {
+      store,
+      localVue
+    })
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(1, expect.anything(), ['local', 'active'], undefined)
+
+    const filter = wrapper.find(`li.el-select-dropdown__item:nth-child(${1})`)
+    filter.trigger('click')
+
+    expect(actions.ToggleUsersFilter).toHaveBeenCalled()
+    expect(actions.ToggleActorTypeFilter).toHaveBeenCalled()
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(2, expect.anything(), ['active'], undefined)
+    expect(actions.ToggleActorTypeFilter).toHaveBeenCalledWith(expect.anything(), [], undefined)
+    await flushPromises()
+    done()
+  })
+
+  it('applies three filters', async (done) => {
+    const wrapper = mount(Filters, {
+      store,
+      localVue
+    })
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(1, expect.anything(), ['local', 'active'], undefined)
+    
+    const filter1 = wrapper.find(`.el-select-group__wrap:nth-child(${1}) li.el-select-dropdown__item:nth-child(${2})`)
+    filter1.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(2, expect.anything(), ['external', 'active'], undefined)
+    expect(actions.ToggleActorTypeFilter).toHaveBeenCalledWith(expect.anything(), [], undefined)
+    await flushPromises()
+
+    const filter2 = wrapper.find(`.el-select-group__wrap:nth-child(${2}) li.el-select-dropdown__item:nth-child(${3})`)
+    filter2.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(3, expect.anything(), ['external', 'need_approval'], undefined)
+    expect(actions.ToggleActorTypeFilter).toHaveBeenCalledWith(expect.anything(), [], undefined)
+    await flushPromises()
+
+    const filter3 = wrapper.find(`.el-select-group__wrap:nth-child(${3}) li.el-select-dropdown__item:nth-child(${1})`)
+    filter3.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(4, expect.anything(), ['external', 'need_approval'], undefined)
+    expect(actions.ToggleActorTypeFilter).toHaveBeenCalledWith(expect.anything(), ['Person'], undefined)
+    await flushPromises()
+    done()
+  })
+
+  it('removes all filters', async (done) => {
+    const wrapper = mount(Filters, {
+      store,
+      localVue
+    })
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(1, expect.anything(), ['local', 'active'], undefined)
+    
+    const filter1 = wrapper.find(`.el-select-group__wrap:nth-child(${1}) li.el-select-dropdown__item:nth-child(${1})`)
+    filter1.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(2, expect.anything(), ['active'], undefined)
+    expect(actions.ToggleActorTypeFilter).toHaveBeenCalledWith(expect.anything(), [], undefined)
+    await flushPromises()
+
+    const filter2 = wrapper.find(`.el-select-group__wrap:nth-child(${2}) li.el-select-dropdown__item:nth-child(${1})`)
+    filter2.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(3, expect.anything(), [], undefined)
+    expect(actions.ToggleActorTypeFilter).toHaveBeenCalledWith(expect.anything(), [], undefined)
+    await flushPromises()
+
+    done()
+  })
+
+  it('applies actor type filters', async (done) => {
+    const wrapper = mount(Filters, {
+      store,
+      localVue
+    })
+    
+    const filter1 = wrapper.find(`.el-select-group__wrap:nth-child(${3}) li.el-select-dropdown__item:nth-child(${1})`)
+    filter1.trigger('click')
+    expect(actions.ToggleActorTypeFilter).toHaveBeenNthCalledWith(1, expect.anything(), ['Person'], undefined)
+    await flushPromises()
+
+    const filter2 = wrapper.find(`.el-select-group__wrap:nth-child(${3}) li.el-select-dropdown__item:nth-child(${2})`)
+    filter2.trigger('click')
+    expect(actions.ToggleActorTypeFilter).toHaveBeenNthCalledWith(2, expect.anything(), ['Person', 'Service'], undefined)
+    await flushPromises()
+
+    const filter3 = wrapper.find(`.el-select-group__wrap:nth-child(${3}) li.el-select-dropdown__item:nth-child(${3})`)
+    filter3.trigger('click')
+    expect(actions.ToggleActorTypeFilter).toHaveBeenNthCalledWith(3, expect.anything(), ['Person', 'Service', 'Application'], undefined)
+    await flushPromises()
+
+    done()
+  })
+
+  it('applies opposite filters', async (done) => {
     const wrapper = mount(Filters, {
       store,
       localVue
     })
 
-    expect(store.state.users.totalUsersCount).toEqual(6)
-
-    const filter = wrapper.find(`li.el-select-dropdown__item:nth-child(${1})`)
-    filter.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(1, expect.anything(), ['local', 'active'], undefined)
+    
+    const filter1 = wrapper.find(`.el-select-group__wrap:nth-child(${2}) li.el-select-dropdown__item:nth-child(${2})`)
+    filter1.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(2, expect.anything(), ['local', 'deactivated'], undefined)
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(5)
 
-    done()
-  })
-
-  it('shows users with applied filter and search query', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(6)
-
-    store.dispatch('ToggleUsersFilter', ['active'])
+    const filter2 = wrapper.find(`.el-select-group__wrap:nth-child(${2}) li.el-select-dropdown__item:nth-child(${3})`)
+    filter2.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(3, expect.anything(), ['local', 'need_approval'], undefined)
     await flushPromises()
-    store.dispatch('SearchUsers', { query: 'john', page: 1 })
+
+    const filter3 = wrapper.find(`.el-select-group__wrap:nth-child(${2}) li.el-select-dropdown__item:nth-child(${4})`)
+    filter3.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(4, expect.anything(), ['local', 'unconfirmed'], undefined)
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(0)
 
-    store.dispatch('SearchUsers', { query: 'allis', page: 1 })
+    const filter4 = wrapper.find(`.el-select-group__wrap:nth-child(${1}) li.el-select-dropdown__item:nth-child(${2})`)
+    filter4.trigger('click')
+    expect(actions.ToggleUsersFilter).toHaveBeenNthCalledWith(5, expect.anything(), ['external', 'unconfirmed'], undefined)
     await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(1)
 
-    store.dispatch('SearchUsers', { query: '', page: 1 })
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(5)
-
-    done()
-  })
-
-  it('applies two filters', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(6)
-
-    store.dispatch('ToggleUsersFilter', ['active', 'local'])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(4)
-    expect(store.state.users.fetchedUsers[0].nickname).toEqual('allis')
-
-    store.dispatch('ToggleUsersFilter', ['deactivated', 'external'])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(0)
-
-    done()
-  })
-
-  it('shows all users after removing filters', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(6)
-
-    store.dispatch('ToggleUsersFilter', ['deactivated'])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(1)
-
-    store.dispatch('ToggleUsersFilter', [])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(6)
-
-    done()
-  })
-
-  it('applies actor type filter', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(6)
-
-    store.dispatch('ToggleActorTypeFilter', ["Person"])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(4)
-    expect(store.state.users.fetchedUsers[0].nickname).toEqual('allis')
-
-    store.dispatch('ToggleActorTypeFilter', ["Service"])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(1)
-    expect(store.state.users.fetchedUsers[0].nickname).toEqual('sally')
-
-    done()
-  })
-
-  it('shows users with applied actor type filter and search query', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(6)
-
-    store.dispatch('ToggleActorTypeFilter', ["Person"])
-    await flushPromises()
-    store.dispatch('SearchUsers', { query: 'john', page: 1 })
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(1)
-
-    store.dispatch('SearchUsers', { query: 'bot', page: 1 })
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(0)
-
-    store.dispatch('SearchUsers', { query: '', page: 1 })
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(4)
-
-    done()
-  })
-
-  it('applies two actor type filters', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(6)
-
-    store.dispatch('ToggleActorTypeFilter', ["Person", "Service"])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(5)
-
-    store.dispatch('ToggleActorTypeFilter', ["Service", "Application"])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(2)
-
-    done()
-  })
-
-  it('shows all users after removing actor type filters', async (done) => {
-    expect(store.state.users.totalUsersCount).toEqual(6)
-
-    store.dispatch('ToggleActorTypeFilter', ["Application"])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(1)
-
-    store.dispatch('ToggleActorTypeFilter', [])
-    await flushPromises()
-    expect(store.state.users.totalUsersCount).toEqual(6)
 
     done()
   })

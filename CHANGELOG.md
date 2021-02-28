@@ -20,6 +20,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **Breaking**: AdminAPI changed User field `confirmation_pending` to `is_confirmed`
+- **Breaking**: AdminAPI changed User field `approval_pending` to `is_approved`
+- **Breaking**: AdminAPI changed User field `deactivated` to `is_active`
 - Hide Tag actions on Users tab if MRF TagPolicy is disabled. Add ability to enable TagPolicy from Moderation menu
 - Move `:restrict_unauthenticated` settings from Authentication tab to Instance tab
 - Replace regular inputs with textareas for setting welcome messages in the Settings section

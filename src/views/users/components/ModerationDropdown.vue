@@ -38,7 +38,7 @@
         v-if="showDeactivatedButton(user.id) && page !== 'statusPage'"
         :divided="showAdminAction(user)"
         @click.native="toggleActivation(user)">
-        {{ user.deactivated ? $t('users.activateAccount') : $t('users.deactivateAccount') }}
+        {{ !user.is_active ? $t('users.activateAccount') : $t('users.deactivateAccount') }}
       </el-dropdown-item>
       <el-dropdown-item
         v-if="showDeactivatedButton(user.id) && page !== 'statusPage'"
@@ -46,24 +46,24 @@
         {{ $t('users.deleteAccount') }}
       </el-dropdown-item>
       <el-dropdown-item
-        v-if="user.local && user.approval_pending"
+        v-if="user.local && !user.is_approved"
         divided
         @click.native="handleAccountApproval(user)">
         {{ $t('users.approveAccount') }}
       </el-dropdown-item>
       <el-dropdown-item
-        v-if="user.local && user.approval_pending"
+        v-if="user.local && !user.is_approved"
         @click.native="handleAccountRejection(user)">
         {{ $t('users.rejectAccount') }}
       </el-dropdown-item>
       <el-dropdown-item
-        v-if="user.local && user.confirmation_pending"
+        v-if="user.local && !user.is_confirmed"
         divided
         @click.native="handleEmailConfirmation(user)">
         {{ $t('users.confirmAccount') }}
       </el-dropdown-item>
       <el-dropdown-item
-        v-if="user.local && user.confirmation_pending"
+        v-if="user.local && !user.is_confirmed"
         @click.native="handleConfirmationResend(user)">
         {{ $t('users.resendConfirmation') }}
       </el-dropdown-item>
@@ -261,7 +261,7 @@ export default {
       return this.$store.state.user.id !== id
     },
     toggleActivation(user) {
-      user.deactivated
+      !user.is_active
         ? this.$store.dispatch('ActivateUsers', { users: [user], _userId: user.id })
         : this.$store.dispatch('DeactivateUsers', { users: [user], _userId: user.id })
     },
