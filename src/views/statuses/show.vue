@@ -49,9 +49,14 @@
         {{ $t('userProfile.recentStatuses') }} by {{ user.nickname }}
       </h2>
       <h2 v-else class="recent-statuses">{{ $t('userProfile.recentStatuses') }}</h2>
-      <el-checkbox v-model="showPrivate" class="show-private-statuses" @change="onTogglePrivate">
-        {{ $t('statuses.showPrivateStatuses') }}
-      </el-checkbox>
+      <div class="checkbox-container">
+        <el-checkbox v-model="showPrivate" class="show-private-statuses">
+          {{ $t('statuses.showPrivateStatuses') }}
+        </el-checkbox>
+        <el-checkbox v-model="withReblogs" class="show-private-statuses">
+          {{ $t('statuses.withReblogs') }}
+        </el-checkbox>
+      </div>
       <el-timeline v-if="!statusesLoading" :reverse="true" class="statuses">
         <el-timeline-item v-for="status in statuses" :key="status.id">
           <status :status="status" :account="status.account" :show-checkbox="false" :user-id="user.id" :godmode="showPrivate"/>
@@ -83,7 +88,6 @@ export default {
   components: { ModerationDropdown, RebootButton, ResetPasswordDialog, Status },
   data() {
     return {
-      showPrivate: false,
       resetPasswordDialogOpen: false
     }
   },
@@ -106,6 +110,15 @@ export default {
     pageSize() {
       return this.$store.state.userProfile.pageSize
     },
+    showPrivate: {
+      get() {
+        return this.$store.state.userProfile.showPrivate
+      },
+      set(value) {
+        this.$store.dispatch('HandleGodmodeChangeFromUserProfile',
+          { checkbox: value, userId: this.user.id })
+      }
+    },
     status() {
       return this.$store.state.status.fetchedStatus
     },
@@ -120,6 +133,15 @@ export default {
     },
     user() {
       return this.$store.state.status.statusAuthor
+    },
+    withReblogs: {
+      get() {
+        return this.$store.state.userProfile.withReblogs
+      },
+      set(value) {
+        this.$store.dispatch('HandleReblogsChangeFromUserProfile',
+          { checkbox: value, userId: this.user.id })
+      }
     }
   },
   beforeMount: function() {
@@ -134,9 +156,6 @@ export default {
     },
     handlePageChange(page) {
       this.$store.dispatch('FetchUserStatuses', { _page: page, userId: this.user.id })
-    },
-    onTogglePrivate() {
-      this.$store.dispatch('FetchUserStatuses', { _page: 1, userId: this.user.id })
     },
     openResetPasswordDialog() {
       this.resetPasswordDialogOpen = true

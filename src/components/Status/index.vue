@@ -26,7 +26,7 @@
         <div class="status-actions">
           <div class="status-tags">
             <el-tag v-if="status.sensitive" type="warning" size="large">{{ $t('reports.sensitive') }}</el-tag>
-            <el-tag size="large">{{ capitalizeFirstLetter(status.visibility) }}</el-tag>
+            <el-tag v-if="status.visibility" size="large">{{ capitalizeFirstLetter(status.visibility) }}</el-tag>
           </div>
           <el-dropdown trigger="click" @click.native.stop>
             <el-button plain size="small" icon="el-icon-edit" class="status-actions-button">
