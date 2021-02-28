@@ -3,16 +3,12 @@ import { changeStatusScope, deleteStatus, fetchStatus } from '@/api/status'
 const status = {
   state: {
     fetchedStatus: {},
-    fetchedStatuses: [],
     loading: false,
     statusAuthor: {}
   },
   mutations: {
     SET_STATUS: (state, status) => {
       state.fetchedStatus = status
-    },
-    PUSH_STATUSES: (state, statuses) => {
-      state.fetchedStatuses = [...state.fetchedStatuses, ...statuses]
     },
     SET_LOADING: (state, status) => {
       state.loading = status
