@@ -7,6 +7,7 @@
     <div v-if="settingGroup.key === 'Pleroma.Emails.Mailer'">
       <div v-for="setting in settingGroup.children.filter(setting => !setting.group)" :key="setting.key">
         <inputs
+          v-if="followsRules(setting.key, settingGroup.key, state)"
           :setting-group="settingGroup"
           :setting="setting"
           :data="data"/>
@@ -15,6 +16,7 @@
         v-for="setting in emailAdapterChildren"
         :key="setting.key">
         <inputs
+          v-if="followsRules(setting.key, settingGroup.key, state)"
           :setting-group="settingGroup"
           :setting="setting"
           :data="data"/>
@@ -24,6 +26,7 @@
       <div v-for="setting in settingGroup.children" :key="setting.key">
         <div v-if="!compound(setting)">
           <inputs
+            v-if="followsRules(setting.key, settingGroup.key, state)"
             :setting-group="settingGroup"
             :setting="setting"
             :data="data"
@@ -33,6 +36,7 @@
           <el-divider v-if="divideSetting(setting.key)" class="divider"/>
           <div v-if="!setting.children">
             <inputs
+              v-if="followsRules(setting.key, settingGroup.key, state)"
               :setting-group="settingGroup"
               :setting="setting"
               :data="data[setting.key]"
@@ -73,6 +77,7 @@ import Inputs from './Inputs'
 import i18n from '@/lang'
 import _ from 'lodash'
 import marked from 'marked'
+import { settingFollowsRules } from '../rules'
 
 export default {
   name: 'Setting',
@@ -109,6 +114,9 @@ export default {
     },
     loading() {
       return this.$store.state.settings.loading
+    },
+    state() {
+      return this.$store.state.settings.settings
     }
   },
   methods: {
@@ -126,6 +134,9 @@ export default {
     },
     divideSetting(key) {
       return [':sslopts', ':tlsopts', ':adapter', ':poll_limits', ':queues', ':styling', ':invalidation', ':multi_factor_authentication'].includes(key)
+    },
+    followsRules(setting, settingGroup, state) {
+      return settingFollowsRules(setting, settingGroup, state)
     },
     getFormattedDescription(desc) {
       return marked(desc)
