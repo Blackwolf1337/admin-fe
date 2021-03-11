@@ -16,6 +16,7 @@ localVue.use(VueRouter)
 localVue.use(Element)
 
 jest.mock('@/api/reports')
+jest.mock('@/api/settings')
 
 describe('Log out', () => {
   let store

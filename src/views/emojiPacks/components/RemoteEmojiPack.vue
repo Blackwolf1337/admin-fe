@@ -81,6 +81,10 @@ import SingleEmojiEditor from './SingleEmojiEditor.vue'
 export default {
   components: { SingleEmojiEditor },
   props: {
+    activeTab: {
+      type: String,
+      required: true
+    },
     name: {
       type: String,
       required: true
@@ -130,7 +134,7 @@ export default {
       }
     },
     loadRemotePack() {
-      return this.$store.state.emojiPacks.activeTab === this.name
+      return this.activeTab === this.name
     },
     pageSize() {
       return this.$store.state.emojiPacks.filesPageSize
@@ -199,6 +203,9 @@ export default {
     }
   },
   methods: {
+    collapse() {
+      this.showPackContent = []
+    },
     downloadFromInstance() {
       this.$store.dispatch(
         'DownloadFrom',

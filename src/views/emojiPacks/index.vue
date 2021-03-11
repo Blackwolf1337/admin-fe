@@ -33,7 +33,7 @@
             <span class="emoji-name-warning">{{ $t('emoji.emojiWarning') }}</span>
           </el-form-item>
           <el-form-item v-if="Object.keys(localPacks).length > 0" :label="$t('emoji.packs')">
-            <el-collapse v-for="(pack, name) in localPacks" :key="name" v-model="activeLocalPack" accordion @change="setActiveTab">
+            <el-collapse v-for="(pack, name) in localPacks" :key="name" v-model="activeLocalPack" accordion @change="closeRemoteTabs">
               <local-emoji-pack ref="localEmojiPack" :name="name" :pack="pack" :host="$store.getters.authHost" :is-local="true" />
             </el-collapse>
           </el-form-item>
@@ -66,8 +66,8 @@
             </div>
           </el-form-item>
           <el-form-item v-if="Object.keys(remotePacks).length > 0" :label="$t('emoji.packs')">
-            <el-collapse v-for="(pack, name) in remotePacks" :key="name" v-model="activeRemotePack" accordion @change="setActiveTab">
-              <remote-emoji-pack :name="name" :pack="pack" :host="$store.getters.authHost" :is-local="false" />
+            <el-collapse v-for="(pack, name) in remotePacks" :key="name" v-model="activeRemotePack" accordion @change="closeLocalTabs">
+              <remote-emoji-pack ref="remoteEmojiPack" :active-tab="activeRemotePack" :name="name" :pack="pack" :host="$store.getters.authHost" :is-local="false" />
             </el-collapse>
           </el-form-item>
         </el-form>
@@ -98,8 +98,8 @@ export default {
     return {
       activeTab: 'local',
       newPackName: '',
-      activeLocalPack: [],
-      activeRemotePack: [],
+      activeLocalPack: '',
+      activeRemotePack: '',
       fullscreenLoading: false
     }
   },
@@ -155,6 +155,22 @@ export default {
     this.refreshLocalPacks()
   },
   methods: {
+    closeLocalTabs() {
+      this.collapseExistingEmojis()
+      this.activeLocalPack = ''
+    },
+    closeRemoteTabs() {
+      this.collapseExistingEmojis()
+      this.activeRemotePack = ''
+    },
+    collapseExistingEmojis() {
+      if (this.$refs.localEmojiPack && this.$refs.localEmojiPack.length > 0) {
+        this.$refs.localEmojiPack.forEach(el => el.collapse())
+      }
+      if (this.$refs.remoteEmojiPack && this.$refs.remoteEmojiPack.length > 0) {
+        this.$refs.remoteEmojiPack.forEach(el => el.collapse())
+      }
+    },
     createLocalPack() {
       this.$store.dispatch('CreatePack', { name: this.newPackName })
         .then(() => {
@@ -203,10 +219,6 @@ export default {
         type: 'success',
         message: i18n.t('emoji.reloaded')
       })
-    },
-    setActiveTab(activeTab) {
-      this.$refs.localEmojiPack.forEach(el => el.collapse())
-      this.$store.dispatch('SetActiveTab', activeTab)
     }
   }
 }

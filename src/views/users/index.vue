@@ -56,16 +56,16 @@
       </el-table-column>
       <el-table-column :min-width="width" :label="$t('users.status')">
         <template slot-scope="scope">
-          <el-tag v-if="!scope.row.deactivated & !scope.row.approval_pending" type="success">
+          <el-tag v-if="scope.row.is_active && scope.row.is_approved" type="success">
             <span v-if="isDesktop">{{ $t('users.active') }}</span>
             <i v-else class="el-icon-circle-check"/>
           </el-tag>
-          <el-tag v-if="scope.row.deactivated & !scope.row.approval_pending" type="danger">
+          <el-tag v-if="!scope.row.is_active && scope.row.is_approved" type="danger">
             <span v-if="isDesktop">{{ $t('users.deactivated') }}</span>
             <i v-else class="el-icon-circle-close"/>
           </el-tag>
           <el-tooltip :content="$t('users.unapprovedAccount')" effect="dark">
-            <el-tag v-if="scope.row.approval_pending" type="info">
+            <el-tag v-if="!scope.row.is_approved" type="info">
               <span v-if="isDesktop">{{ $t('users.unapproved') }}</span>
               <i v-else class="el-icon-warning-outline"/>
             </el-tag>
@@ -77,7 +77,7 @@
             <span>{{ isDesktop ? $t('users.moderator') : getFirstLetter($t('users.moderator')) }}</span>
           </el-tag>
           <el-tooltip :content="$t('users.unconfirmedEmail')" effect="dark">
-            <el-tag v-if="scope.row.confirmation_pending" type="info">
+            <el-tag v-if="!scope.row.is_confirmed" type="info">
               {{ isDesktop ? $t('users.unconfirmed') : getFirstLetter($t('users.unconfirmed')) }}
             </el-tag>
           </el-tooltip>

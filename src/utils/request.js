@@ -6,27 +6,32 @@ const service = axios.create({
   timeout: 60000 // request timeout
 })
 
+const isJson = ({ headers }) => headers['content-type'].includes('application/json')
+
 // response interceptor
 service.interceptors.response.use(
   response => response,
   error => {
-    let errorMessage
     console.log(`Error ${error}`)
 
-    if (error.response) {
-      const edata = error.response.data.error ? error.response.data.error : error.response.data
-      errorMessage = !error.response.headers['content-type'].includes('application/json')
-        ? `${error.message}`
-        : `${error.message} - ${edata}`
+    if (!error.response) {
+      Message({
+        message: error,
+        type: 'error',
+        duration: 5 * 1000
+      })
     } else {
-      errorMessage = error
+      const errors = Array.isArray(error.response.data) ? error.response.data : [error.response.data]
+      errors.forEach(errorData => {
+        const edata = errorData.error || errorData
+        Message({
+          message: isJson(error.response) ? `${error.message} - ${edata}` : `${error.message}`,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      })
     }
 
-    Message({
-      message: errorMessage,
-      type: 'error',
-      duration: 5 * 1000
-    })
     return Promise.reject(error)
   }
 )

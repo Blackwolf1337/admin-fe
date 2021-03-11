@@ -19,7 +19,6 @@ import Vue from 'vue'
 
 const emojiPacks = {
   state: {
-    activeTab: '',
     currentLocalFilesPage: 1,
     currentLocalPacksPage: 1,
     currentRemoteFilesPage: 1,
@@ -35,9 +34,6 @@ const emojiPacks = {
     remotePacksCount: 0
   },
   mutations: {
-    SET_ACTIVE_TAB: (state, tab) => {
-      state.activeTab = tab
-    },
     SET_LOCAL_FILES_COUNT: (state, count) => {
       state.localPackFilesCount = count
     },
@@ -204,9 +200,6 @@ const emojiPacks = {
 
         commit('UPDATE_LOCAL_PACK_PACK', { name: packName, pack: result.data })
       }
-    },
-    SetActiveTab({ commit }, activeTab) {
-      commit('SET_ACTIVE_TAB', activeTab)
     },
     async SetRemoteEmojiPacks({ commit, getters, state }, { page, remoteInstance }) {
       const { data } = await listRemotePacks(remoteInstance, page, state.pageSize, getters.authHost, getters.token)
