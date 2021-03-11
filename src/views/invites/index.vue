@@ -22,6 +22,7 @@
       :visible.sync="createTokenDialogVisible"
       :show-close="false"
       :title="$t('invites.createInviteToken')"
+      :width="isTokenCreated ? '60%' : '30%'"
       custom-class="create-new-token-dialog">
       <el-form ref="newTokenForm" :model="newTokenForm" :label-width="getLabelWidth" status-icon>
         <el-form-item :label="$t('invites.maxUse')">
@@ -51,9 +52,12 @@
         </div>
         <el-form label-width="85px" class="new-token-card">
           <el-form-item :label="$t('invites.inviteLink')">
-            <el-link :href="inviteLink" :underline="false" target="_blank">
-              {{ inviteLink }}
-            </el-link>
+            <div class="invite-link-container">
+              <el-link :href="inviteLink" :underline="false" target="_blank">
+                {{ inviteLink }}
+              </el-link>
+              <el-button type="text" size="small" @click="handleCopy($event)">{{ $t('invites.copyLink') }}</el-button>
+            </div>
           </el-form-item>
           <el-form-item :label="$t('invites.token')">
             {{ newToken.token }}
@@ -156,6 +160,7 @@
 </template>
 
 <script>
+import clip from '@/utils/clipboard'
 import RebootButton from '@/components/RebootButton'
 import { mapGetters } from 'vuex'
 import { baseName } from '@/api/utils'
@@ -194,6 +199,9 @@ export default {
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
+    isTokenCreated() {
+      return 'token' in this.newToken
+    },
     loading() {
       return this.$store.state.invites.loading
     },
@@ -216,9 +224,14 @@ export default {
       this.$store.dispatch('RemoveNewToken')
       this.$data.inviteUserForm.email = ''
       this.$data.inviteUserForm.name = ''
+      this.$data.newTokenForm.maxUse = 1
+      this.$data.newTokenForm.expiresAt = ''
     },
     createToken() {
       this.$store.dispatch('GenerateInviteToken', this.$data.newTokenForm)
+    },
+    handleCopy(event) {
+      clip(this.inviteLink, event)
     },
     async inviteUserViaEmail() {
       this.$refs['inviteUserForm'].validate(async(valid) => {
@@ -269,7 +282,6 @@ export default {
     padding: 10px;
   }
   .create-new-token-dialog {
-    width: 50%;
     a {
       margin-bottom: 3px;
     }
@@ -285,6 +297,14 @@ export default {
   }
   .icon {
     margin-right: 5px;
+  }
+  .invite-link-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    button {
+      margin-left: 15px;
+    }
   }
   .invite-token-table {
     width: 100%;

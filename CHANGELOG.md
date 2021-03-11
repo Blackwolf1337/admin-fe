@@ -15,8 +15,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Filter users by actor type: Person, Bot or Application
 - Add ability to configure Media Preview Proxy, User Backup, Websocket based federation and Pleroma.Web.Endpoint.MetricsExporter settings
 - Mobile and Tablet UI for Single Report show page
+
 ### Changed
 
+- **Breaking**: AdminAPI changed User field `confirmation_pending` to `is_confirmed`
+- **Breaking**: AdminAPI changed User field `approval_pending` to `is_approved`
+- **Breaking**: AdminAPI changed User field `deactivated` to `is_active`
 - Hide Tag actions on Users tab if MRF TagPolicy is disabled. Add ability to enable TagPolicy from Moderation menu
 - Move `:restrict_unauthenticated` settings from Authentication tab to Instance tab
 - Replace regular inputs with textareas for setting welcome messages in the Settings section
@@ -24,6 +28,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Remove Websocket based federation settings
 - Move tag moderation from Moderation menu to separate column in the Users table, add ability to add custom tags
 - Refresh mobile UI for the Users table
+- 401 and 404 error pages updated
+- Remove unused components
 
 ### Fixed
 
@@ -31,7 +37,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Allow using underscores and hyphens in new account's usernames
 - Fix wrapping `:icons` setting and parsing tuples in settings with key `:headers`
 - Update keys for Pleroma.Web.Plugs.RemoteIp and PurgeExpiredActivity settings
-
+- Update switching between local and remote emoji packs panels: the panel with the pack's metadata will be closed when another panel is opened
+- Fix displaying messages for multiple errors
 ## [2.2] - 2020-11-18
 
 ### Added
