@@ -452,7 +452,8 @@ export default {
     uploadImage: 'Upload image',
     remove: 'Remove',
     instancePanel: 'Instance Panel Document',
-    termsOfServices: 'Terms of Service'
+    termsOfServices: 'Terms of Service',
+    submit: 'Submit'
   },
   relays: {
     relays: 'Relays',

@@ -1,14 +1,12 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form :model="activitypubData" :label-position="labelPosition" :label-width="labelWidth" data-search=":activitypub">
-      <setting :setting-group="activitypub" :data="activitypubData"/>
-    </el-form>
-    <el-divider v-if="user" class="divider thick-line"/>
-    <el-form :model="userData" :label-position="labelPosition" :label-width="labelWidth" data-search=":user">
-      <setting :setting-group="user" :data="userData"/>
-    </el-form>
+    <div v-for="setting in settingsPerTab" :key="setting.key">
+      <el-form :model="settingData(setting)" :label-position="labelPosition" :label-width="labelWidth" :data-search="setting.key">
+        <setting :setting-group="settingDesc(setting)" :data="settingData(setting)"/>
+      </el-form>
+    </div>
     <div class="submit-button-container">
-      <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
+      <el-button class="submit-button" type="primary" @click="onSubmit">{{ $t('settings.submit') }}</el-button>
     </div>
   </div>
 </template>
@@ -20,17 +18,22 @@ import Setting from './Setting'
 import _ from 'lodash'
 
 export default {
-  name: 'ActivityPub',
+  name: 'Tab',
   components: { Setting },
+  props: {
+    tab: {
+      type: String,
+      default: function() {
+        return ''
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       'settings'
     ]),
-    activitypub() {
-      return this.settings.description.find(setting => setting.key === ':activitypub')
-    },
-    activitypubData() {
-      return _.get(this.settings.settings, [':pleroma', ':activitypub']) || {}
+    settingsPerTab() {
+      return this.settings.description.filter(setting => setting.tab === this.tab)
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -58,12 +61,6 @@ export default {
     },
     searchQuery() {
       return this.$store.state.settings.searchQuery
-    },
-    user() {
-      return this.settings.description.find(setting => setting.key === ':user')
-    },
-    userData() {
-      return _.get(this.settings.settings, [':pleroma', ':user']) || {}
     }
   },
   mounted() {
@@ -76,6 +73,12 @@ export default {
     }
   },
   methods: {
+    settingData(setting) {
+      return _.get(this.settings.settings, [setting.group, setting.key]) || {}
+    },
+    settingDesc(setting) {
+      return this.settings.description.find(settingDesc => settingDesc.key === setting.key)
+    },
     async onSubmit() {
       try {
         await this.$store.dispatch('SubmitChanges')

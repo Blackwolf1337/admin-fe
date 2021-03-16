@@ -29,7 +29,7 @@
             @select="handleSearchSelect"/>
         </div>
       </div>
-      <component :is="componentName"/>
+      <tab :tab="tab"/>
     </div>
     <div v-if="isMobile || isTablet">
       <div :class="isSidebarOpen" class="settings-header-container">
@@ -57,68 +57,25 @@
           class="settings-search-input"
           @select="handleSearchSelect"/>
       </div>
-      <component :is="componentName"/>
+      <tab :tab="tab"/>
     </div>
   </div>
 </template>
 
 <script>
 import { tabs } from './components/tabs'
-import {
-  ActivityPub,
-  Authentication,
-  Captcha,
-  Emoji,
-  Esshd,
-  Frontend,
-  Gopher,
-  Http,
-  Instance,
-  JobQueue,
-  LinkFormatter,
-  Logger,
-  Mailer,
-  MediaProxy,
-  Metadata,
-  Mrf,
-  Other,
-  RateLimiters,
-  Upload,
-  WebPush
-} from './components'
+import Tab from './components/Tab'
 import RebootButton from '@/components/RebootButton'
 
 export default {
-  components: {
-    ActivityPub,
-    Authentication,
-    Captcha,
-    Emoji,
-    Esshd,
-    Frontend,
-    Gopher,
-    Http,
-    Instance,
-    JobQueue,
-    LinkFormatter,
-    Logger,
-    Mailer,
-    MediaProxy,
-    Metadata,
-    Mrf,
-    Other,
-    RateLimiters,
-    RebootButton,
-    Upload,
-    WebPush
-  },
+  components: { RebootButton, Tab },
   data() {
     return {
       searchQuery: ''
     }
   },
   computed: {
-    componentName() {
+    tab() {
       return this.$route.path.split('/settings/').pop()
     },
     configDisabled() {
