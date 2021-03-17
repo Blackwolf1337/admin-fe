@@ -382,7 +382,6 @@ export default {
         : this.updateSetting(updatedValue, group, key, input, type)
     },
     updateSetting(value, group, key, input, type) {
-      console.log(this.setting)
       this.$store.dispatch('UpdateSettings', { group, key, input, value, type })
       this.$store.dispatch('UpdateState', { group, key, input, value })
     }
