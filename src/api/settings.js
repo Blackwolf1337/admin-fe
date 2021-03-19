@@ -14,15 +14,6 @@ export async function deleteInstanceDocument(name, authHost, token) {
 export async function fetchDescription(authHost, token) {
   return await request({
     baseURL: baseName(authHost),
-    url: `/api/v1/pleroma/admin/config/descriptions`,
-    method: 'get',
-    headers: authHeaders(token)
-  })
-}
-
-export async function fetchDescription2(authHost, token) {
-  return await request({
-    baseURL: baseName(authHost),
     url: `/api/v2/pleroma/admin/config/descriptions`,
     method: 'get',
     headers: authHeaders(token)
