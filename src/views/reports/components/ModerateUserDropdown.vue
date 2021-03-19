@@ -8,7 +8,7 @@
       <el-dropdown-item
         v-if="showDeactivatedButton(account)"
         @click.native="handleDeactivation(account)">
-        {{ account.deactivated ? $t('users.activateAccount') : $t('users.deactivateAccount') }}
+        {{ !account.is_active ? $t('users.activateAccount') : $t('users.deactivateAccount') }}
       </el-dropdown-item>
       <el-dropdown-item
         v-if="showDeactivatedButton(account.id)"
@@ -120,11 +120,11 @@ export default {
     },
     handleDeactivation(user) {
       if (this.renderedFrom === 'showPage') {
-        user.deactivated
+        !user.is_active
           ? this.$store.dispatch('ActivateUserFromReportShow', user)
           : this.$store.dispatch('DeactivateUserFromReportShow', user)
       } else if (this.renderedFrom === 'reportsPage') {
-        user.deactivated
+        !user.is_active
           ? this.$store.dispatch('ActivateUserFromReports', { user, reportId: this.reportId })
           : this.$store.dispatch('DeactivateUserFromReports', { user, reportId: this.reportId })
       }

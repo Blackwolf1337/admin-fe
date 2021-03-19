@@ -1,5 +1,7 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
+    <frontends-table />
+    <el-divider v-if="frontend" class="divider thick-line"/>
     <el-form :model="frontendData" :label-position="labelPosition" :label-width="labelWidth">
       <setting :setting-group="frontend" :data="frontendData"/>
     </el-form>
@@ -28,7 +30,7 @@
       <setting :setting-group="preload" :data="preloadData"/>
     </el-form>
     <div class="submit-button-container">
-      <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
+      <el-button class="submit-button" type="primary" @click="onSubmit">{{ $t('settings.submit') }}</el-button>
     </div>
   </div>
 </template>
@@ -37,11 +39,12 @@
 import { mapGetters } from 'vuex'
 import i18n from '@/lang'
 import Setting from './Setting'
+import FrontendsTable from './inputComponents/FrontendsTable'
 import _ from 'lodash'
 
 export default {
   name: 'Frontend',
-  components: { Setting },
+  components: { FrontendsTable, Setting },
   computed: {
     ...mapGetters([
       'settings'
@@ -69,6 +72,9 @@ export default {
     },
     frontendsData() {
       return _.get(this.settings.settings, [':pleroma', ':frontends']) || {}
+    },
+    isDesktop() {
+      return this.$store.state.app.device === 'desktop'
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'

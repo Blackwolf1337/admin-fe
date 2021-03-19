@@ -20,7 +20,7 @@
       <setting :setting-group="newUsersDigestEmail" :data="newUsersDigestEmailData"/>
     </el-form>
     <div class="submit-button-container">
-      <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
+      <el-button class="submit-button" type="primary" @click="onSubmit">{{ $t('settings.submit') }}</el-button>
     </div>
   </div>
 </template>

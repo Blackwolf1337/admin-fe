@@ -16,14 +16,14 @@
         @input="parseRateLimiter($event, setting.key, 'limit', 'oneLimit', rateLimitAllUsers)"/>
       <div class="limit-button-container">
         <el-button :size="isDesktop ? 'medium' : 'mini'" icon="el-icon-plus" circle @click="toggleLimits([['', ''], ['', '']], setting.key)"/>
-        <p class="expl limit-expl">Set different limits for unauthenticated and authenticated users</p>
+        <p class="expl limit-expl">{{ $t('settings.setLimits') }}</p>
       </div>
     </div>
     <div v-if="rateLimitAuthUsers">
       <el-form-item class="rate-limit">
         <div class="rate-limit-label-container">
           <span class="rate-limit-label">
-            Unauthenticated users:
+            {{ $t('settings.unauthenticatedUsers') }}:
           </span>
         </div>
         <div class="rate-limit-content">
@@ -49,7 +49,7 @@
       <el-form-item class="rate-limit">
         <div class="rate-limit-label-container">
           <span class="rate-limit-label">
-            Authenticated users:
+            {{ $t('settings.authenticatedUsers') }}:
           </span>
         </div>
         <div class="rate-limit-content">
@@ -70,7 +70,7 @@
       </el-form-item>
       <div class="limit-button-container">
         <el-button :size="isDesktop ? 'medium' : 'mini'" class="icon-minus-button" icon="el-icon-minus" circle @click="toggleLimits(['', ''], setting.key)"/>
-        <p class="expl limit-expl">Set limit for all users</p>
+        <p class="expl limit-expl">{{ $t('settings.setLimitsForAll') }}</p>
       </div>
     </div>
   </div>

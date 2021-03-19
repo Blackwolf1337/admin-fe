@@ -104,7 +104,7 @@ const moderationLog = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/moderation_log/index'),
+      component: () => import('@/views/moderationLog/index'),
       name: 'Moderation Log',
       meta: { title: 'moderationLog', icon: 'el-icon-notebook-2', noCache: true }
     }

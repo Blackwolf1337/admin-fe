@@ -154,11 +154,11 @@ describe('Users actions', () => {
     await flushPromises()
 
     const user = store.state.users.fetchedUsers[1]
-    expect(user.deactivated).toBe(false)
+    expect(user.is_active).toBe(true)
     wrapper.find(htmlElement(2, 4)).trigger('click')
 
     const updatedUser = store.state.users.fetchedUsers[1]
-    expect(updatedUser.deactivated).toBe(true)
+    expect(updatedUser.is_active).toBe(false)
     done()
   })
 
@@ -172,13 +172,13 @@ describe('Users actions', () => {
       }
     })
     await flushPromises()
-    expect(store.state.users.fetchedUsers[1].deactivated).toBe(false)
+    expect(store.state.users.fetchedUsers[1].is_active).toBe(true)
 
     wrapper.find(htmlElement(2, 5)).trigger('click')
-    store.dispatch('DeleteUsers', { users: [{ active: true, deactivated: false, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'] }] })
+    store.dispatch('DeleteUsers', { users: [{ active: true, is_active: true, id: '10', nickname: 'bob', local: false, external: true, roles: { admin: false, moderator: false }, tags: ['mrf_tag:sandbox'] }] })
 
     await flushPromises()
-    expect(store.state.users.fetchedUsers[1].deactivated).toBe(true)
+    expect(store.state.users.fetchedUsers[1].is_active).toBe(false)
     done()
   })
 

@@ -74,6 +74,16 @@ export default {
     mediaProxyCache: 'MediaProxy Cache',
     'emoji-packs': 'Emoji packs'
   },
+  errLog: {
+    error401: 'Oops! 401 Error',
+    error404: 'Oops! 404 Error',
+    pageNotFound: 'Page not found',
+    correctUrl: 'Please make sure you URL is correct',
+    unauth: 'Unauthorized',
+    back: 'Back',
+    login: 'Login',
+    homePage: 'Home Page'
+  },
   navbar: {
     logOut: 'Log Out',
     dashboard: 'Dashboard',
@@ -87,7 +97,7 @@ export default {
     logInViaPleromaFE: 'Log in via PleromaFE',
     username: 'username@host',
     password: 'password',
-    omitHostname: 'omit hostname if Pleroma is located on this domain',
+    omitHostname: 'Omit hostname if Pleroma is located on this domain',
     errorMessage: 'Username must contain username and host, e.g. john@pleroma.social',
     any: 'any',
     thirdparty: 'Or connect with',
@@ -158,11 +168,6 @@ export default {
     cancel: 'Cancel',
     confirm: 'Confirm',
     unfollow: 'Unfollow'
-  },
-  errorLog: {
-    tips: 'Please click the bug icon in the upper right corner',
-    description: 'Now the management system are basically the form of the spa, it enhances the user experience, but it also increases the possibility of page problems, a small negligence may lead to the entire page deadlock. Fortunately Vue provides a way to catch handling exceptions, where you can handle errors or report exceptions.',
-    documentation: 'Document introduction'
   },
   excel: {
     export: 'Export',
@@ -412,6 +417,7 @@ export default {
     moderationLog: 'Moderation Log'
   },
   settings: {
+    submit: 'Submit',
     settings: 'Settings',
     instance: 'Instance',
     upload: 'Upload',
@@ -453,7 +459,26 @@ export default {
     remove: 'Remove',
     instancePanel: 'Instance Panel Document',
     termsOfServices: 'Terms of Service',
-    submit: 'Submit'
+    availableFrontends: 'Available Frontends',
+    installFrontends: 'This is the list of available frontends. You can switch to one of the listed frontends or specify all the required options and install another frontend',
+    install: 'Install',
+    installed: 'Installed',
+    name: 'Name',
+    git: 'Git',
+    installAnotherFrontend: 'Install another frontend',
+    addKeyValuePair: 'Add another `key - value` pair to this icon',
+    addIconConfig: 'Add another icon configuration',
+    setLimits: 'Set different limits for unauthenticated and authenticated users',
+    unauthenticatedUsers: 'Unauthenticated users',
+    authenticatedUsers: 'Authenticated users',
+    setLimitsForAll: 'Set limit for all users',
+    ref: 'Ref',
+    file: 'File',
+    buildUrl: 'Build URL',
+    buildDir: 'Build Directory',
+    frontendSuccess: 'Frontend installed successfully!',
+    frontendStartedInstallation: 'Installation started',
+    inProcess: 'In process'
   },
   relays: {
     relays: 'Relays',
@@ -487,7 +512,8 @@ export default {
     invalidEmailError: 'Please input valid e-mail',
     emailSent: 'Invite was sent',
     submitFormError: 'There are invalid values in the form. Please fix them before continuing.',
-    inviteViaEmailAlert: 'To send invite via email make sure to enable `invites_enabled` and disable `registrations_open`'
+    inviteViaEmailAlert: 'To send invite via email make sure to enable `invites_enabled` and disable `registrations_open`',
+    copyLink: 'Copy link'
   },
   emoji: {
     emojiPacks: 'Emoji packs',
@@ -545,6 +571,5 @@ export default {
     emptyPack: 'This emoji pack is empty',
     emojiWarning: 'Pack names cannot include any of the following characters: # / < > & +',
     image: 'Image'
-
   }
 }
