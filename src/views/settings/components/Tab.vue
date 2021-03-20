@@ -1,9 +1,10 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <div v-for="setting in settingsPerTab" :key="setting.key">
-      <el-form :model="settingData(setting)" :label-position="labelPosition" :label-width="labelWidth" :data-search="setting.key">
+    <div v-for="(setting, index) in settingsPerTab" :key="setting.key">
+      <el-form :label-position="labelPosition" :label-width="labelWidth" :data-search="setting.key">
         <setting :setting-group="settingDesc(setting)" :data="settingData(setting)"/>
       </el-form>
+      <el-divider v-if="showDivider(index, setting)" class="divider thick-line"/>
     </div>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">{{ $t('settings.submit') }}</el-button>
@@ -78,6 +79,9 @@ export default {
     },
     settingDesc(setting) {
       return this.settings.description.find(settingDesc => settingDesc.key === setting.key)
+    },
+    showDivider(index, setting) {
+      return this.settingDesc(setting) && index < this.settingsPerTab.length - 1
     },
     async onSubmit() {
       try {
