@@ -18,6 +18,6 @@ const getters = {
   users: state => state.users.fetchedUsers,
   authHost: state => state.user.authHost,
   settings: state => state.settings,
-  tabs: state => state.settings.tabs
+  listOfTabs: state => state.settings.tabs
 }
 export default getters

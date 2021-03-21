@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { tabs } from './components/tabs'
 import Tab from './components/Tab'
 import RebootButton from '@/components/RebootButton'
@@ -75,11 +76,17 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'listOfTabs',
+      'settings'
+    ]),
     tab() {
-      return this.$route.path.split('/settings/').pop()
+      const { tab } = this.listOfTabs.length > 0 &&
+        this.listOfTabs.find(tab => tab.path === this.$route.path.split('/settings/').pop())
+      return tab
     },
     configDisabled() {
-      return this.$store.state.settings.configDisabled
+      return this.settings.configDisabled
     },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
@@ -97,10 +104,10 @@ export default {
       return this.$store.state.app.sidebar.opened ? 'reboot-sidebar-opened' : 'reboot-sidebar-closed'
     },
     searchData() {
-      return this.$store.state.settings.searchData
+      return this.settings.searchData
     },
     tabs() {
-      return tabs(this.$store.state.settings.description)
+      return tabs(this.settings.description)
     }
   },
   mounted: function() {
