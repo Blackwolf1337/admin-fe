@@ -57,20 +57,6 @@
           :data-search="setting.key || setting.group"
           class="input"
           @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
-        <el-switch
-          v-if="setting.type === 'boolean' && ![':registrations_open', ':invites_enabled'].includes(setting.key)"
-          :value="inputValue"
-          :data-search="setting.key || setting.group"
-          class="switch-input"
-          @change="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
-        <el-input-number
-          v-if="setting.type === 'integer'"
-          :value="inputValue === null ? undefined : inputValue"
-          :placeholder="setting.suggestions ? setting.suggestions[0].toString() : null"
-          :min="0"
-          :size="isDesktop ? 'large' : 'medium'"
-          :data-search="setting.key || setting.group"
-          @change="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
         <el-select
           v-if="renderSingleSelect(setting.type)"
           :value="inputValue === false ? 'false' : inputValue"
@@ -111,6 +97,14 @@
           <template slot="prepend">:</template>
         </el-input>
         <!-- special inputs -->
+        <component
+          :is="settingComponent"
+          :data="data"
+          :nested="nested"
+          :setting-group="settingGroup"
+          :setting="setting"
+          :setting-parent="settingParent"/>
+
         <editable-keyword-input v-if="editableKeyword(setting.key, setting.type)" :data="keywordData" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
         <icons-input v-if="setting.key === ':icons'" :data="iconsData" :setting-group="settingGroup" :setting="setting"/>
         <boolean-combined-input v-if="booleanCombinedInput" :data="data" :setting-group="settingGroup" :setting="setting"/>
@@ -143,14 +137,17 @@ import {
   ImageUploadInput,
   BooleanCombinedInput,
   MascotsInput,
+  NumberInput,
   ProxyUrlInput,
   PruneInput,
   RateLimitInput,
   RegInvitesInput,
   SelectInputWithReducedLabels,
   SenderInput,
-  SpecificMultipleSelect } from './inputComponents'
+  SpecificMultipleSelect,
+  SwitchInput } from './inputComponents'
 import { getBooleanValue, processNested } from '@/store/modules/normalizers'
+import { mapSetting } from './mapping'
 import _ from 'lodash'
 import marked from 'marked'
 
@@ -162,13 +159,15 @@ export default {
     ImageUploadInput,
     BooleanCombinedInput,
     MascotsInput,
+    NumberInput,
     ProxyUrlInput,
     PruneInput,
     RateLimitInput,
     RegInvitesInput,
     SelectInputWithReducedLabels,
     SenderInput,
-    SpecificMultipleSelect
+    SpecificMultipleSelect,
+    SwitchInput
   },
   props: {
     customLabelWidth: {
@@ -296,6 +295,9 @@ export default {
         'Pleroma.Web.Auth.Authenticator'
       ].includes(this.setting.key) ||
         (this.settingGroup.key === 'Pleroma.Emails.Mailer' && this.setting.key === ':adapter')
+    },
+    settingComponent() {
+      return mapSetting(this.setting.type)
     },
     settings() {
       return this.$store.state.settings.settings
