@@ -79,15 +79,6 @@
           placeholder="xxx.xxx.xxx.xx"
           class="input"
           @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
-        <el-input
-          v-if="setting.type === 'atom'"
-          :value="inputValue"
-          :placeholder="setting.suggestions && setting.suggestions[0] ? setting.suggestions[0].substr(1) : ''"
-          :data-search="setting.key || setting.group"
-          class="input"
-          @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)">
-          <template slot="prepend">:</template>
-        </el-input>
         <!-- special inputs -->
         <component
           :is="settingComponent"
@@ -123,6 +114,7 @@
 <script>
 import i18n from '@/lang'
 import {
+  AtomInput,
   EditableKeywordInput,
   IconsInput,
   ImageUploadInput,
@@ -147,6 +139,7 @@ import marked from 'marked'
 export default {
   name: 'Inputs',
   components: {
+    AtomInput,
     EditableKeywordInput,
     IconsInput,
     ImageUploadInput,
@@ -236,10 +229,6 @@ export default {
         return this.data
       } else if (this.settingGroup.group === ':mime' && this.settingParent[0].key === ':types') {
         return this.data ? this.data[this.setting.key] : []
-      } else if (this.setting.type === 'atom') {
-        return this.data[this.setting.key] && this.data[this.setting.key][0] === ':'
-          ? this.data[this.setting.key].substr(1)
-          : this.data[this.setting.key]
       } else if (Array.isArray(this.setting.type) &&
           this.setting.type.find(el => Array.isArray(el) && el.includes('list'))) {
         return typeof this.data[this.setting.key] === 'string' ? [this.data[this.setting.key]] : this.data[this.setting.key]
