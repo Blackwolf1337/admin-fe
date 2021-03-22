@@ -5,7 +5,7 @@ const settingsTypesMap = {
   KeywordInput: ['keyword'],
   NumberInput: ['integer'],
   StringInput: ['string', ['string', 'atom']],
-  SelectOfStringsOrTuples: [['select', ['string', 'tuple']]],
+  // SelectOfStringsOrTuples: [['select', ['string', 'tuple']]],
   SwitchInput: ['boolean'],
   SelectInputWithReducedLabels: [['select', 'reduced_labels'], ['multiple_select', 'reduced_labels']]
 }
