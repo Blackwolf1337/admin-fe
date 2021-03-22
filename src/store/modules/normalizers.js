@@ -27,22 +27,6 @@ const getCurrentValue = (type, value, path) => {
   }
 }
 
-// const getValueWithoutKey = (key, [type, value]) => {
-//   if (prependWithСolon(type, value)) {
-//     return `:${value}`
-//   } else if (key === ':backends') {
-//     const index = value.findIndex(el => el === ':ex_syslogger')
-//     const updatedArray = value.slice()
-//     if (index !== -1) {
-//       updatedArray[index] = { 'tuple': ['ExSyslogger', ':ex_syslogger'] }
-//     }
-//     return updatedArray
-//   } else if (key === ':types') {
-//     return Object.keys(value).reduce((acc, key) => { return { ...acc, [key]: value[key][1] } }, {})
-//   }
-//   return value
-// }
-
 export const parseNonTuples = (key, value) => {
   if (key === ':backends') {
     const index = value.findIndex(el => typeof el === 'object' && el.tuple.includes(':ex_syslogger'))
