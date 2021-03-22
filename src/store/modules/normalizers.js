@@ -213,8 +213,18 @@ const valueExists = (type, value, path) => {
   }
 }
 
-export const valueHasTuples = value => {
-  return Array.isArray(value) && value.every(item => typeof item === 'object' && 'tuple' in item)
+export const valueHasTuples = (key, value) => {
+  const valueIsArrayOfNonObjects = Array.isArray(value) && value.length > 0 && value.every(el => typeof el !== 'object')
+  return key === ':meta' ||
+    key === ':types' ||
+    key === ':backends' ||
+    key === ':compiled_template_engines' ||
+    key === ':compiled_format_encoders' ||
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean' ||
+    value === null ||
+    valueIsArrayOfNonObjects
 }
 
 export const wrapUpdatedSettings = (group, settings, currentState) => {

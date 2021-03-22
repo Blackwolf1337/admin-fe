@@ -75,7 +75,8 @@ export default {
   },
   methods: {
     settingData(setting) {
-      return _.get(this.settings.settings, [setting.group, setting.key]) || {}
+      const settingKey = !setting.key && setting.children.length === 1 ? setting.children[0].key : setting.key
+      return _.get(this.settings.settings, [setting.group, settingKey]) || {}
     },
     settingDesc(setting) {
       if (!setting.key && setting.children) {

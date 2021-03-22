@@ -54,7 +54,7 @@ export default {
   },
   computed: {
     inputValue() {
-      return this.data[this.setting.key] || this.data
+      return this.data[this.setting.key] || this.data.value
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'

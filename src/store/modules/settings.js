@@ -8,7 +8,7 @@ import {
   removeSettings,
   updateInstanceDocument,
   updateSettings } from '@/api/settings'
-import { formSearchObject, parseTuples, valueHasTuples, wrapUpdatedSettings } from './normalizers'
+import { formSearchObject, parseTuples, parseNonTuples, valueHasTuples, wrapUpdatedSettings } from './normalizers'
 import { tabs } from '../../utils/tabs'
 import _ from 'lodash'
 
@@ -57,14 +57,10 @@ const settings = {
     },
     SET_SETTINGS: (state, data) => {
       const newSettings = data.reduce((acc, { group, key, value }) => {
-        const parsedValue = valueHasTuples(value)
-          ? parseTuples(value, key)
-          : value
-        if (acc[group]) {
-          acc[group] = key ? { ...acc[group], [key]: parsedValue } : { ...acc[group], ...parsedValue }
-        } else {
-          acc[group] = key ? { [key]: parsedValue } : parsedValue
-        }
+        const parsedValue = valueHasTuples(key, value)
+          ? { value: parseNonTuples(key, value) }
+          : parseTuples(value, key)
+        acc[group] = acc[group] ? { ...acc[group], [key]: parsedValue } : { [key]: parsedValue }
         return acc
       }, {})
 
