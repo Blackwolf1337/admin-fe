@@ -78,7 +78,12 @@ export default {
       return _.get(this.settings.settings, [setting.group, setting.key]) || {}
     },
     settingDesc(setting) {
-      return this.settings.description.find(settingDesc => settingDesc.key === setting.key)
+      if (!setting.key && setting.children) {
+        return this.settings.description.find(settingDesc =>
+          settingDesc.children && settingDesc.children[0].key === setting.children[0].key)
+      } else {
+        return this.settings.description.find(settingDesc => settingDesc.key === setting.key)
+      }
     },
     showDivider(index, setting) {
       return this.settingDesc(setting) && index < this.settingsPerTab.length - 1

@@ -113,7 +113,6 @@
         <prune-input v-if="setting.key === ':prune'" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting"/>
         <rate-limit-input v-if="settingGroup.key === ':rate_limit'" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <reg-invites-input v-if="[':registrations_open', ':invites_enabled'].includes(setting.key)" :data="data" :setting-group="settingGroup" :setting="setting"/>
-        <select-input-with-reduced-labels v-if="reducedSelects" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <specific-multiple-select v-if="setting.key === ':backends' || setting.key === ':args'" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <sender-input v-if="senderInput(setting)" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
         <!-------------------->
@@ -143,6 +142,7 @@ import {
   RateLimitInput,
   RegInvitesInput,
   SelectInputWithReducedLabels,
+  SelectOfStringsOrTuples,
   SenderInput,
   SpecificMultipleSelect,
   SwitchInput } from './inputComponents'
@@ -165,6 +165,7 @@ export default {
     RateLimitInput,
     RegInvitesInput,
     SelectInputWithReducedLabels,
+    SelectOfStringsOrTuples,
     SenderInput,
     SpecificMultipleSelect,
     SwitchInput
@@ -281,21 +282,6 @@ export default {
       }
       return Array.isArray(this.data) ? this.data : []
     },
-    reducedSelects() {
-      return [
-        ':filters',
-        ':uploader',
-        ':federation_publisher_modules',
-        ':scrub_policy',
-        ':ttl_setters',
-        ':parsers',
-        ':providers',
-        ':method',
-        ':policies',
-        'Pleroma.Web.Auth.Authenticator'
-      ].includes(this.setting.key) ||
-        (this.settingGroup.key === 'Pleroma.Emails.Mailer' && this.setting.key === ':adapter')
-    },
     settingComponent() {
       return mapSetting(this.setting.type)
     },
@@ -364,7 +350,7 @@ export default {
       })
     },
     renderMultipleSelect(type) {
-      return !this.reducedSelects && Array.isArray(type) && this.setting.key !== ':backends' && this.setting.key !== ':args' && (
+      return Array.isArray(type) && this.setting.key !== ':backends' && this.setting.key !== ':args' && (
         this.setting.key === ':ip_whitelist' ||
         type.includes('module') ||
         (type.includes('list') && type.includes('string')) ||
@@ -373,10 +359,8 @@ export default {
       )
     },
     renderSingleSelect(type) {
-      return !this.reducedSelects && (
-        type === 'module' ||
+      return type === 'module' ||
         (Array.isArray(type) && type.includes('atom') && type.includes('dropdown'))
-      )
     },
     senderInput({ key, type }) {
       return Array.isArray(type) && type.includes('string') && type.includes('tuple') && key === ':sender'

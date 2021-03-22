@@ -1,13 +1,14 @@
 import _ from 'lodash'
 
-const settingsTypesMap = [
-  { NumberInput: 'integer' },
-  { SelectOfStringsOrTuples: ['select', ['string', 'tuple']] },
-  { SwitchInput: 'boolean' }
-]
+const settingsTypesMap = {
+  NumberInput: ['integer'],
+  SelectOfStringsOrTuples: [['select', ['string', 'tuple']]],
+  SwitchInput: ['boolean'],
+  SelectInputWithReducedLabels: [['select', 'reduced_labels'], ['multiple_select', 'reduced_labels']]
+}
 
-export const mapSetting = (type) => {
-  const component = settingsTypesMap.find(mapObject => _.isEqual(type, _.values(mapObject)[0]))
-  console.log(_.keys(component)[0])
-  return _.keys(component)[0]
+export const mapSetting = (settingType) => {
+  const component = _.keys(settingsTypesMap).find(component =>
+    _.some(settingsTypesMap[component], type => _.isEqual(settingType, type)))
+  return component
 }
