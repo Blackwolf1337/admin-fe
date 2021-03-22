@@ -49,14 +49,6 @@
           type="textarea"
           class="input"
           @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
-        <el-input
-          v-if="setting.type === 'string' ||
-          (Array.isArray(setting.type) && setting.type.includes('string') && setting.type.includes('atom'))"
-          :value="inputValue"
-          :placeholder="setting.suggestions ? setting.suggestions[0] : null"
-          :data-search="setting.key || setting.group"
-          class="input"
-          @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
         <el-select
           v-if="renderSingleSelect(setting.type)"
           :value="inputValue === false ? 'false' : inputValue"
@@ -145,6 +137,7 @@ import {
   SelectOfStringsOrTuples,
   SenderInput,
   SpecificMultipleSelect,
+  StringInput,
   SwitchInput } from './inputComponents'
 import { getBooleanValue, processNested } from '@/store/modules/normalizers'
 import { mapSetting } from './mapping'
@@ -168,6 +161,7 @@ export default {
     SelectOfStringsOrTuples,
     SenderInput,
     SpecificMultipleSelect,
+    StringInput,
     SwitchInput
   },
   props: {
