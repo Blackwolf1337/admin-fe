@@ -13,4 +13,5 @@ export { default as SelectInputWithReducedLabels } from './SelectInputWithReduce
 export { default as SelectOfStringsOrTuples } from './SelectOfStringsOrTuples'
 export { default as SenderInput } from './SenderInput'
 export { default as SpecificMultipleSelect } from './SpecificMultipleSelect'
+export { default as StringInput } from './StringInput'
 export { default as SwitchInput } from './SwitchInput'

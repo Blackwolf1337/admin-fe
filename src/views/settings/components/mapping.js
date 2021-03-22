@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 const settingsTypesMap = {
+  StringInput: ['string', ['string', 'atom']],
   NumberInput: ['integer'],
   SelectOfStringsOrTuples: [['select', ['string', 'tuple']]],
   SwitchInput: ['boolean'],
