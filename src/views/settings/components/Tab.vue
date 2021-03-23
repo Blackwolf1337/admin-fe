@@ -33,9 +33,6 @@ export default {
     ...mapGetters([
       'settings'
     ]),
-    settingsPerTab() {
-      return this.settings.description.filter(setting => setting.tab === this.tab)
-    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
@@ -62,6 +59,9 @@ export default {
     },
     searchQuery() {
       return this.$store.state.settings.searchQuery
+    },
+    settingsPerTab() {
+      return this.settings.description.filter(setting => setting.tab === this.tab)
     }
   },
   mounted() {
@@ -74,17 +74,26 @@ export default {
     }
   },
   methods: {
+    descriptionMap(setting) {
+      return [
+        { selector: 'group',
+          fn: settingDesc => settingDesc.key === setting.key,
+          keysToGetData: [setting.group, setting.key] },
+        { selector: ['group', 'without_key'],
+          fn: settingDesc => settingDesc.group === setting.group,
+          keysToGetData: [setting.group] },
+        { selector: ['group', 'without_key', 'single_setting'],
+          fn: settingDesc => settingDesc.children && settingDesc.children[0].key === setting.children[0].key,
+          keysToGetData: [setting.group, setting.children[0].key] }
+      ]
+    },
     settingData(setting) {
-      const settingKey = !setting.key && setting.children.length === 1 ? setting.children[0].key : setting.key
-      return _.get(this.settings.settings, [setting.group, settingKey]) || {}
+      const { keysToGetData } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
+      return _.get(this.settings.settings, keysToGetData) || {}
     },
     settingDesc(setting) {
-      if (!setting.key && setting.children) {
-        return this.settings.description.find(settingDesc =>
-          settingDesc.children && settingDesc.children[0].key === setting.children[0].key)
-      } else {
-        return this.settings.description.find(settingDesc => settingDesc.key === setting.key)
-      }
+      const { fn } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
+      return this.settings.description.find(fn)
     },
     showDivider(index, setting) {
       return this.settingDesc(setting) && index < this.settingsPerTab.length - 1
