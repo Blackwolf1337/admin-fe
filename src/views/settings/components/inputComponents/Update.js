@@ -43,6 +43,12 @@ export default {
     },
     isTablet() {
       return this.$store.state.app.device === 'tablet'
+    },
+    settings() {
+      return this.$store.state.settings.settings
+    },
+    updatedSettings() {
+      return this.$store.state.settings.updatedSettings
     }
   },
   methods: {
