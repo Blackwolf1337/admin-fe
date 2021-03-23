@@ -120,6 +120,7 @@ import {
   ImageUploadInput,
   BooleanCombinedInput,
   MascotsInput,
+  MultipleSelectInput,
   NumberInput,
   ProxyUrlInput,
   PruneInput,
@@ -144,6 +145,7 @@ export default {
     ImageUploadInput,
     BooleanCombinedInput,
     MascotsInput,
+    MultipleSelectInput,
     NumberInput,
     ProxyUrlInput,
     PruneInput,
@@ -336,7 +338,6 @@ export default {
       return Array.isArray(type) && this.setting.key !== ':backends' && this.setting.key !== ':args' && (
         this.setting.key === ':ip_whitelist' ||
         type.includes('module') ||
-        (type.includes('list') && type.includes('string')) ||
         (type.includes('list') && type.includes('atom')) ||
         (!type.includes('keyword') && type.includes('regex') && type.includes('string'))
       )
