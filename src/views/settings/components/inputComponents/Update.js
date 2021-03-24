@@ -1,4 +1,5 @@
 import { processNested } from '@/store/modules/normalizers'
+import _ from 'lodash'
 
 export default {
   props: {
@@ -35,26 +36,24 @@ export default {
     }
   },
   computed: {
+    valueMap() {
+      return [
+        { condition: _.isEqual(this.settingGroup.type, ['group', 'without_key']) && this.data[this.setting.key] &&
+            this.setting.type === 'atom' && this.data[this.setting.key].value[0] === ':',
+        value: () => this.data[this.setting.key].value.substr(1) },
+        { condition: _.isEqual(this.settingGroup.type, ['group', 'without_key']) && this.data[this.setting.key],
+          value: () => this.data[this.setting.key].value },
+        { condition: this.setting.type === 'atom',
+          value: () => this.data[this.setting.key] && this.data[this.setting.key][0] === ':' ? this.data[this.setting.key].substr(1) : this.data[this.setting.key] },
+        { condition: _.isEqual(this.settingGroup.type, ['group', 'without_key', 'single_setting']),
+          value: () => this.data.value },
+        { condition: true,
+          value: () => this.data[this.setting.key] }
+      ]
+    },
     inputValue() {
-      if ([':esshd', ':cors_plug', ':quack', ':tesla', ':swoosh'].includes(this.settingGroup.group) &&
-        this.data[this.setting.key]) {
-        return this.setting.type === 'atom' && this.data[this.setting.key].value[0] === ':'
-          ? this.data[this.setting.key].value.substr(1)
-          : this.data[this.setting.key].value
-      } else if (this.setting.type === 'atom') {
-        return this.data[this.setting.key] && this.data[this.setting.key][0] === ':' ? this.data[this.setting.key].substr(1) : this.data[this.setting.key]
-      } else if ((this.settingGroup.group === ':logger' && this.setting.key === ':backends') ||
-        this.setting.key === 'Pleroma.Web.Auth.Authenticator' ||
-        this.setting.key === ':admin_token') {
-        return this.data.value
-      } else if (this.settingGroup.group === ':mime' && this.settingParent[0].key === ':types') {
-        return this.data ? this.data[this.setting.key] : []
-      } else if (Array.isArray(this.setting.type) &&
-          this.setting.type.find(el => Array.isArray(el) && el.includes('list'))) {
-        return typeof this.data[this.setting.key] === 'string' ? [this.data[this.setting.key]] : this.data[this.setting.key]
-      } else {
-        return this.data[this.setting.key]
-      }
+      const { value } = this.valueMap.find(({ condition }) => condition)
+      return value()
     },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
