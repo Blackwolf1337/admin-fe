@@ -14,14 +14,7 @@ import Update from './Update'
 
 export default {
   name: 'AtomInput',
-  extends: Update,
-  computed: {
-    inputValue() {
-      return this.data[this.setting.key] && this.data[this.setting.key][0] === ':'
-        ? this.data[this.setting.key].substr(1)
-        : this.data[this.setting.key]
-    }
-  }
+  extends: Update
 }
 </script>
 

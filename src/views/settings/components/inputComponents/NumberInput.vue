@@ -1,6 +1,6 @@
 <template>
   <el-input-number
-    :value="data[setting.key] || undefined"
+    :value="inputValue"
     :placeholder="setting.suggestions ? setting.suggestions[0].toString() : null"
     :min="0"
     :size="isDesktop ? 'large' : 'medium'"

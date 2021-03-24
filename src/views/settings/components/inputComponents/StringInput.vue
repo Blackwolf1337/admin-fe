@@ -1,6 +1,6 @@
 <template>
   <el-input
-    :value="data[setting.key]"
+    :value="inputValue"
     :placeholder="setting.suggestions ? setting.suggestions[0] : null"
     :data-search="setting.key || setting.group"
     class="input"

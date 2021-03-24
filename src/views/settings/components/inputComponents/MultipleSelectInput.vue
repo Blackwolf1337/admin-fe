@@ -1,6 +1,6 @@
 <template>
   <el-select
-    :value="data[setting.key]"
+    :value="inputValue"
     :data-search="setting.key || setting.group"
     multiple
     filterable
