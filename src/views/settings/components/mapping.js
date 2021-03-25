@@ -2,7 +2,8 @@ import _ from 'lodash'
 
 const settingsTypesMap = {
   AtomInput: ['atom'],
-  KeywordInput: ['keyword'],
+  EditableKeywordInput: [['keyword', ['list', 'string']]],
+  // KeywordInput: ['keyword'],
   MultipleSelectInput: [['list', 'string']],
   NumberInput: ['integer'],
   StringInput: ['string', ['string', 'atom']],

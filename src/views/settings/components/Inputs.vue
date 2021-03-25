@@ -290,9 +290,7 @@ export default {
         (type.includes('map') && type.findIndex(el => el.includes('list') && el.includes('string')) !== -1) ||
         (type.includes('keyword') && type.includes('integer')) ||
         (type.includes('keyword') && type.includes('string')) ||
-        (type.includes('tuple') && type.includes('list')) ||
-        (type.includes('keyword') && type.findIndex(el => el.includes('list') && el.includes('string')) !== -1)
-      )
+        (type.includes('tuple') && type.includes('list')))
     },
     getFormattedDescription(desc) {
       return marked(desc)

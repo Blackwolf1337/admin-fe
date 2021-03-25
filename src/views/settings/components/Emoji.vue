@@ -80,11 +80,14 @@
       </el-tab-pane>
       <el-tab-pane :label="$t('settings.settings')" name="settings">
         <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-          <el-form :model="emojiData" :label-position="labelPosition" :label-width="settingsLabelWidth">
-            <setting :setting-group="emoji" :data="emojiData"/>
-          </el-form>
+          <div v-for="(setting, index) in settingsPerTab" :key="setting.key">
+            <el-form :label-position="labelPosition" :label-width="settingsLabelWidth" :data-search="setting.key">
+              <setting :setting-group="settingDesc(setting)" :data="settingData(setting)"/>
+            </el-form>
+            <el-divider v-if="showDivider(index, setting)" class="divider thick-line"/>
+          </div>
           <div class="submit-button-container">
-            <el-button class="submit-button" type="primary" @click="onSubmit">Submit</el-button>
+            <el-button class="submit-button" type="primary" @click="onSubmit">{{ $t('settings.submit') }}</el-button>
           </div>
         </div>
       </el-tab-pane>
@@ -121,12 +124,6 @@ export default {
     },
     currentRemotePacksPage() {
       return this.$store.state.emojiPacks.currentRemotePacksPage
-    },
-    emoji() {
-      return this.settings.description.find(setting => setting.key === ':emoji')
-    },
-    emojiData() {
-      return _.get(this.settings.settings, [':pleroma', ':emoji']) || {}
     },
     emojiPacksDisabled() {
       const disabledFeatures = process.env.DISABLED_FEATURES || []
@@ -190,6 +187,9 @@ export default {
       } else {
         return '280px'
       }
+    },
+    settingsPerTab() {
+      return this.settings.description.filter(setting => setting.tab === 'emoji')
     }
   },
   mounted() {
@@ -209,6 +209,19 @@ export default {
     }
   },
   methods: {
+    descriptionMap(setting) {
+      return [
+        { selector: 'group',
+          fn: settingDesc => settingDesc.key === setting.key,
+          keysToGetData: [setting.group, setting.key] },
+        { selector: ['group', 'without_key'],
+          fn: settingDesc => settingDesc.group === setting.group,
+          keysToGetData: [setting.group] },
+        { selector: ['group', 'without_key', 'single_setting'],
+          fn: settingDesc => settingDesc.children && settingDesc.children[0].key === setting.children[0].key,
+          keysToGetData: [setting.group, setting.children[0].key] }
+      ]
+    },
     closeLocalTabs() {
       this.collapseExistingEmojis()
       this.activeLocalPack = ''
@@ -284,6 +297,17 @@ export default {
         type: 'success',
         message: i18n.t('emoji.reloaded')
       })
+    },
+    settingData(setting) {
+      const { keysToGetData } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
+      return _.get(this.settings.settings, keysToGetData) || {}
+    },
+    settingDesc(setting) {
+      const { fn } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
+      return this.settings.description.find(fn)
+    },
+    showDivider(index, setting) {
+      return this.settingDesc(setting) && index < this.settingsPerTab.length - 1
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="editable-keyword-container">
-    <div v-if="setting.key === ':crontab'" :data-search="setting.key" class="crontab">
+    <!-- <div v-if="setting.key === ':crontab'" :data-search="setting.key" class="crontab">
       <el-form-item v-for="worker in data" :key="getId(worker)" :label="getCrontabWorkerLabel(worker)" class="crontab-container">
         <el-input
           :value="getValue(worker)"
@@ -8,8 +8,8 @@
           class="input setting-input"
           @input="updateCrontab($event, 'value', worker)"/>
       </el-form-item>
-    </div>
-    <div v-else-if="editableKeywordWithInteger" :data-search="setting.key || setting.group">
+    </div> -->
+    <!-- <div v-else-if="editableKeywordWithInteger" :data-search="setting.key || setting.group">
       <div v-for="element in data" :key="getId(element)" class="setting-input">
         <el-input :value="getKey(element)" placeholder="key" class="name-input" @input="parseEditableKeyword($event, 'key', element)"/> :
         <el-input-number :value="getValue(element)" :min="0" size="large" class="value-input" @change="parseEditableKeyword($event, 'value', element)"/>
@@ -24,8 +24,8 @@
         <el-button :size="isDesktop ? 'medium' : 'mini'" class="icon-minus-button" icon="el-icon-minus" circle @click="deleteEditableKeywordRow(element)"/>
       </div>
       <el-button :size="isDesktop ? 'medium' : 'mini'" icon="el-icon-plus" circle @click="addRowToEditableKeyword"/>
-    </div>
-    <div v-else-if="editableKeywordWithSelect" :data-search="setting.key || setting.group">
+    </div> -->
+    <div v-if="editableKeywordWithSelect" :data-search="setting.key || setting.group">
       <div v-for="element in data" :key="getId(element)" class="setting-input">
         <el-input :value="getKey(element)" placeholder="key" class="name-input" @input="parseEditableKeyword($event, 'key', element)"/> :
         <el-select :value="getValue(element)" multiple filterable allow-create class="value-input" @change="parseEditableKeyword($event, 'value', element)"/>
@@ -38,6 +38,7 @@
 
 <script>
 import { processNested } from '@/store/modules/normalizers'
+import _ from 'lodash'
 
 export default {
   name: 'EditableKeywordInput',
@@ -73,8 +74,9 @@ export default {
       return this.setting.type.includes('keyword') && this.setting.type.includes('integer')
     },
     editableKeywordWithSelect() {
-      return (this.setting.type.includes('map') && this.setting.type.findIndex(el => el.includes('list') && el.includes('string')) !== -1) ||
-        (this.setting.type.includes('keyword') && this.setting.type.findIndex(el => el.includes('list') && el.includes('string')) !== -1)
+      return _.isEqual(this.setting.type, ['keyword', ['list', 'string']])
+      // (this.setting.type.includes('map') && this.setting.type.findIndex(el => el.includes('list') && el.includes('string')) !== -1) ||
+      //   (this.setting.type.includes('keyword') && this.setting.type.findIndex(el => el.includes('list') && el.includes('string')) !== -1)
     },
     editableKeywordWithString() {
       return this.setting.key !== ':crontab' && (
