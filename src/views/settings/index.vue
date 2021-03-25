@@ -29,7 +29,7 @@
             @select="handleSearchSelect"/>
         </div>
       </div>
-      <tab :tab="tab"/>
+      <component :is="chooseTab" :tab="tab"/>
     </div>
     <div v-if="isMobile || isTablet">
       <div :class="isSidebarOpen" class="settings-header-container">
@@ -57,7 +57,7 @@
           class="settings-search-input"
           @select="handleSearchSelect"/>
       </div>
-      <tab :tab="tab"/>
+      <component :is="chooseTab" :tab="tab"/>
     </div>
   </div>
 </template>
@@ -65,11 +65,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { tabs } from './components/tabs'
+import Emoji from './components/Emoji'
 import Tab from './components/Tab'
 import RebootButton from '@/components/RebootButton'
 
 export default {
-  components: { RebootButton, Tab },
+  components: { Emoji, RebootButton, Tab },
   data() {
     return {
       searchQuery: ''
@@ -80,10 +81,8 @@ export default {
       'listOfTabs',
       'settings'
     ]),
-    tab() {
-      const { tab } = this.listOfTabs.length > 0 &&
-        this.listOfTabs.find(tab => tab.path === this.$route.path.split('/settings/').pop())
-      return tab
+    chooseTab() {
+      return this.tab === 'emoji' ? Emoji : Tab
     },
     configDisabled() {
       return this.settings.configDisabled
@@ -105,6 +104,11 @@ export default {
     },
     searchData() {
       return this.settings.searchData
+    },
+    tab() {
+      const { tab } = this.listOfTabs.length > 0 &&
+        this.listOfTabs.find(tab => tab.path === this.$route.path.split('/settings/').pop())
+      return tab
     },
     tabs() {
       return tabs(this.settings.description)
