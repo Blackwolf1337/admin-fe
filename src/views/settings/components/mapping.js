@@ -3,6 +3,7 @@ import _ from 'lodash'
 const settingsTypesMap = {
   AtomInput: ['atom'],
   EditableKeywordInput: [['keyword', ['list', 'string']]],
+  ImageUploadInput: [['string', 'image'], ['string', 'image', 'full_size']],
   // KeywordInput: ['keyword'],
   MultipleSelectInput: [['list', 'string']],
   NumberInput: ['integer'],

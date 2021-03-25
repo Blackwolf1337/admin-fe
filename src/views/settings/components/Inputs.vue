@@ -33,14 +33,6 @@
         </el-tooltip>
       </span>
       <div class="input-row">
-        <image-upload-input
-          v-if="isImageUrl"
-          :data="data"
-          :setting-group="settingGroup"
-          :setting="setting"
-          :input-value="inputValue"
-          @change="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"
-        />
         <el-input
           v-if="textareaInput"
           :value="inputValue"
@@ -278,9 +270,6 @@ export default {
     },
     updatedSettings() {
       return this.$store.state.settings.updatedSettings
-    },
-    isImageUrl() {
-      return Array.isArray(this.setting.type) && this.setting.type.includes('image')
     }
   },
   methods: {
