@@ -247,20 +247,20 @@
     border: 1px solid #eee;
     margin-bottom: 18px;
   }
-  .mascot {
+  .map-keyword {
     margin-bottom: 15px;
   }
-  .mascot-container {
+  .map-keyword-container {
     width: 100%;
   }
-  .mascot-input {
+  .map-keyword-input {
     margin-bottom: 7px;
   }
-  .mascot-name-container {
+  .map-name-container {
     display: flex;
     margin-bottom: 7px;
   }
-  .mascot-name-input {
+  .map-name-input {
     margin-right: 10px
   }
   .multiple-select-container {
@@ -549,7 +549,7 @@
         margin: 0;
         padding: 0 ;
       }
-      .el-form-item:first-child .mascot-form-item {
+      .el-form-item:first-child .map-form-item {
         padding: 0;
       }
       .el-form-item:first-child .rate-limit {
@@ -678,13 +678,13 @@
     .line {
       margin-bottom: 10px;
     }
-    .mascot-form-item {
+    .map-form-item {
       .el-form-item__label:not(.no-top-margin) {
         margin: 0;
         padding: 0;
       }
     }
-    .mascot-container {
+    .map-keyword-container {
       margin-bottom: 5px;
     }
     .name-input {
