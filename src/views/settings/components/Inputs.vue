@@ -52,13 +52,6 @@
           @change="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)">
           <el-option v-for="(option, index) in setting.suggestions" :key="index" :value="option"/>
         </el-select>
-        <el-input
-          v-if="setting.key === ':ip'"
-          :value="inputValue"
-          :data-search="setting.key || setting.group"
-          placeholder="xxx.xxx.xxx.xx"
-          class="input"
-          @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
         <!-- special inputs -->
         <component
           :is="settingComponent"
@@ -97,6 +90,7 @@ import {
   EditableKeywordInput,
   IconsInput,
   ImageUploadInput,
+  IpInput,
   BooleanCombinedInput,
   KeywordMapInput,
   MultipleSelectInput,
@@ -123,6 +117,7 @@ export default {
     EditableKeywordInput,
     IconsInput,
     ImageUploadInput,
+    IpInput,
     BooleanCombinedInput,
     KeywordMapInput,
     MultipleSelectInput,
