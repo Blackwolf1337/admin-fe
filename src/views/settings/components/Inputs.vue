@@ -42,18 +42,6 @@
           class="input"
           @input="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)"/>
         <el-select
-          v-if="renderSingleSelect(setting.type)"
-          :value="inputValue === false ? 'false' : inputValue"
-          :data-search="setting.key || setting.group"
-          clearable
-          class="input"
-          @change="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)">
-          <el-option
-            v-for="(option, index) in setting.suggestions"
-            :value="option"
-            :key="index"/>
-        </el-select>
-        <el-select
           v-if="renderMultipleSelect(setting.type)"
           :value="inputValue"
           :data-search="setting.key || setting.group"
@@ -118,12 +106,13 @@ import {
   PruneInput,
   RateLimitInput,
   RegInvitesInput,
+  SelectInput,
   SelectInputWithReducedLabels,
   SenderInput,
   SpecificMultipleSelect,
   StringInput,
   SwitchInput } from './inputComponents'
-import { getBooleanValue, processNested } from '@/store/modules/normalizers'
+import { processNested } from '@/store/modules/normalizers'
 import { mapSetting } from './mapping'
 import _ from 'lodash'
 import marked from 'marked'
@@ -143,6 +132,7 @@ export default {
     PruneInput,
     RateLimitInput,
     RegInvitesInput,
+    SelectInput,
     SelectInputWithReducedLabels,
     SenderInput,
     SpecificMultipleSelect,
@@ -329,18 +319,13 @@ export default {
         (!type.includes('keyword') && type.includes('regex') && type.includes('string'))
       )
     },
-    renderSingleSelect(type) {
-      return type === 'module' ||
-        (Array.isArray(type) && type.includes('atom') && type.includes('dropdown'))
-    },
     senderInput({ key, type }) {
       return Array.isArray(type) && type.includes('string') && type.includes('tuple') && key === ':sender'
     },
     update(value, group, key, parents, input, type, nested) {
-      const updatedValue = this.renderSingleSelect(type) ? getBooleanValue(value) : value
       nested
-        ? this.processNestedData(updatedValue, group, key, parents)
-        : this.updateSetting(updatedValue, group, key, input, type)
+        ? this.processNestedData(value, group, key, parents)
+        : this.updateSetting(value, group, key, input, type)
     },
     updateSetting(value, group, key, input, type) {
       this.$store.dispatch('UpdateSettings', { group, key, input, value, type })

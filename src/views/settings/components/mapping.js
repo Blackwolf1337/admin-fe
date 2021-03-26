@@ -10,6 +10,7 @@ const settingsTypesMap = {
   StringInput: ['string', ['string', 'atom']],
   // SelectOfStringsOrTuples: [['select', ['string', 'tuple']]],
   SwitchInput: ['boolean'],
+  SelectInput: ['select'],
   SelectInputWithReducedLabels: [['select', 'reduced_labels'], ['multiple_select', 'reduced_labels']]
 }
 
