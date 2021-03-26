@@ -65,12 +65,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { tabs } from './components/tabs'
-import Emoji from './components/Emoji'
+import { Frontend, Emoji } from './components'
 import Tab from './components/Tab'
 import RebootButton from '@/components/RebootButton'
 
 export default {
-  components: { Emoji, RebootButton, Tab },
+  components: { Frontend, Emoji, RebootButton, Tab },
   data() {
     return {
       searchQuery: ''
@@ -82,7 +82,7 @@ export default {
       'settings'
     ]),
     chooseTab() {
-      return this.tab === 'emoji' ? Emoji : Tab
+      return this.mapTab[this.tab] || Tab
     },
     configDisabled() {
       return this.settings.configDisabled
@@ -98,6 +98,12 @@ export default {
     },
     isTablet() {
       return this.$store.state.app.device === 'tablet'
+    },
+    mapTab() {
+      return {
+        'emoji': Emoji,
+        'frontend': Frontend
+      }
     },
     rebootIsSidebarOpen() {
       return this.$store.state.app.sidebar.opened ? 'reboot-sidebar-opened' : 'reboot-sidebar-closed'

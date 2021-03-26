@@ -1,34 +1,13 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
     <frontends-table />
-    <el-divider v-if="frontend" class="divider thick-line"/>
-    <el-form :model="frontendData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="frontend" :data="frontendData"/>
-    </el-form>
-    <el-divider v-if="frontend" class="divider thick-line"/>
-    <el-form :model="staticFeData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="staticFe" :data="staticFeData"/>
-    </el-form>
-    <el-divider v-if="staticFe" class="divider thick-line"/>
-    <el-form :model="frontendsData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="frontends" :data="frontendsData"/>
-    </el-form>
-    <el-divider v-if="frontends" class="divider thick-line"/>
-    <el-form :model="assetsData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="assets" :data="assetsData"/>
-    </el-form>
-    <el-divider v-if="assets" class="divider thick-line"/>
-    <el-form :model="chatData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="chat" :data="chatData"/>
-    </el-form>
-    <el-divider v-if="chat" class="divider thick-line"/>
-    <el-form :model="markupData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="markup" :data="markupData"/>
-    </el-form>
-    <el-divider v-if="preload" class="divider thick-line"/>
-    <el-form :model="preloadData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="preload" :data="preloadData"/>
-    </el-form>
+    <el-divider class="divider thick-line"/>
+    <div v-for="(setting, index) in settingsPerTab" :key="setting.key">
+      <el-form :label-position="labelPosition" :label-width="labelWidth" :data-search="setting.key">
+        <setting :setting-group="settingDesc(setting)" :data="settingData(setting)"/>
+      </el-form>
+      <el-divider v-if="showDivider(index, setting)" class="divider thick-line"/>
+    </div>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">{{ $t('settings.submit') }}</el-button>
     </div>
@@ -49,30 +28,6 @@ export default {
     ...mapGetters([
       'settings'
     ]),
-    assets() {
-      return this.settings.description.find(setting => setting.key === ':assets')
-    },
-    assetsData() {
-      return _.get(this.settings.settings, [':pleroma', ':assets']) || {}
-    },
-    chat() {
-      return this.settings.description.find(setting => setting.key === ':chat')
-    },
-    chatData() {
-      return _.get(this.settings.settings, [':pleroma', ':chat']) || {}
-    },
-    frontend() {
-      return this.settings.description.find(setting => setting.key === ':frontend_configurations')
-    },
-    frontendData() {
-      return _.get(this.settings.settings, [':pleroma', ':frontend_configurations']) || {}
-    },
-    frontends() {
-      return this.settings.description.find(setting => setting.key === ':frontends')
-    },
-    frontendsData() {
-      return _.get(this.settings.settings, [':pleroma', ':frontends']) || {}
-    },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
@@ -100,26 +55,11 @@ export default {
     loading() {
       return this.settings.loading
     },
-    markup() {
-      return this.settings.description.find(setting => setting.key === ':markup')
-    },
-    markupData() {
-      return _.get(this.settings.settings, [':pleroma', ':markup']) || {}
-    },
-    preload() {
-      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.Preload')
-    },
-    preloadData() {
-      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.Preload']) || {}
-    },
     searchQuery() {
       return this.$store.state.settings.searchQuery
     },
-    staticFe() {
-      return this.settings.description.find(setting => setting.key === ':static_fe')
-    },
-    staticFeData() {
-      return _.get(this.settings.settings, [':pleroma', ':static_fe']) || {}
+    settingsPerTab() {
+      return this.settings.description.filter(setting => setting.tab === 'frontend')
     }
   },
   mounted() {
@@ -132,6 +72,19 @@ export default {
     }
   },
   methods: {
+    descriptionMap(setting) {
+      return [
+        { selector: 'group',
+          fn: settingDesc => settingDesc.key === setting.key,
+          keysToGetData: [setting.group, setting.key] },
+        { selector: ['group', 'without_key'],
+          fn: settingDesc => settingDesc.group === setting.group,
+          keysToGetData: [setting.group] },
+        { selector: ['group', 'without_key', 'single_setting'],
+          fn: settingDesc => settingDesc.children && settingDesc.children[0].key === setting.children[0].key,
+          keysToGetData: [setting.group, setting.children[0].key] }
+      ]
+    },
     async onSubmit() {
       try {
         await this.$store.dispatch('SubmitChanges')
@@ -142,6 +95,17 @@ export default {
         type: 'success',
         message: i18n.t('settings.success')
       })
+    },
+    settingData(setting) {
+      const { keysToGetData } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
+      return _.get(this.settings.settings, keysToGetData) || {}
+    },
+    settingDesc(setting) {
+      const { fn } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
+      return this.settings.description.find(fn)
+    },
+    showDivider(index, setting) {
+      return this.settingDesc(setting) && index < this.settingsPerTab.length - 1
     }
   }
 }

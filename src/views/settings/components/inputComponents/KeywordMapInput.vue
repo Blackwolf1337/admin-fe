@@ -23,7 +23,7 @@ export default {
   extends: Update,
   methods: {
     addRowToMap() {
-      const newItem = this.setting.map_keys.reduce((acc, key) => {
+      const newItem = this.setting.map_keys.reduce((acc, { key }) => {
         acc[key] = ''
         return acc
       }, { id: this.generateID() })
