@@ -5,7 +5,6 @@ const settingsTypesMap = {
   EditableKeywordInput: [['keyword', ['list', 'string']]],
   ImageUploadInput: [['string', 'image'], ['string', 'image', 'full_size']],
   IpInput: [['tuple', 'ip']],
-  // KeywordInput: ['keyword'],
   KeywordMapInput: [['keyword', 'map']],
   MultipleSelectInput: [['list', 'string']],
   NumberInput: ['integer'],
