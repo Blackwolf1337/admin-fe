@@ -10,6 +10,7 @@ const settingsTypesMap = {
   MultipleSelectInput: [['list', 'string']],
   NumberInput: ['integer'],
   StringInput: ['string', ['string', 'atom']],
+  StringOrTupleInput: [['string', 'tuple']],
   // SelectOfStringsOrTuples: [['select', ['string', 'tuple']]],
   SwitchInput: ['boolean'],
   SelectInput: ['select'],

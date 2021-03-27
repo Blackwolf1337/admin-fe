@@ -15,6 +15,13 @@ export default {
         return false
       }
     },
+    parents: {
+      type: Array,
+      default: function() {
+        return []
+      },
+      required: false
+    },
     setting: {
       type: Object,
       default: function() {

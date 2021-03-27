@@ -57,6 +57,7 @@
           :is="settingComponent"
           :data="data"
           :nested="nested"
+          :parents="settingParent"
           :setting-group="settingGroup"
           :setting="setting"
           :setting-parent="settingParent"/>
@@ -64,12 +65,10 @@
         <editable-keyword-input v-if="editableKeyword(setting.key, setting.type)" :data="keywordData" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
         <icons-input v-if="setting.key === ':icons'" :data="iconsData" :setting-group="settingGroup" :setting="setting"/>
         <boolean-combined-input v-if="booleanCombinedInput" :data="data" :setting-group="settingGroup" :setting="setting"/>
-        <proxy-url-input v-if="setting.key === ':proxy_url'" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
         <prune-input v-if="setting.key === ':prune'" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting"/>
         <rate-limit-input v-if="settingGroup.key === ':rate_limit'" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <reg-invites-input v-if="[':registrations_open', ':invites_enabled'].includes(setting.key)" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <specific-multiple-select v-if="setting.key === ':backends' || setting.key === ':args'" :data="data" :setting-group="settingGroup" :setting="setting"/>
-        <sender-input v-if="senderInput(setting)" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
         <!-------------------->
         <el-tooltip v-if="canBeDeleted && isTablet" :content="$t('settings.removeFromDB')" placement="bottom-end" class="delete-setting-button-container">
           <el-button icon="el-icon-delete" circle size="mini" class="delete-setting-button" @click="removeSetting"/>
@@ -95,15 +94,14 @@ import {
   KeywordMapInput,
   MultipleSelectInput,
   NumberInput,
-  ProxyUrlInput,
   PruneInput,
   RateLimitInput,
   RegInvitesInput,
   SelectInput,
   SelectInputWithReducedLabels,
-  SenderInput,
   SpecificMultipleSelect,
   StringInput,
+  StringOrTupleInput,
   SwitchInput } from './inputComponents'
 import { processNested } from '@/store/modules/normalizers'
 import { mapSetting } from './mapping'
@@ -122,15 +120,14 @@ export default {
     KeywordMapInput,
     MultipleSelectInput,
     NumberInput,
-    ProxyUrlInput,
     PruneInput,
     RateLimitInput,
     RegInvitesInput,
     SelectInput,
     SelectInputWithReducedLabels,
-    SenderInput,
     SpecificMultipleSelect,
     StringInput,
+    StringOrTupleInput,
     SwitchInput
   },
   props: {
@@ -312,9 +309,6 @@ export default {
         (type.includes('list') && type.includes('atom')) ||
         (!type.includes('keyword') && type.includes('regex') && type.includes('string'))
       )
-    },
-    senderInput({ key, type }) {
-      return Array.isArray(type) && type.includes('string') && type.includes('tuple') && key === ':sender'
     },
     update(value, group, key, parents, input, type, nested) {
       nested
