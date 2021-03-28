@@ -55,7 +55,6 @@
           :setting-parent="settingParent"/>
 
         <editable-keyword-input v-if="editableKeyword(setting.key, setting.type)" :data="keywordData" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
-        <icons-input v-if="setting.key === ':icons'" :data="iconsData" :setting-group="settingGroup" :setting="setting"/>
         <boolean-combined-input v-if="booleanCombinedInput" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <prune-input v-if="setting.key === ':prune'" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting"/>
         <rate-limit-input v-if="settingGroup.key === ':rate_limit'" :data="data" :setting-group="settingGroup" :setting="setting"/>
@@ -79,11 +78,11 @@ import i18n from '@/lang'
 import {
   AtomInput,
   EditableKeywordInput,
-  IconsInput,
   ImageUploadInput,
   IpInput,
   BooleanCombinedInput,
   KeywordMapInput,
+  ListOfMapsInput,
   MultipleSelectInput,
   NumberInput,
   PruneInput,
@@ -106,11 +105,11 @@ export default {
   components: {
     AtomInput,
     EditableKeywordInput,
-    IconsInput,
     ImageUploadInput,
     IpInput,
     BooleanCombinedInput,
     KeywordMapInput,
+    ListOfMapsInput,
     MultipleSelectInput,
     NumberInput,
     PruneInput,
@@ -186,9 +185,6 @@ export default {
       const { group, key } = this.settingGroup
       return _.get(this.$store.state.settings.db, [group, key]) &&
         this.$store.state.settings.db[group][key].includes(this.setting.key)
-    },
-    iconsData() {
-      return Array.isArray(this.data) ? this.data : []
     },
     valueMap() {
       return [

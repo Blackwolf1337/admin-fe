@@ -6,6 +6,7 @@ const settingsTypesMap = {
   ImageUploadInput: [['string', 'image'], ['string', 'image', 'full_size']],
   IpInput: [['tuple', 'ip']],
   KeywordMapInput: [['keyword', 'map']],
+  ListOfMapsInput: [['list', 'map']],
   MultipleSelectInput: [['list', 'string']],
   NumberInput: ['integer'],
   StringInput: ['string', ['string', 'atom']],

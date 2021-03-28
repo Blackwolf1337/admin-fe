@@ -92,37 +92,37 @@
   .highlight {
   background-color: #e6e6e6;
   }
-  .icons-button-container {
+  .map-items-button-container {
     width: 100%;
     margin-bottom: 10px;
   }
-  .icons-button-desc {
+  .items-button-desc {
     font-size: 14px;
     color: #606266;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei";
     margin-left: 5px;
   }
-  .icon-container {
+  .item-container {
     flex-direction: column;
     width: 95%;
   }
-  .icon-values-container {
+  .item-values-container {
     display: flex;
     margin: 0 10px 10px 0;
   }
-  .icon-key-input {
+  .item-key-input {
     width: 30%;
     margin-right: 8px
   }
-  .icon-minus-button {
+  .item-minus-button {
     width: 36px;
     height: 36px;
   }
-  .icon-value-input {
+  .item-value-input {
     width: 70%;
     margin-left: 8px;
   }
-  .icons-container {
+  .map-items-container {
     display: flex;
   }
   .image-upload-area {
@@ -656,23 +656,23 @@
     .expl, .expl > p {
       line-height: 16px;
     }
-    .icon-key-input {
+    .item-key-input {
       width: 40%;
       margin-right: 4px
     }
-    .icon-minus-button {
+    .item-minus-button {
       width: 28px;
       height: 28px;
       margin-top: 4px;
     }
-    .icon-values-container {
+    .item-values-container {
       margin: 0 7px 7px 0;
     }
-    .icon-value-input {
+    .item-value-input {
       width: 60%;
       margin-left: 4px;
     }
-    .icons-button-container {
+    .map-items-button-container {
       line-height: 24px;
     }
     .line {
@@ -727,7 +727,7 @@
       line-height: 18px;
       margin: 0 15px 10px 0;
     }
-    .icon-minus-button {
+    .item-minus-button {
       width: 28px;
       height: 28px;
       margin-top: 4px;
