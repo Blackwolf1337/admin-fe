@@ -1,49 +1,13 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    <el-form :model="instanceData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="instance" :data="instanceData"/>
-    </el-form>
+    <div v-for="(setting, index) in settingsPerTab" :key="setting.key">
+      <el-form :label-position="labelPosition" :label-width="labelWidth" :data-search="setting.key">
+        <setting :setting-group="settingDesc(setting)" :data="settingData(setting)"/>
+      </el-form>
+      <el-divider v-if="showDivider(index, setting)" class="divider thick-line"/>
+    </div>
+    <el-divider class="divider thick-line"/>
     <editor-input v-model="instancePanelContent" :name="'instance-panel'" @input="handleEditorUpdate"/>
-    <el-divider v-if="instance" class="divider thick-line"/>
-    <el-form :model="restrictUnauthenticatedData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="restrictUnauthenticated" :data="restrictUnauthenticatedData"/>
-    </el-form>
-    <el-divider v-if="restrictUnauthenticated" class="divider thick-line"/>
-    <el-form :model="adminTokenData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="adminToken" :data="adminTokenData"/>
-    </el-form>
-    <el-divider v-if="adminToken" class="divider thick-line"/>
-    <el-form :model="welcomeData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="welcome" :data="welcomeData"/>
-    </el-form>
-    <el-divider v-if="welcome" class="divider thick-line"/>
-    <el-form :model="scheduledActivityData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="scheduledActivity" :data="scheduledActivityData"/>
-    </el-form>
-    <el-divider v-if="scheduledActivity" class="divider thick-line"/>
-    <el-form :model="manifestData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="manifest" :data="manifestData"/>
-    </el-form>
-    <el-divider v-if="manifest" class="divider thick-line"/>
-    <el-form :model="pleromaUserData" :label-position="labelPosition" :label-width="labelWidth" data-search="Pleroma.User">
-      <setting :setting-group="pleromaUser" :data="pleromaUserData"/>
-    </el-form>
-    <el-divider v-if="pleromaUser" class="divider thick-line"/>
-    <el-form :model="faviconsData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="favicons" :data="faviconsData"/>
-    </el-form>
-    <el-divider v-if="favicons" class="divider thick-line"/>
-    <el-form :model="uriSchemesData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="uriSchemes" :data="uriSchemesData"/>
-    </el-form>
-    <el-divider v-if="uriSchemes" class="divider thick-line"/>
-    <el-form :model="feedData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="feed" :data="feedData"/>
-    </el-form>
-    <el-divider v-if="feed" class="divider thick-line"/>
-    <el-form :model="streamerData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="streamer" :data="streamerData"/>
-    </el-form>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">{{ $t('settings.submit') }}</el-button>
     </div>
@@ -72,12 +36,6 @@ export default {
     ...mapGetters([
       'settings'
     ]),
-    adminToken() {
-      return this.settings.description.find(setting => setting.children && setting.children[0].key === ':admin_token')
-    },
-    adminTokenData() {
-      return _.get(this.settings.settings, [':pleroma', ':admin_token']) || {}
-    },
     instancePanelContent: {
       get() {
         return this.$store.state.settings.instancePanel
@@ -85,24 +43,6 @@ export default {
       set(content) {
         this.editorContent = content
       }
-    },
-    favicons() {
-      return this.settings.description.find(setting => setting.key === ':instances_favicons')
-    },
-    faviconsData() {
-      return _.get(this.settings.settings, [':pleroma', ':instances_favicons']) || {}
-    },
-    feed() {
-      return this.settings.description.find(setting => setting.key === ':feed')
-    },
-    feedData() {
-      return _.get(this.settings.settings, [':pleroma', ':feed']) || {}
-    },
-    instance() {
-      return this.settings.description.find(setting => setting.key === ':instance')
-    },
-    instanceData() {
-      return _.get(this.settings.settings, [':pleroma', ':instance']) || {}
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -128,50 +68,11 @@ export default {
     loading() {
       return this.settings.loading
     },
-    manifest() {
-      return this.settings.description.find(setting => setting.key === ':manifest')
-    },
-    manifestData() {
-      return _.get(this.settings.settings, [':pleroma', ':manifest']) || {}
-    },
-    pleromaUser() {
-      return this.settings.description.find(setting => setting.key === 'Pleroma.User')
-    },
-    pleromaUserData() {
-      return _.get(this.settings.settings, [':pleroma', 'Pleroma.User']) || {}
-    },
-    restrictUnauthenticated() {
-      return this.settings.description.find(setting => setting.key === ':restrict_unauthenticated')
-    },
-    restrictUnauthenticatedData() {
-      return _.get(this.settings.settings, [':pleroma', ':restrict_unauthenticated']) || {}
-    },
     searchQuery() {
       return this.$store.state.settings.searchQuery
     },
-    scheduledActivity() {
-      return this.$store.state.settings.description.find(setting => setting.key === 'Pleroma.ScheduledActivity')
-    },
-    scheduledActivityData() {
-      return _.get(this.settings.settings, [':pleroma', 'Pleroma.ScheduledActivity']) || {}
-    },
-    streamer() {
-      return this.$store.state.settings.description.find(setting => setting.key === ':streamer')
-    },
-    streamerData() {
-      return _.get(this.settings.settings, [':pleroma', ':streamer']) || {}
-    },
-    uriSchemes() {
-      return this.settings.description.find(setting => setting.key === ':uri_schemes')
-    },
-    uriSchemesData() {
-      return _.get(this.settings.settings, [':pleroma', ':uri_schemes']) || {}
-    },
-    welcome() {
-      return this.settings.description.find(setting => setting.key === ':welcome')
-    },
-    welcomeData() {
-      return _.get(this.settings.settings, [':pleroma', ':welcome']) || {}
+    settingsPerTab() {
+      return this.settings.description.filter(setting => setting.tab === 'instance')
     }
   },
   async mounted() {
@@ -186,6 +87,19 @@ export default {
     await this.$store.dispatch('FetchInstanceDocument', 'instance-panel')
   },
   methods: {
+    descriptionMap(setting) {
+      return [
+        { selector: 'group',
+          fn: settingDesc => settingDesc.key === setting.key,
+          keysToGetData: [setting.group, setting.key] },
+        { selector: ['group', 'without_key'],
+          fn: settingDesc => settingDesc.group === setting.group,
+          keysToGetData: [setting.group] },
+        { selector: ['group', 'without_key', 'single_setting'],
+          fn: settingDesc => settingDesc.children && settingDesc.children[0].key === setting.children[0].key,
+          keysToGetData: [setting.group, setting.children[0].key] }
+      ]
+    },
     handleEditorUpdate(content) {
       this.editorContent = content
     },
@@ -203,6 +117,17 @@ export default {
         type: 'success',
         message: i18n.t('settings.success')
       })
+    },
+    settingData(setting) {
+      const { keysToGetData } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
+      return _.get(this.settings.settings, keysToGetData) || {}
+    },
+    settingDesc(setting) {
+      const { fn } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
+      return this.settings.description.find(fn)
+    },
+    showDivider(index, setting) {
+      return this.settingDesc(setting) && index < this.settingsPerTab.length - 1
     }
   }
 }
