@@ -53,9 +53,7 @@
           :setting-group="settingGroup"
           :setting="setting"
           :setting-parent="settingParent"/>
-
         <editable-keyword-input v-if="editableKeyword(setting.key, setting.type)" :data="keywordData" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
-        <boolean-combined-input v-if="booleanCombinedInput" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <prune-input v-if="setting.key === ':prune'" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting"/>
         <rate-limit-input v-if="settingGroup.key === ':rate_limit'" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <reg-invites-input v-if="[':registrations_open', ':invites_enabled'].includes(setting.key)" :data="data" :setting-group="settingGroup" :setting="setting"/>
@@ -178,9 +176,6 @@ export default {
     }
   },
   computed: {
-    booleanCombinedInput() {
-      return Array.isArray(this.setting.type) && this.setting.type.includes('boolean')
-    },
     canBeDeleted() {
       const { group, key } = this.settingGroup
       return _.get(this.$store.state.settings.db, [group, key]) &&
@@ -265,8 +260,7 @@ export default {
         (type.includes('map') && type.includes('string')) ||
         (type.includes('map') && type.findIndex(el => el.includes('list') && el.includes('string')) !== -1) ||
         (type.includes('keyword') && type.includes('integer')) ||
-        (type.includes('keyword') && type.includes('string')) ||
-        (type.includes('tuple') && type.includes('list')))
+        (type.includes('keyword') && type.includes('string')))
     },
     getFormattedDescription(desc) {
       return marked(desc)

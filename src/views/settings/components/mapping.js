@@ -2,6 +2,7 @@ import _ from 'lodash'
 
 const settingsTypesMap = {
   AtomInput: ['atom'],
+  BooleanCombinedInput: [['string', 'boolean'], ['integer', 'boolean'], ['atom', 'boolean'], ['tuple', 'boolean']],
   EditableKeywordInput: [['keyword', ['list', 'string']]],
   ImageUploadInput: [['string', 'image'], ['string', 'image', 'full_size']],
   IpInput: [['tuple', 'ip']],
