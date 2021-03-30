@@ -89,7 +89,6 @@ import {
   SelectInputWithReducedLabels,
   StringInput,
   StringOrTupleInput,
-  StringOrTupleMultipleSelect,
   SwitchInput,
   TextareaInput } from './inputComponents'
 import { processNested } from '@/store/modules/normalizers'
@@ -116,7 +115,6 @@ export default {
     SelectInputWithReducedLabels,
     StringInput,
     StringOrTupleInput,
-    StringOrTupleMultipleSelect,
     SwitchInput,
     TextareaInput
   },

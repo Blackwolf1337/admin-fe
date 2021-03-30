@@ -16,6 +16,5 @@ export { default as SelectInputWithReducedLabels } from './SelectInputWithReduce
 export { default as SenderInput } from './SenderInput'
 export { default as StringInput } from './StringInput'
 export { default as StringOrTupleInput } from './StringOrTupleInput'
-export { default as StringOrTupleMultipleSelect } from './StringOrTupleMultipleSelect'
 export { default as SwitchInput } from './SwitchInput'
 export { default as TextareaInput } from './TextareaInput'
