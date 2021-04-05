@@ -1,32 +1,31 @@
 <template>
   <div class="editable-keyword-container">
-    <!-- <div v-if="setting.key === ':crontab'" :data-search="setting.key" class="crontab">
-      <el-form-item v-for="worker in data" :key="getId(worker)" :label="getCrontabWorkerLabel(worker)" class="crontab-container">
-        <el-input
-          :value="getValue(worker)"
-          :placeholder="getSuggestion(worker) || null"
-          class="input setting-input"
-          @input="updateCrontab($event, 'value', worker)"/>
-      </el-form-item>
-    </div> -->
+    <div v-if="reversedKeywordWithString" :data-search="setting.key">
+      <div v-for="element in keywordData" :key="getId(element)" class="setting-input">
+        <el-input :value="getKey(element)" :placeholder="keyPlaceholder" class="name-input reversed" @input="parseEditableKeyword($event, 'key', element)"/> :
+        <el-input :value="getValue(element)" :placeholder="valuePlaceholder" class="value-input reversed" @input="parseEditableKeyword($event, 'value', element)"/>
+        <el-button :size="isDesktop ? 'medium' : 'mini'" class="icon-minus-button" icon="el-icon-minus" circle @click="deleteEditableKeywordRow(element)"/>
+      </div>
+      <el-button :size="isDesktop ? 'medium' : 'mini'" icon="el-icon-plus" circle @click="addRowToEditableKeyword"/>
+    </div>
     <!-- <div v-else-if="editableKeywordWithInteger" :data-search="setting.key || setting.group">
-      <div v-for="element in data" :key="getId(element)" class="setting-input">
+      <div v-for="element in keywordData" :key="getId(element)" class="setting-input">
         <el-input :value="getKey(element)" placeholder="key" class="name-input" @input="parseEditableKeyword($event, 'key', element)"/> :
         <el-input-number :value="getValue(element)" :min="0" size="large" class="value-input" @change="parseEditableKeyword($event, 'value', element)"/>
         <el-button :size="isDesktop ? 'medium' : 'mini'" class="icon-minus-button" icon="el-icon-minus" circle @click="deleteEditableKeywordRow(element)"/>
       </div>
       <el-button :size="isDesktop ? 'medium' : 'mini'" icon="el-icon-plus" circle @click="addRowToEditableKeyword"/>
-    </div>
+    </div> -->
     <div v-else-if="editableKeywordWithString" :data-search="setting.key || setting.group">
-      <div v-for="element in data" :key="getId(element)" class="setting-input">
+      <div v-for="element in keywordData" :key="getId(element)" class="setting-input">
         <el-input :value="getKey(element)" :placeholder="keyPlaceholder" class="name-input" @input="parseEditableKeyword($event, 'key', element)"/> :
         <el-input :value="getValue(element)" :placeholder="valuePlaceholder" class="value-input" @input="parseEditableKeyword($event, 'value', element)"/>
         <el-button :size="isDesktop ? 'medium' : 'mini'" class="icon-minus-button" icon="el-icon-minus" circle @click="deleteEditableKeywordRow(element)"/>
       </div>
       <el-button :size="isDesktop ? 'medium' : 'mini'" icon="el-icon-plus" circle @click="addRowToEditableKeyword"/>
-    </div> -->
-    <div v-if="editableKeywordWithSelect" :data-search="setting.key || setting.group">
-      <div v-for="element in data" :key="getId(element)" class="setting-input">
+    </div>
+    <div v-else-if="editableKeywordWithSelect" :data-search="setting.key || setting.group">
+      <div v-for="element in keywordData" :key="getId(element)" class="setting-input">
         <el-input :value="getKey(element)" placeholder="key" class="name-input" @input="parseEditableKeyword($event, 'key', element)"/> :
         <el-select :value="getValue(element)" multiple filterable allow-create class="value-input" @change="parseEditableKeyword($event, 'value', element)"/>
         <el-button :size="isDesktop ? 'medium' : 'mini'" class="icon-minus-button" icon="el-icon-minus" circle @click="deleteEditableKeywordRow(element)"/>
@@ -71,25 +70,26 @@ export default {
   },
   computed: {
     editableKeywordWithInteger() {
-      return this.setting.type.includes('keyword') && this.setting.type.includes('integer')
+      return _.isEqual(this.setting.type, ['keyword', 'integer'])
     },
     editableKeywordWithSelect() {
       return _.isEqual(this.setting.type, ['keyword', ['list', 'string']])
-      // (this.setting.type.includes('map') && this.setting.type.findIndex(el => el.includes('list') && el.includes('string')) !== -1) ||
-      //   (this.setting.type.includes('keyword') && this.setting.type.findIndex(el => el.includes('list') && el.includes('string')) !== -1)
     },
     editableKeywordWithString() {
-      return this.setting.key !== ':crontab' && (
-        (this.setting.type.includes('keyword') && this.setting.type.includes('string')) ||
-        (this.setting.type.includes('tuple') && this.setting.type.includes('list')) ||
-        (this.setting.type.includes('map') && this.setting.type.includes('string'))
-      )
+      return _.isEqual(this.setting.type, ['keyword', 'string']) ||
+        _.isEqual(this.setting.type, ['map', 'string'])
     },
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
     keyPlaceholder() {
       return this.setting.key === ':replace' ? 'pattern' : 'key'
+    },
+    keywordData() {
+      return Array.isArray(this.data) ? this.data : []
+    },
+    reversedKeywordWithString() {
+      return _.isEqual(this.setting.type, ['keyword', 'string', 'reversed'])
     },
     settings() {
       return this.$store.state.settings.settings
@@ -114,19 +114,12 @@ export default {
     generateID() {
       return `f${(~~(Math.random() * 1e8)).toString(16)}`
     },
-    getCrontabWorkerLabel(worker) {
-      const workerKey = this.getKey(worker)
-      return workerKey.includes('Pleroma.Workers.Cron.') ? workerKey.replace('Pleroma.Workers.Cron.', '') : workerKey
-    },
     getKey(element) {
       return Object.keys(element)[0]
     },
     getId(element) {
       const { id } = Object.values(element)[0]
       return id
-    },
-    getSuggestion(worker) {
-      return this.setting.suggestions.find(suggestion => suggestion[1] === this.getKey(worker))[0]
     },
     getValue(element) {
       const { value } = Object.values(element)[0]
@@ -145,25 +138,6 @@ export default {
 
       this.updateSetting(updatedValue, this.settingGroup.group, this.settingGroup.key, this.setting.key, this.setting.type)
     },
-    updateCrontab(value, inputType, worker) {
-      const updatedId = this.getId(worker)
-      const updatedValue = this.data.map((worker, index) => {
-        if (Object.values(worker)[0].id === updatedId) {
-          return { [Object.keys(worker)[0]]: { ...Object.values(this.data[index])[0], value }}
-        }
-        return worker
-      })
-      const updatedValueWithType = updatedValue.reduce((acc, worker) => {
-        return { ...acc, [Object.keys(worker)[0]]: ['reversed_tuple', Object.values(worker)[0].value] }
-      }, {})
-
-      this.$store.dispatch('UpdateSettings',
-        { group: this.settingGroup.group, key: this.settingGroup.key, input: this.setting.key, value: updatedValueWithType, type: this.setting.type }
-      )
-      this.$store.dispatch('UpdateState',
-        { group: this.settingGroup.group, key: this.settingGroup.key, input: this.setting.key, value: updatedValue }
-      )
-    },
     updateSetting(value, group, key, input, type) {
       const wrappedSettings = this.wrapUpdatedSettings(value, input, type)
 
@@ -181,13 +155,19 @@ export default {
       }
     },
     wrapUpdatedSettings(value, input, type) {
-      return type === 'map'
-        ? value.reduce((acc, element) => {
+      if (_.isEqual(type, 'map')) {
+        return value.reduce((acc, element) => {
           return { ...acc, [Object.keys(element)[0]]: Object.values(element)[0].value }
         }, {})
-        : value.reduce((acc, element) => {
+      } else if (_.isEqual(type, ['keyword', 'string', 'reversed'])) {
+        return value.reduce((acc, element) => {
+          return { ...acc, [Object.keys(element)[0]]: ['reversed', Object.values(element)[0].value] }
+        }, {})
+      } else {
+        return value.reduce((acc, element) => {
           return { ...acc, [Object.keys(element)[0]]: ['list', Object.values(element)[0].value] }
         }, {})
+      }
     }
   }
 }

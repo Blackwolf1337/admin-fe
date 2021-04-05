@@ -349,6 +349,9 @@
     margin-left: 8px;
     margin-right: 10px
   }
+  .reversed {
+    width: 50%;
+  }
   .sender-input {
     display: flex;
     align-items: center;
@@ -492,12 +495,6 @@
   }
 
   @media only screen and (max-width:480px) {
-    .crontab {
-      width: 100%;
-      label {
-        width: 100%;
-      }
-    }
     .delete-setting-button {
       margin: 4px 0 0 5px;
       height: 28px;
@@ -544,10 +541,6 @@
       .el-form-item:first-child {
         margin: 0;
         padding: 0 15px 10px 15px;
-      }
-      .el-form-item.crontab-container:first-child {
-        margin: 0;
-        padding: 0 ;
       }
       .el-form-item:first-child .map-form-item {
         padding: 0;

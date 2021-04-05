@@ -256,8 +256,7 @@ export default {
       return Array.isArray(type) && (
         (type.includes('map') && type.includes('string')) ||
         (type.includes('map') && type.findIndex(el => el.includes('list') && el.includes('string')) !== -1) ||
-        (type.includes('keyword') && type.includes('integer')) ||
-        (type.includes('keyword') && type.includes('string')))
+        (type.includes('keyword') && type.includes('integer')))
     },
     getFormattedDescription(desc) {
       return marked(desc)
