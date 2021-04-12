@@ -3,7 +3,7 @@ import _ from 'lodash'
 const settingsTypesMap = {
   AtomInput: ['atom'],
   BooleanCombinedInput: [['string', 'boolean'], ['integer', 'boolean'], ['atom', 'boolean'], ['tuple', 'boolean']],
-  EditableKeywordInput: [['keyword', 'multiple_select'], ['keyword', 'string'], ['keyword', 'integer'], ['keyword', 'string', 'reversed']],
+  EditableKeywordInput: [['keyword', 'multiple_select'], ['keyword', 'string'], ['keyword', 'integer'], ['keyword', 'string', 'reversed'], ['map', 'string']],
   ImageUploadInput: [['string', 'image'], ['string', 'image', 'full_size']],
   IpInput: [['tuple', 'ip']],
   KeywordMapInput: [['keyword', 'map']],

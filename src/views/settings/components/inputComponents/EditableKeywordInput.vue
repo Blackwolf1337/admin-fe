@@ -43,7 +43,7 @@ export default {
   name: 'EditableKeywordInput',
   props: {
     data: {
-      type: Array,
+      type: [Object, Array],
       default: function() {
         return {}
       }
@@ -83,6 +83,9 @@ export default {
       return this.$store.state.app.device === 'desktop'
     },
     keywordData() {
+      if (this.parents.length > 0) {
+        return Array.isArray(this.data[this.setting.key]) ? this.data[this.setting.key] : []
+      }
       return Array.isArray(this.data) ? this.data : []
     },
     reversedKeywordWithString() {
@@ -97,12 +100,12 @@ export default {
   },
   methods: {
     addRowToEditableKeyword() {
-      const updatedValue = [...this.data, { '': { value: '', id: this.generateID() }}]
+      const updatedValue = [...this.keywordData, { '': { value: '', id: this.generateID() }}]
       this.updateSetting(updatedValue, this.settingGroup.group, this.settingGroup.key, this.setting.key, this.setting.type)
     },
     deleteEditableKeywordRow(element) {
       const deletedId = this.getId(element)
-      const filteredValues = this.data.filter(element => Object.values(element)[0].id !== deletedId)
+      const filteredValues = this.keywordData.filter(element => Object.values(element)[0].id !== deletedId)
       this.updateSetting(filteredValues, this.settingGroup.group, this.settingGroup.key, this.setting.key, this.setting.type)
     },
     generateID() {
@@ -121,11 +124,11 @@ export default {
     },
     parseEditableKeyword(value, inputType, element) {
       const updatedId = this.getId(element)
-      const updatedValue = this.data.map((element, index) => {
+      const updatedValue = this.keywordData.map((element, index) => {
         if (Object.values(element)[0].id === updatedId) {
           return inputType === 'key'
-            ? { [value]: Object.values(this.data[index])[0] }
-            : { [Object.keys(element)[0]]: { ...Object.values(this.data[index])[0], value }}
+            ? { [value]: Object.values(this.keywordData[index])[0] }
+            : { [Object.keys(element)[0]]: { ...Object.values(this.keywordData[index])[0], value }}
         }
         return element
       })
