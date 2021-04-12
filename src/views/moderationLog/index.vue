@@ -43,7 +43,8 @@
         v-for="(logEntry, index) in log"
         :key="index"
         :timestamp="normalizeTimestamp(logEntry.time)">
-        <component :is="processedMessage(logEntry)"/>
+        <log-entry-message v-if="propertyExists(logEntry.data.actor, 'nickname')" :actor="logEntry.data.actor" :message="logEntry.message" :subject="logEntry.data.subject"/>
+        <span v-else>{{ logEntry.message }}</span>
       </el-timeline-item>
     </el-timeline>
     <div class="pagination">
@@ -64,14 +65,10 @@ import moment from 'moment'
 import _ from 'lodash'
 import debounce from 'lodash.debounce'
 import RebootButton from '@/components/RebootButton'
-import ReportLink from './ReportLink'
-import UserLink from './UserLink'
-import Vue from 'vue'
-Vue.component('user-link', UserLink)
-Vue.component('report-link', ReportLink)
+import LogEntryMessage from './LogEntryMessage'
 
 export default {
-  components: { RebootButton },
+  components: { RebootButton, LogEntryMessage },
   data() {
     return {
       dateRange: '',
@@ -133,24 +130,6 @@ export default {
     normalizeTimestamp(timestamp) {
       return moment(timestamp * 1000).format('YYYY-MM-DD HH:mm')
     },
-    processedMessage(logEntry) {
-      const html = [...logEntry.message.matchAll(/\@(?<nickname>([\w-]+))/g)].map(res => res.groups.nickname)
-        .reduce((acc, nickname) => {
-          return acc.replace(`@${nickname}`, `<user-link actor="${nickname}"/>`)
-        }, logEntry.message)
-      if (this.propertyExists(logEntry.data, 'subject') && logEntry.data.subject.type === 'report') {
-        const updatedHtml = [...html.matchAll(/\#(?<reportId>([\w]+))/g)].map(res => res.groups.reportId)
-          .reduce((acc, id) => {
-            return acc.replace(`#${id}`, `<report-link id="${id}"/>`)
-          }, html)
-        return {
-          template: '<div>' + updatedHtml + '</div>'
-        }
-      }
-      return {
-        template: '<div>' + html + '</div>'
-      }
-    },
     propertyExists(account, property) {
       return account[property]
     }
@@ -193,9 +172,6 @@ h1 {
   padding: 10px;
   margin: 0;
   width: 145px;
-}
-.router-link {
-  text-decoration: none;
 }
 .pagination {
   text-align: center;

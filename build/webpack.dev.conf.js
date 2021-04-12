@@ -48,7 +48,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       poll: config.dev.poll
     },
     headers: {
-      'content-security-policy': "script-src 'self' 'unsafe-eval'; base-uri 'self'; frame-ancestors 'none'; img-src 'self' data: https: http:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'"
+      'content-security-policy': "base-uri 'self'; frame-ancestors 'none'; img-src 'self' data: https: http:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; script-src 'self';"
     }
   },
   plugins: [
@@ -67,12 +67,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         BASE_URL: devEnv.ASSETS_PUBLIC_PATH + config.dev.assetsSubDirectory,
       },
     }),
-  ],
-  resolve: {
-    alias: {
-      vue: 'vue/dist/vue.js'
-    }
-  }
+  ]
 })
 
 module.exports = new Promise((resolve, reject) => {
