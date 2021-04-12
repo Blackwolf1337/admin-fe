@@ -2,24 +2,24 @@
   <div class="editable-keyword-container">
     <div v-if="reversedKeywordWithString" :data-search="setting.key">
       <div v-for="element in keywordData" :key="getId(element)" class="setting-input">
-        <el-input :value="getKey(element)" :placeholder="keyPlaceholder" class="name-input reversed" @input="parseEditableKeyword($event, 'key', element)"/> :
-        <el-input :value="getValue(element)" :placeholder="valuePlaceholder" class="value-input reversed" @input="parseEditableKeyword($event, 'value', element)"/>
+        <el-input :value="getKey(element)" placeholder="key" class="name-input reversed" @input="parseEditableKeyword($event, 'key', element)"/> :
+        <el-input :value="getValue(element)" placeholder="value" class="value-input reversed" @input="parseEditableKeyword($event, 'value', element)"/>
         <el-button :size="isDesktop ? 'medium' : 'mini'" class="icon-minus-button" icon="el-icon-minus" circle @click="deleteEditableKeywordRow(element)"/>
       </div>
       <el-button :size="isDesktop ? 'medium' : 'mini'" icon="el-icon-plus" circle @click="addRowToEditableKeyword"/>
     </div>
-    <!-- <div v-else-if="editableKeywordWithInteger" :data-search="setting.key || setting.group">
+    <div v-else-if="editableKeywordWithInteger" :data-search="setting.key || setting.group">
       <div v-for="element in keywordData" :key="getId(element)" class="setting-input">
         <el-input :value="getKey(element)" placeholder="key" class="name-input" @input="parseEditableKeyword($event, 'key', element)"/> :
         <el-input-number :value="getValue(element)" :min="0" size="large" class="value-input" @change="parseEditableKeyword($event, 'value', element)"/>
         <el-button :size="isDesktop ? 'medium' : 'mini'" class="icon-minus-button" icon="el-icon-minus" circle @click="deleteEditableKeywordRow(element)"/>
       </div>
       <el-button :size="isDesktop ? 'medium' : 'mini'" icon="el-icon-plus" circle @click="addRowToEditableKeyword"/>
-    </div> -->
+    </div>
     <div v-else-if="editableKeywordWithString" :data-search="setting.key || setting.group">
       <div v-for="element in keywordData" :key="getId(element)" class="setting-input">
-        <el-input :value="getKey(element)" :placeholder="keyPlaceholder" class="name-input" @input="parseEditableKeyword($event, 'key', element)"/> :
-        <el-input :value="getValue(element)" :placeholder="valuePlaceholder" class="value-input" @input="parseEditableKeyword($event, 'value', element)"/>
+        <el-input :value="getKey(element)" placeholder="key" class="name-input" @input="parseEditableKeyword($event, 'key', element)"/> :
+        <el-input :value="getValue(element)" placeholder="value" class="value-input" @input="parseEditableKeyword($event, 'value', element)"/>
         <el-button :size="isDesktop ? 'medium' : 'mini'" class="icon-minus-button" icon="el-icon-minus" circle @click="deleteEditableKeywordRow(element)"/>
       </div>
       <el-button :size="isDesktop ? 'medium' : 'mini'" icon="el-icon-plus" circle @click="addRowToEditableKeyword"/>
@@ -82,9 +82,6 @@ export default {
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
-    keyPlaceholder() {
-      return this.setting.key === ':replace' ? 'pattern' : 'key'
-    },
     keywordData() {
       return Array.isArray(this.data) ? this.data : []
     },
@@ -96,9 +93,6 @@ export default {
     },
     updatedSettings() {
       return this.$store.state.settings.updatedSettings
-    },
-    valuePlaceholder() {
-      return this.setting.key === ':replace' ? 'replacement' : 'value'
     }
   },
   methods: {
