@@ -301,14 +301,6 @@
     margin-left: 8px;
     margin-right: 10px
   }
-  .prune-options {
-    display: flex;
-    height: 36px;
-    align-items: baseline;
-    .el-radio {
-      margin-top: 11px;
-    }
-  }
   .tuples-container {
     .el-form-item__content {
       width: 100%;
@@ -575,10 +567,6 @@
     .proxy-url-value-input {
       width: 100%;
       margin-left: 0;
-    }
-    .prune-options {
-      flex-direction: column;
-      height: 80px;
     }
     .tuples-container {
       .el-form-item__content {
