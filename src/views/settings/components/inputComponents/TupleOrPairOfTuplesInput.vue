@@ -1,71 +1,71 @@
 <template>
-  <div :data-search="setting.key || setting.group" class="rate-limit-container">
-    <div v-if="!rateLimitAuthUsers">
+  <div :data-search="setting.key || setting.group" class="pair-of-tuples-container">
+    <div v-if="!valueIsAnArrayOfTuples">
       <el-input-number
-        :value="rateLimitAllUsers[0]"
+        :value="tupleValue[0]"
         :controls="false"
-        placeholder="scale"
-        class="scale-input"
-        @input="parseRateLimiter($event, setting.key, 'scale', 'oneLimit', rateLimitAllUsers)"/>
+        :placeholder="setting.placeholders[0]"
+        class="setting-tuple-key-input"
+        @input="parseTuples($event, setting.key, 'first', 'oneLimit', tupleValue)"/>
       <span>:</span>
       <el-input-number
-        :value="rateLimitAllUsers[1]"
+        :value="tupleValue[1]"
         :controls="false"
-        placeholder="limit"
-        class="limit-input"
-        @input="parseRateLimiter($event, setting.key, 'limit', 'oneLimit', rateLimitAllUsers)"/>
+        :placeholder="setting.placeholders[1]"
+        class="setting-tuple-value-input"
+        @input="parseTuples($event, setting.key, 'second', 'oneLimit', tupleValue)"/>
       <div class="limit-button-container">
         <el-button :size="isDesktop ? 'medium' : 'mini'" icon="el-icon-plus" circle @click="toggleLimits([['', ''], ['', '']], setting.key)"/>
         <p class="expl limit-expl">{{ $t('settings.setLimits') }}</p>
       </div>
     </div>
-    <div v-if="rateLimitAuthUsers">
-      <el-form-item class="rate-limit">
-        <div class="rate-limit-label-container">
-          <span class="rate-limit-label">
+    <div v-if="valueIsAnArrayOfTuples">
+      <el-form-item class="tuples-container">
+        <div class="tuples-label-container">
+          <span class="tuples-label">
             {{ $t('settings.unauthenticatedUsers') }}:
           </span>
         </div>
-        <div class="rate-limit-content">
+        <div class="tuples-content">
           <el-input-number
-            :value="rateLimitUnauthUsers[0]"
+            :value="valueFirstTuple[0]"
             :controls="false"
-            placeholder="scale"
-            class="scale-input"
-            @input="parseRateLimiter(
-              $event, setting.key, 'scale', 'unauthUsersLimit', [rateLimitUnauthUsers, rateLimitAuthUsers]
+            :placeholder="setting.placeholders[0]"
+            class="setting-tuple-key-input"
+            @input="parseTuples(
+              $event, setting.key, 'first', 'firstTuple', [valueFirstTuple, valueSecondTuple]
           )"/>
           <span>:</span>
           <el-input-number
-            :value="rateLimitUnauthUsers[1]"
+            :value="valueFirstTuple[1]"
             :controls="false"
-            placeholder="limit"
-            class="limit-input"
-            @input="parseRateLimiter(
-              $event, setting.key, 'limit', 'unauthUsersLimit', [rateLimitUnauthUsers, rateLimitAuthUsers]
+            :placeholder="setting.placeholders[1]"
+            class="setting-tuple-value-input"
+            @input="parseTuples(
+              $event, setting.key, 'second', 'firstTuple', [valueFirstTuple, valueSecondTuple]
           )"/>
         </div>
       </el-form-item>
-      <el-form-item class="rate-limit">
-        <div class="rate-limit-label-container">
-          <span class="rate-limit-label">
+      <el-form-item class="tuples-container">
+        <div class="tuples-label-container">
+          <span class="tuples-label">
             {{ $t('settings.authenticatedUsers') }}:
           </span>
         </div>
-        <div class="rate-limit-content">
+        <div class="tuples-content">
           <el-input-number
-            :value="rateLimitAuthUsers[0]"
+            :value="valueSecondTuple[0]"
             :controls="false"
-            placeholder="scale"
-            class="scale-input"
-            @input="parseRateLimiter($event, setting.key, 'scale', 'authUserslimit', [rateLimitUnauthUsers, rateLimitAuthUsers])"/>
+            :placeholder="setting.placeholders[0]"
+            class="setting-tuple-key-input"
+            @input="parseTuples($event, setting.key, 'first', 'secondTuple', [valueFirstTuple, valueSecondTuple])"/>
           <span>:</span>
           <el-input-number
-            :value="rateLimitAuthUsers[1]"
+            :value="valueSecondTuple[1]"
             :controls="false"
-            placeholder="limit"
-            class="limit-input"
-            @input="parseRateLimiter($event, setting.key, 'limit', 'authUserslimit', [rateLimitUnauthUsers, rateLimitAuthUsers])"/>
+            :placeholder="setting.placeholders[1]"
+            class="setting-tuple-value-input"
+            @input="parseTuples($event, setting.key, 'second', 'secondTuple', [valueFirstTuple, valueSecondTuple])"/>
         </div>
       </el-form-item>
       <div class="limit-button-container">
@@ -103,31 +103,30 @@ export default {
     isDesktop() {
       return this.$store.state.app.device === 'desktop'
     },
-    rateLimitAllUsers() {
+    tupleValue() {
       return this.data[this.setting.key] ? this.data[this.setting.key] : ['', '']
     },
-    rateLimitAuthUsers() {
-      return this.data[this.setting.key] && Array.isArray(this.data[this.setting.key][0])
-        ? this.data[this.setting.key][1]
-        : false
+    valueIsAnArrayOfTuples() {
+      return this.data[this.setting.key] && this.data[this.setting.key].every(value => Array.isArray(value))
     },
-    rateLimitUnauthUsers() {
-      return this.data[this.setting.key] && Array.isArray(this.data[this.setting.key][1])
-        ? this.data[this.setting.key][0]
-        : false
+    valueFirstTuple() {
+      return this.data[this.setting.key][0]
+    },
+    valueSecondTuple() {
+      return this.data[this.setting.key][1]
     }
   },
   methods: {
-    parseRateLimiter(value, input, typeOfInput, typeOfLimit, currentValue) {
+    parseTuples(value, input, typeOfInput, typeOfLimit, currentValue) {
       let valueToSend
       if (typeOfLimit === 'oneLimit') {
-        valueToSend = typeOfInput === 'scale' ? [value, currentValue[1]] : [currentValue[0], value]
-      } else if (typeOfLimit === 'unauthUsersLimit') {
-        valueToSend = typeOfInput === 'scale'
+        valueToSend = typeOfInput === 'first' ? [value, currentValue[1]] : [currentValue[0], value]
+      } else if (typeOfLimit === 'firstTuple') {
+        valueToSend = typeOfInput === 'first'
           ? [[value, currentValue[0][1]], [currentValue[1][0], currentValue[1][1]]]
           : [[currentValue[0][0], value], [currentValue[1][0], currentValue[1][1]]]
-      } else if (typeOfLimit === 'authUserslimit') {
-        valueToSend = typeOfInput === 'scale'
+      } else if (typeOfLimit === 'secondTuple') {
+        valueToSend = typeOfInput === 'first'
           ? [[currentValue[0][0], currentValue[0][1]], [value, currentValue[1][1]]]
           : [[currentValue[0][0], currentValue[0][1]], [currentValue[1][0], value]]
       }

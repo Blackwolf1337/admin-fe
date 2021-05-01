@@ -37,7 +37,7 @@
   .editable-keyword-container {
     width: 100%;
   }
-  .el-form-item .rate-limit {
+  .el-form-item .tuples-container {
     margin-right: 0;
   }
   .el-input-group__prepend {
@@ -237,7 +237,7 @@
   .limit-expl {
     margin-left: 10px;
   }
-  .limit-input {
+  .setting-tuple-value-input {
     width: 47%;
     margin: 0 0 5px 1%
   }
@@ -279,6 +279,9 @@
       margin-right: 30px;
     }
   }
+  .pair-of-tuples-container {
+    width: 100%;
+  }
   .pattern-input {
     width: 20%;
     margin-right: 8px
@@ -306,22 +309,19 @@
       margin-top: 11px;
     }
   }
-  .rate-limit {
+  .tuples-container {
     .el-form-item__content {
       width: 100%;
       display: flex;
     }
   }
-  .rate-limit-container {
-    width: 100%;
-  }
-  .rate-limit-content {
+  .tuples-content {
     width: 70%;
   }
-  .rate-limit-label {
+  .tuples-label {
     float: right;
   }
-  .rate-limit-label-container {
+  .tuples-label-container {
     font-size: 14px;
     color: #606266;
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei";
@@ -358,7 +358,7 @@
     margin-bottom: 10px;
     width: 100%;
   }
-  .scale-input {
+  .setting-tuple-key-input {
     width: 47%;
     margin: 0 1% 5px 0
   }
@@ -545,7 +545,7 @@
       .el-form-item:first-child .map-form-item {
         padding: 0;
       }
-      .el-form-item:first-child .rate-limit {
+      .el-form-item:first-child .tuples-container {
         padding: 0;
       }
       .settings-delete-button {
@@ -560,7 +560,7 @@
     .label-with-margin {
       margin-left: 15px;
     }
-    .limit-input {
+    .setting-tuple-value-input {
       width: 45%;
     }
     .proxy-url-input {
@@ -580,18 +580,18 @@
       flex-direction: column;
       height: 80px;
     }
-    .rate-limit {
+    .tuples-container {
       .el-form-item__content {
         flex-direction: column;
       }
     }
-    .rate-limit-content {
+    .tuples-content {
       width: 100%;
     }
-    .rate-limit-label {
+    .tuples-label {
       float: left;
     }
-    .rate-limit-label-container {
+    .tuples-label-container {
       width: 100%;
     }
     .reboot-button {
@@ -600,7 +600,7 @@
     .reboot-button-container {
       top: 57px;
     }
-    .scale-input {
+    .setting-tuple-key-input {
       width: 45%;
     }
     .settings-header {
@@ -739,10 +739,10 @@
       display: flex;
       justify-content: space-between;
     }
-    .rate-limit-content {
+    .tuples-content {
       width: 65%;
     }
-    .rate-limit-label-container {
+    .tuples-label-container {
       width: 35%;
     }
     .settings-delete-button {

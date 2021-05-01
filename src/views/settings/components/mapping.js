@@ -15,7 +15,8 @@ const settingsTypesMap = {
   SwitchInput: ['boolean'],
   SelectInput: ['select'],
   SelectInputWithReducedLabels: [['select', 'reduced_labels'], ['multiple_select', 'reduced_labels']],
-  TextareaInput: ['textarea']
+  TextareaInput: ['textarea'],
+  TupleOrPairOfTuplesInput: [['tuple_of_integers', 'pair_of_tuples']]
 }
 
 export const mapSetting = (settingType) => {

@@ -45,7 +45,6 @@
           <el-option v-for="(option, index) in setting.suggestions" :key="index" :value="option"/>
         </el-select>
         <!-- special inputs -->
-        {{ setting.type }}
         <component
           :is="settingComponent"
           :data="data"
