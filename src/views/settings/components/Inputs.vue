@@ -45,6 +45,7 @@
           <el-option v-for="(option, index) in setting.suggestions" :key="index" :value="option"/>
         </el-select>
         <!-- special inputs -->
+        {{ setting.type }}
         <component
           :is="settingComponent"
           :data="data"
@@ -55,7 +56,6 @@
           :setting-parent="settingParent"/>
         <editable-keyword-input v-if="editableKeyword(setting.key, setting.type)" :data="keywordData" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
         <prune-input v-if="setting.key === ':prune'" :data="data[setting.key]" :setting-group="settingGroup" :setting="setting"/>
-        <rate-limit-input v-if="settingGroup.key === ':rate_limit'" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <reg-invites-input v-if="[':registrations_open', ':invites_enabled'].includes(setting.key)" :data="data" :setting-group="settingGroup" :setting="setting"/>
         <!-------------------->
         <el-tooltip v-if="canBeDeleted && isTablet" :content="$t('settings.removeFromDB')" placement="bottom-end" class="delete-setting-button-container">
@@ -83,14 +83,14 @@ import {
   MultipleSelectInput,
   NumberInput,
   PruneInput,
-  RateLimitInput,
   RegInvitesInput,
   SelectInput,
   SelectInputWithReducedLabels,
   StringInput,
   StringOrTupleInput,
   SwitchInput,
-  TextareaInput } from './inputComponents'
+  TextareaInput,
+  TupleOrPairOfTuplesInput } from './inputComponents'
 import { processNested } from '@/store/modules/normalizers'
 import { mapSetting } from './mapping'
 import _ from 'lodash'
@@ -109,14 +109,14 @@ export default {
     MultipleSelectInput,
     NumberInput,
     PruneInput,
-    RateLimitInput,
     RegInvitesInput,
     SelectInput,
     SelectInputWithReducedLabels,
     StringInput,
     StringOrTupleInput,
     SwitchInput,
-    TextareaInput
+    TextareaInput,
+    TupleOrPairOfTuplesInput
   },
   props: {
     customLabelWidth: {
@@ -299,7 +299,6 @@ export default {
     renderMultipleSelect(type) {
       return Array.isArray(type) && (
         this.setting.key === ':ip_whitelist' ||
-        type.includes('module') ||
         (!type.includes('keyword') && type.includes('regex') && type.includes('string'))
       )
     },
