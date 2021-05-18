@@ -2,29 +2,12 @@
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
     <editor-input v-model="termsOfServicesContent" :name="'terms-of-service'" @input="handleEditorUpdate"/>
     <el-divider class="divider thick-line"/>
-    <el-form :model="prometheusMetricsData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="prometheusMetrics" :data="prometheusMetricsData"/>
-    </el-form>
-    <el-divider v-if="prometheusMetrics" class="divider thick-line"/>
-    <el-form :model="backupData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="backup" :data="backupData"/>
-    </el-form>
-    <el-divider v-if="backup" class="divider thick-line"/>
-    <el-form :model="mimeTypesData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="mimeTypes" :data="mimeTypesData"/>
-    </el-form>
-    <el-divider v-if="mimeTypes" class="divider thick-line"/>
-    <el-form :model="remoteIpData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="remoteIp" :data="remoteIpData"/>
-    </el-form>
-    <el-divider v-if="remoteIpData" class="divider thick-line"/>
-    <el-form :model="modulesData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="modules" :data="modulesData"/>
-    </el-form>
-    <el-divider v-if="castAndValidate" class="divider thick-line"/>
-    <el-form :model="castAndValidateData" :label-position="labelPosition" :label-width="labelWidth">
-      <setting :setting-group="castAndValidate" :data="castAndValidateData"/>
-    </el-form>
+    <div v-for="(setting, index) in settingsPerTab" :key="setting.key">
+      <el-form :label-position="labelPosition" :label-width="labelWidth" :data-search="setting.key">
+        <setting :setting-group="settingDesc(setting)" :data="settingData(setting)"/>
+      </el-form>
+      <el-divider v-if="showDivider(index, setting)" class="divider thick-line"/>
+    </div>
     <div class="submit-button-container">
       <el-button class="submit-button" type="primary" @click="onSubmit">{{ $t('settings.submit') }}</el-button>
     </div>
@@ -50,17 +33,8 @@ export default {
     ...mapGetters([
       'settings'
     ]),
-    backup() {
-      return this.settings.description.find(setting => setting.key === 'Pleroma.User.Backup')
-    },
-    backupData() {
-      return _.get(this.settings.settings, [':pleroma', 'Pleroma.User.Backup']) || {}
-    },
-    castAndValidate() {
-      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.ApiSpec.CastAndValidate')
-    },
-    castAndValidateData() {
-      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.ApiSpec.CastAndValidate']) || {}
+    settingsPerTab() {
+      return this.settings.description.filter(setting => setting.tab === 'other')
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
@@ -85,30 +59,6 @@ export default {
     },
     loading() {
       return this.settings.loading
-    },
-    mimeTypes() {
-      return this.settings.description.find(setting => setting.group === ':mime')
-    },
-    mimeTypesData() {
-      return _.get(this.settings.settings, [':mime']) || {}
-    },
-    modules() {
-      return this.settings.description.find(setting => setting.key === ':modules')
-    },
-    modulesData() {
-      return _.get(this.settings.settings, [':pleroma', ':modules']) || {}
-    },
-    prometheusMetrics() {
-      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.Endpoint.MetricsExporter')
-    },
-    prometheusMetricsData() {
-      return _.get(this.settings.settings, [':prometheus', 'Pleroma.Web.Endpoint.MetricsExporter']) || {}
-    },
-    remoteIp() {
-      return this.settings.description.find(setting => setting.key === 'Pleroma.Web.Plugs.RemoteIp')
-    },
-    remoteIpData() {
-      return _.get(this.settings.settings, [':pleroma', 'Pleroma.Web.Plugs.RemoteIp']) || {}
     },
     searchQuery() {
       return this.$store.state.settings.searchQuery
@@ -151,6 +101,13 @@ export default {
         type: 'success',
         message: i18n.t('settings.success')
       })
+    },
+    settingDesc(setting) {
+      const { fn } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
+      return this.settings.description.find(fn)
+    },
+    showDivider(index, setting) {
+      return this.settingDesc(setting) && index < this.settingsPerTab.length - 1
     }
   }
 }

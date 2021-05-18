@@ -268,7 +268,6 @@ export default {
     },
     renderMultipleSelect(type) {
       return Array.isArray(type) && (
-        this.setting.key === ':ip_whitelist' ||
         (!type.includes('keyword') && type.includes('regex') && type.includes('string'))
       )
     },

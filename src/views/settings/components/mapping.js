@@ -8,7 +8,7 @@ const settingsTypesMap = {
   IpInput: [['tuple', 'ip']],
   KeywordMapInput: [['keyword', 'map']],
   ListOfMapsInput: [['list', 'map']],
-  MultipleSelectInput: ['multiple_select'],
+  MultipleSelectInput: ['multiple_select', ['multiple_select', 'tuple']],
   NumberInput: ['integer'],
   StringInput: ['string', ['string', 'atom']],
   StringOrTupleInput: [['tuple', 'string']],
