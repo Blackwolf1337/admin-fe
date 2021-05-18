@@ -87,8 +87,6 @@ export const parseTuples = (tuples, key) => {
           return { key: name, value: icon[name], id: `f${(~~(Math.random() * 1e8)).toString(16)}` }
         })
       }, [])
-    } else if (item.tuple[0] === ':prune') {
-      accum[item.tuple[0]] = item.tuple[1] === ':disabled' ? [item.tuple[1]] : item.tuple[1].tuple
     } else if (item.tuple[0] === ':proxy_url' || item.tuple[0] === ':sender') {
       accum[item.tuple[0]] = parseStringOrTupleValue(item.tuple[0], item.tuple[1])
     } else if (item.tuple[0] === ':args') {
@@ -298,6 +296,9 @@ const wrapMap = ({ currentState, setting, type, value }) => {
       result: () => {
         return { tuple: [setting, { 'tuple': value.split('.').map(s => parseInt(s, 10)) }] }
       }
+    },
+    { conditional: () => _.isEqual(type, ['tuple_of_three', 'boolean']),
+      result: () => { return { 'tuple': [setting, { 'tuple': value }] } }
     },
     { conditional: () => true, result: () => { return { 'tuple': [setting, value] } } }
   ]
