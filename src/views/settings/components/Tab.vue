@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
     <div v-for="(setting, index) in settingsPerTab" :key="setting.key">
-      <el-form :label-position="labelPosition" :label-width="labelWidth" :data-search="setting.key">
+      <el-form v-if="showGroup(setting.key)" :label-position="labelPosition" :label-width="labelWidth" :data-search="setting.key">
         <setting :setting-group="settingDesc(setting)" :data="settingData(setting)"/>
       </el-form>
       <el-divider v-if="showDivider(index, setting)" class="divider thick-line"/>
@@ -16,6 +16,7 @@
 import { mapGetters } from 'vuex'
 import i18n from '@/lang'
 import Setting from './Setting'
+import { groupFollowsRules } from '../rules'
 import _ from 'lodash'
 
 export default {
@@ -96,7 +97,10 @@ export default {
       return this.settings.description.find(fn)
     },
     showDivider(index, setting) {
-      return this.settingDesc(setting) && index < this.settingsPerTab.length - 1
+      return this.showGroup(setting.key) && this.settingDesc(setting) && index < this.settingsPerTab.length - 1
+    },
+    showGroup(groupKey) {
+      return groupFollowsRules(groupKey, this.$store.state.settings.settings)
     },
     async onSubmit() {
       try {
