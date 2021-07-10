@@ -73,7 +73,8 @@ export default {
       return _.isEqual(this.setting.type, ['keyword', 'integer'])
     },
     editableKeywordWithSelect() {
-      return _.isEqual(this.setting.type, ['keyword', ['list', 'string']])
+      return _.isEqual(this.setting.type, ['keyword', 'multiple_select']) ||
+        _.isEqual(this.setting.type, ['map', 'multiple_select'])
     },
     editableKeywordWithString() {
       return _.isEqual(this.setting.type, ['keyword', 'string']) ||
@@ -152,11 +153,7 @@ export default {
       }
     },
     wrapUpdatedSettings(value, input, type) {
-      if (_.isEqual(type, 'map')) {
-        return value.reduce((acc, element) => {
-          return { ...acc, [Object.keys(element)[0]]: Object.values(element)[0].value }
-        }, {})
-      } else if (_.isEqual(type, ['keyword', 'string', 'reversed'])) {
+      if (_.isEqual(type, ['keyword', 'string', 'reversed'])) {
         return value.reduce((acc, element) => {
           return { ...acc, [Object.keys(element)[0]]: ['reversed', Object.values(element)[0].value] }
         }, {})

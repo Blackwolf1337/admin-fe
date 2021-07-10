@@ -250,21 +250,18 @@ const wrapMap = ({ currentState, setting, type, value }) => {
       ['keyword', 'string', 'reversed']], settingType => _.isEqual(type, settingType)),
     result: () => {
       return { tuple: [setting, wrapValues(value, currentState)] }
-    }
-    },
+    } },
     { conditional: () => (type === 'atom' && value.length > 0) ||
       _.isEqual(type, ['atom', 'boolean']) && typeof value === 'string',
     result: () => {
       return { 'tuple': [setting, `:${value}`] }
-    }
-    },
+    } },
     { conditional: () => _.some([
       ['tuple', 'string'],
       ['tuple', 'boolean']], settingType => _.isEqual(type, settingType)),
     result: () => {
       return { tuple: [setting, wrapValues(value, currentState)] }
-    }
-    },
+    } },
     { conditional: () => _.isEqual(type, 'reversed'),
       result: () => {
         return { tuple: [value, setting] }
@@ -281,17 +278,19 @@ const wrapMap = ({ currentState, setting, type, value }) => {
         }] }
       }
     },
-    { conditional: () => _.isEqual(type, ['map', 'string']),
-      result: () => {
-        return { tuple: [
-          setting,
-          Object.keys(value).reduce((acc, key) => {
-            acc[key] = value[key][1]
-            return acc
-          }, {})
-        ] }
-      }
-    },
+    { conditional: () => _.some([
+      ['map', 'string'],
+      ['map', 'multiple_select']
+    ], settingType => _.isEqual(type, settingType)),
+    result: () => {
+      return { tuple: [
+        setting,
+        Object.keys(value).reduce((acc, key) => {
+          acc[key] = value[key][1]
+          return acc
+        }, {})
+      ] }
+    } },
     { conditional: () => _.isEqual(type, ['tuple', 'ip']),
       result: () => {
         return { tuple: [setting, { 'tuple': value.split('.').map(s => parseInt(s, 10)) }] }
