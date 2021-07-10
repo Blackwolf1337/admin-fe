@@ -25,6 +25,56 @@ const rulesForGroupsOfSettings = [{
   targetGroup: ':s3', // check if this group of settings will be rendered
   pathToSetting: [':pleroma', 'Pleroma.Upload', ':uploader'], // path to the setting whose value will be checked
   equal: 'Pleroma.Uploaders.S3'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_simple',
+  policy: 'Pleroma.Web.ActivityPub.MRF.SimplePolicy'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_normalize_markup',
+  policy: 'Pleroma.Web.ActivityPub.MRF.NormalizeMarkup'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_vocabulary',
+  policy: 'Pleroma.Web.ActivityPub.MRF.VocabularyPolicy'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_hellthread',
+  policy: 'Pleroma.Web.ActivityPub.MRF.HellthreadPolicy'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_keyword',
+  policy: 'Pleroma.Web.ActivityPub.MRF.KeywordPolicy'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_activity_expiration',
+  policy: 'Pleroma.Web.ActivityPub.MRF.ActivityExpirationPolicy'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_object_age',
+  policy: 'Pleroma.Web.ActivityPub.MRF.ObjectAgePolicy'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_subchain',
+  policy: 'Pleroma.Web.ActivityPub.MRF.SubchainPolicy'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_mention',
+  policy: 'Pleroma.Web.ActivityPub.MRF.MentionPolicy'
+},
+{
+  name: 'renderMrfGroup',
+  targetGroup: ':mrf_rejectnonpublic',
+  policy: 'Pleroma.Web.ActivityPub.MRF.RejectNonPublic'
 }]
 
 const renderIfNotEqual = (state, { pathToSetting, notEqual }) => {
@@ -35,12 +85,19 @@ const renderGroupIfEqual = (state, { pathToSetting, equal }) => {
   return _.get(state, pathToSetting) === equal
 }
 
+const renderMrfGroup = (state, { policy }) => {
+  const selectedMrfPolicies = _.get(state, [':pleroma', ':mrf', ':policies']) || []
+
+  return selectedMrfPolicies.includes(policy)
+}
+
 const rulesForSettingsMap = {
   renderIfNotEqual
 }
 
 const rulesForGroupsMap = {
-  renderGroupIfEqual
+  renderGroupIfEqual,
+  renderMrfGroup
 }
 
 export const settingFollowsRules = (settingKey, settingGroupKey, state) => {
