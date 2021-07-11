@@ -64,7 +64,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { tabs } from './components/tabs'
 import { Frontend, Emoji, Instance, Other } from './components'
 import Tab from './components/Tab'
 import RebootButton from '@/components/RebootButton'
@@ -79,7 +78,10 @@ export default {
   computed: {
     ...mapGetters([
       'listOfTabs',
-      'settings'
+      'settings',
+      'listOfTabs',
+      'description'
+
     ]),
     chooseTab() {
       return this.mapTab[this.tab] || Tab
@@ -119,7 +121,23 @@ export default {
       return tab
     },
     tabs() {
-      return tabs(this.settings.description)
+      return this.listOfTabs.map(tabObject => {
+        return {
+          ...tabObject,
+          settings: this.description.reduce((acc, { tab, key, group, type, children }) => {
+            if (tabObject.tab === tab) {
+              return type.includes('single_setting')
+                ? [...acc, children[0].key]
+                : [...acc, key || group]
+            } return acc
+          }, []) }
+      }).map(tabObject => {
+        if (tabObject.tab === 'other') {
+          return { ...tabObject, settings: [...tabObject.settings, ':terms_of_services'] }
+        } else if (tabObject.tab === 'instance') {
+          return { ...tabObject, settings: [...tabObject.settings, ':instance_panel'] }
+        } return tabObject
+      })
     }
   },
   mounted: function() {
@@ -130,13 +148,16 @@ export default {
   methods: {
     handleSearchSelect(selectedValue) {
       this.$store.dispatch('SetSearchQuery', selectedValue.key)
-      const tab = Object.keys(this.tabs).find(tab => {
-        return this.tabs[tab].settings.includes(selectedValue.group === ':pleroma' ? selectedValue.key : selectedValue.group)
+      const tab = this.tabs.find(tabObject => {
+        return tabObject.settings.includes(selectedValue.group === ':pleroma' ? selectedValue.key : selectedValue.group)
       })
-      if (this.$router.currentRoute.path === `/settings/${tab}`) {
+
+      if (!tab) return
+      const path = tab.path
+      if (this.$router.currentRoute.path === `/settings/${path}`) {
         this.scrollTo(selectedValue.key)
-      } else if (tab) {
-        this.$router.push({ path: `/settings/${tab}` })
+      } else if (path) {
+        this.$router.push({ path: `/settings/${path}` })
       }
     },
     scrollTo(searchQuery) {
