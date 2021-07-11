@@ -1,6 +1,6 @@
 import {
   deleteInstanceDocument,
-  fetchDescription,
+  fetchDescription2,
   fetchFrontends,
   fetchSettings,
   getInstanceDocument,
@@ -9,7 +9,6 @@ import {
   updateInstanceDocument,
   updateSettings } from '@/api/settings'
 import { formSearchObject, parseTuples, parseNonTuples, valueHasTuples, wrapUpdatedSettings } from './normalizers'
-import { tabs } from '../../utils/tabs'
 import _ from 'lodash'
 
 const settings = {
@@ -115,11 +114,13 @@ const settings = {
         const settings = await fetchSettings(getters.authHost, getters.token)
         commit('SET_SETTINGS', settings.data.configs)
 
-        const { data } = await fetchDescription(getters.authHost, getters.token)
-        commit('SET_DESCRIPTION', data)
-        const searchObject = formSearchObject(data)
-        commit('SET_SEARCH', searchObject)
+        const { data } = await fetchDescription2(getters.authHost, getters.token)
+        const { descriptions, tabs } = data
+        commit('SET_DESCRIPTION', descriptions)
         commit('SET_TABS', tabs)
+
+        const searchObject = formSearchObject(descriptions)
+        commit('SET_SEARCH', searchObject)
       } catch (_e) {
         commit('TOGGLE_TABS', true)
         commit('SET_LOADING', false)

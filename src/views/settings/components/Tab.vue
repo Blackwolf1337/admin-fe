@@ -1,6 +1,5 @@
 <template>
   <div v-if="!loading" :class="isSidebarOpen" class="form-container">
-    {{ settingsPerTab.map(a => a.key) }}
     <div v-for="(setting, index) in settingsPerTab" :key="setting.key">
       <el-form v-if="showGroup(setting.key)" :label-position="labelPosition" :label-width="labelWidth" :data-search="setting.key">
         <setting :setting-group="settingDesc(setting)" :data="settingData(setting)"/>

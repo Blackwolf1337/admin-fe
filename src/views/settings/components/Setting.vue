@@ -126,7 +126,7 @@ export default {
       return _.get(this.$store.state.settings.db, [group, existingKey]) &&
         this.$store.state.settings.db[group][existingKey].includes(settingKey)
     },
-    compound({ type, key, children }) {
+    compound({ type }) {
       return type === 'keyword' ||
         type === 'map' ||
         type.includes('keyword') ||
