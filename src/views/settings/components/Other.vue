@@ -15,53 +15,23 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import i18n from '@/lang'
 import Setting from './Setting'
+import TabMethods from './TabMethods'
 import { EditorInput } from './inputComponents'
-import _ from 'lodash'
 
 export default {
   name: 'Other',
   components: { EditorInput, Setting },
+  extends: TabMethods,
   data() {
     return {
       termsOfServices: ''
     }
   },
   computed: {
-    ...mapGetters([
-      'settings'
-    ]),
     settingsPerTab() {
       return this.settings.description.filter(setting => setting.tab === 'other')
-    },
-    isMobile() {
-      return this.$store.state.app.device === 'mobile'
-    },
-    isSidebarOpen() {
-      return this.$store.state.app.sidebar.opened ? 'sidebar-opened' : 'sidebar-closed'
-    },
-    isTablet() {
-      return this.$store.state.app.device === 'tablet'
-    },
-    labelPosition() {
-      return this.isMobile ? 'top' : 'right'
-    },
-    labelWidth() {
-      if (this.isMobile) {
-        return '120px'
-      } else if (this.isTablet) {
-        return '200px'
-      } else {
-        return '280px'
-      }
-    },
-    loading() {
-      return this.settings.loading
-    },
-    searchQuery() {
-      return this.$store.state.settings.searchQuery
     },
     termsOfServicesContent: {
       get() {
@@ -101,13 +71,6 @@ export default {
         type: 'success',
         message: i18n.t('settings.success')
       })
-    },
-    settingDesc(setting) {
-      const { fn } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
-      return this.settings.description.find(fn)
-    },
-    showDivider(index, setting) {
-      return this.settingDesc(setting) && index < this.settingsPerTab.length - 1
     }
   }
 }

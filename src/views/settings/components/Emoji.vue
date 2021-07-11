@@ -96,16 +96,16 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import i18n from '@/lang'
 import LocalEmojiPack from '../../emojiPacks/LocalEmojiPack'
 import RemoteEmojiPack from '../../emojiPacks/RemoteEmojiPack'
 import Setting from './Setting'
-import _ from 'lodash'
+import TabMethods from './TabMethods'
 
 export default {
   name: 'Emoji',
   components: { LocalEmojiPack, RemoteEmojiPack, Setting },
+  extends: TabMethods,
   data() {
     return {
       activeTab: 'local',
@@ -116,9 +116,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'settings'
-    ]),
     currentLocalPacksPage() {
       return this.$store.state.emojiPacks.currentLocalPacksPage
     },
@@ -129,18 +126,6 @@ export default {
       const disabledFeatures = process.env.DISABLED_FEATURES || []
       return disabledFeatures.includes('emoji-packs')
     },
-    isMobile() {
-      return this.$store.state.app.device === 'mobile'
-    },
-    isSidebarOpen() {
-      return this.$store.state.app.sidebar.opened ? 'sidebar-opened' : 'sidebar-closed'
-    },
-    isTablet() {
-      return this.$store.state.app.device === 'tablet'
-    },
-    labelPosition() {
-      return this.isMobile ? 'top' : 'right'
-    },
     labelWidth() {
       if (this.isMobile) {
         return '105px'
@@ -149,9 +134,6 @@ export default {
       } else {
         return '200px'
       }
-    },
-    loading() {
-      return this.settings.loading
     },
     localPacks() {
       return this.$store.state.emojiPacks.localPacks
@@ -175,9 +157,6 @@ export default {
     },
     remotePacksCount() {
       return this.$store.state.emojiPacks.remotePacksCount
-    },
-    searchQuery() {
-      return this.$store.state.settings.searchQuery
     },
     settingsLabelWidth() {
       if (this.isMobile) {
@@ -209,19 +188,6 @@ export default {
     }
   },
   methods: {
-    descriptionMap(setting) {
-      return [
-        { selector: 'group',
-          fn: settingDesc => settingDesc.key === setting.key,
-          keysToGetData: [setting.group, setting.key] },
-        { selector: ['group', 'without_key'],
-          fn: settingDesc => settingDesc.group === setting.group,
-          keysToGetData: [setting.group] },
-        { selector: ['group', 'without_key', 'single_setting'],
-          fn: settingDesc => settingDesc.children && settingDesc.children[0].key === setting.children[0].key,
-          keysToGetData: [setting.group, setting.children[0].key] }
-      ]
-    },
     closeLocalTabs() {
       this.collapseExistingEmojis()
       this.activeLocalPack = ''
@@ -260,17 +226,6 @@ export default {
           this.$store.dispatch('ReloadEmoji')
         })
     },
-    async onSubmit() {
-      try {
-        await this.$store.dispatch('SubmitChanges')
-      } catch (e) {
-        return
-      }
-      this.$message({
-        type: 'success',
-        message: i18n.t('settings.success')
-      })
-    },
     refreshLocalPacks() {
       try {
         this.$store.dispatch('FetchLocalEmojiPacks', this.currentLocalPacksPage)
@@ -297,17 +252,6 @@ export default {
         type: 'success',
         message: i18n.t('emoji.reloaded')
       })
-    },
-    settingData(setting) {
-      const { keysToGetData } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
-      return _.get(this.settings.settings, keysToGetData) || {}
-    },
-    settingDesc(setting) {
-      const { fn } = this.descriptionMap(setting).find(({ selector }) => _.isEqual(selector, setting.type))
-      return this.settings.description.find(fn)
-    },
-    showDivider(index, setting) {
-      return this.settingDesc(setting) && index < this.settingsPerTab.length - 1
     }
   }
 }

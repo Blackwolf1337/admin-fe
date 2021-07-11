@@ -65,12 +65,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { tabs } from './components/tabs'
-import { Frontend, Emoji, Instance } from './components'
+import { Frontend, Emoji, Instance, Other } from './components'
 import Tab from './components/Tab'
 import RebootButton from '@/components/RebootButton'
 
 export default {
-  components: { Frontend, Emoji, Instance, RebootButton, Tab },
+  components: { Frontend, Emoji, Instance, Other, RebootButton, Tab },
   data() {
     return {
       searchQuery: ''
@@ -103,7 +103,8 @@ export default {
       return {
         'emoji': Emoji,
         'frontend': Frontend,
-        'instance': Instance
+        'instance': Instance,
+        'other': Other
       }
     },
     rebootIsSidebarOpen() {
