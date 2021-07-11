@@ -33,18 +33,6 @@
         </el-tooltip>
       </span>
       <div class="input-row">
-        <el-select
-          v-if="renderMultipleSelect(setting.type)"
-          :value="inputValue"
-          :data-search="setting.key || setting.group"
-          multiple
-          filterable
-          allow-create
-          class="input"
-          @change="update($event, settingGroup.group, settingGroup.key, settingParent, setting.key, setting.type, nested)">
-          <el-option v-for="(option, index) in setting.suggestions" :key="index" :value="option"/>
-        </el-select>
-        <!-- special inputs -->
         <component
           :is="settingComponent"
           :data="data"
@@ -53,9 +41,6 @@
           :setting-group="settingGroup"
           :setting="setting"
           :setting-parent="settingParent"/>
-        <editable-keyword-input v-if="editableKeyword(setting.key, setting.type)" :data="keywordData" :setting-group="settingGroup" :setting="setting" :parents="settingParent"/>
-        <reg-invites-input v-if="[':registrations_open', ':invites_enabled'].includes(setting.key)" :data="data" :setting-group="settingGroup" :setting="setting"/>
-        <!-------------------->
         <el-tooltip v-if="canBeDeleted && isTablet" :content="$t('settings.removeFromDB')" placement="bottom-end" class="delete-setting-button-container">
           <el-button icon="el-icon-delete" circle size="mini" class="delete-setting-button" @click="removeSetting"/>
         </el-tooltip>
@@ -88,9 +73,9 @@ import {
   SwitchInput,
   TextareaInput,
   TupleOrPairOfTuplesInput } from './inputComponents'
+import TabMethods from './TabMethods'
 import { processNested } from '@/store/modules/normalizers'
 import { mapSetting } from './mapping'
-import valueMap from './inputComponents/valueMap'
 import _ from 'lodash'
 import marked from 'marked'
 
@@ -115,6 +100,7 @@ export default {
     TextareaInput,
     TupleOrPairOfTuplesInput
   },
+  extends: TabMethods,
   props: {
     customLabelWidth: {
       type: String,
@@ -175,64 +161,29 @@ export default {
       return _.get(this.$store.state.settings.db, [group, key]) &&
         this.$store.state.settings.db[group][key].includes(this.setting.key)
     },
-    inputValue() {
-      const { value } = valueMap(
-        this.setting.key,
-        this.setting.type,
-        this.settingParent[0],
-        this.settingGroup.type,
-        this.data[this.setting.key],
-        this.data
-      ).find(({ condition }) => condition)
-      return value()
-    },
-    isDesktop() {
-      return this.$store.state.app.device === 'desktop'
-    },
-    isMobile() {
-      return this.$store.state.app.device === 'mobile'
-    },
-    isTablet() {
-      return this.$store.state.app.device === 'tablet'
-    },
-    labelWidth() {
-      if (this.isMobile) {
-        return '120px'
-      } else if (this.isTablet) {
-        return '200px'
-      } else {
-        return '280px'
-      }
-    },
-    keywordData() {
-      if (this.settingParent.length > 0 ||
-        (Array.isArray(this.setting.type) && this.setting.type.includes('tuple') && this.setting.type.includes('list'))) {
-        return Array.isArray(this.data[this.setting.key]) ? this.data[this.setting.key] : []
-      }
-      return Array.isArray(this.data) ? this.data : []
-    },
     settingComponent() {
       return mapSetting(this.setting.type)
     },
     settings() {
       return this.$store.state.settings.settings
-    },
-    updatedSettings() {
-      return this.$store.state.settings.updatedSettings
     }
   },
   methods: {
-    editableKeyword(key, type) {
-      return Array.isArray(type) && (
-        (type.includes('map') && type.findIndex(el => el.includes('list') && el.includes('string')) !== -1))
-    },
     getFormattedDescription(desc) {
       return marked(desc)
     },
     processNestedData(value, group, parentKey, parents) {
       const { valueForState,
         valueForUpdatedSettings,
-        setting } = processNested(value, value, group, parentKey, parents.reverse(), this.settings, this.updatedSettings)
+        setting } = processNested(
+        value,
+        value,
+        group,
+        parentKey,
+        parents.reverse(),
+        this.settings,
+        this.$store.state.settings.updatedSettings
+      )
 
       this.$store.dispatch('UpdateSettings',
         { group, key: parentKey, input: setting.key, value: valueForUpdatedSettings, type: setting.type })
@@ -265,11 +216,6 @@ export default {
           message: this.$t('users.canceled')
         })
       })
-    },
-    renderMultipleSelect(type) {
-      return Array.isArray(type) && (
-        (!type.includes('keyword') && type.includes('regex') && type.includes('string'))
-      )
     },
     update(value, group, key, parents, input, type, nested) {
       nested
