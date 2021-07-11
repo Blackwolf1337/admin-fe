@@ -29,7 +29,7 @@
           :icon="frontendInputOpen ? 'el-icon-minus' : 'el-icon-plus'"
           circle
           @click="toggleFrontendInput"/>
-        <span class="icons-button-desc">{{ $t('settings.installAnotherFrontend') }}</span>
+        <span class="items-button-desc">{{ $t('settings.installAnotherFrontend') }}</span>
       </div>
       <el-form v-if="frontendInputOpen" ref="frontendFormData" :rules="rules" :model="frontendFormData" label-width="130px">
         <el-form-item :label="$t('settings.name')" class="frontend-form-input" prop="name">
@@ -146,3 +146,8 @@ export default {
   }
 }
 </script>
+
+<style rel='stylesheet/scss' lang='scss'>
+@import '../../../styles/settings';
+@include settings
+</style>

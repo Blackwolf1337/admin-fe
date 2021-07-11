@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'RegInvitesInput',
+  name: 'BooleanWithConfirmation',
   props: {
     data: {
       type: [Object, Array],

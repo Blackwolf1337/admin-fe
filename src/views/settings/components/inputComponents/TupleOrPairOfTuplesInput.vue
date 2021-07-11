@@ -78,7 +78,7 @@
 
 <script>
 export default {
-  name: 'RateLimitInput',
+  name: 'TupleOrPairOfTuplesInput',
   props: {
     data: {
       type: [Object, Array],

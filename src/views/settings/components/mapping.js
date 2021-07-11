@@ -3,6 +3,7 @@ import _ from 'lodash'
 const settingsTypesMap = {
   AtomInput: ['atom'],
   BooleanCombinedInput: [['string', 'boolean'], ['integer', 'boolean'], ['atom', 'boolean'], ['tuple_of_three', 'boolean']],
+  BooleanWithConfirmation: [['boolean', 'confirmationRequired']],
   EditableKeywordInput: [
     ['keyword', 'multiple_select'],
     ['keyword', 'string'],

@@ -15,6 +15,9 @@ export default {
         this.editorContent = content
       }
     },
+    isDesktop() {
+      return this.$store.state.app.device === 'desktop'
+    },
     isMobile() {
       return this.$store.state.app.device === 'mobile'
     },
