@@ -9,7 +9,6 @@ import {
   updateInstanceDocument,
   updateSettings } from '@/api/settings'
 import { formSearchObject, parseNonTuples, parseTuples, valueHasTuples, wrapUpdatedSettings } from './normalizers'
-import { tabs } from '../../utils/tabs'
 import _ from 'lodash'
 
 const settings = {
@@ -116,10 +115,10 @@ const settings = {
         commit('SET_SETTINGS', settings.data.configs)
 
         const { data } = await fetchDescription(getters.authHost, getters.token)
-        commit('SET_DESCRIPTION', data)
-        const searchObject = formSearchObject(data)
+        commit('SET_DESCRIPTION', data.descriptions)
+        const searchObject = formSearchObject(data.descriptions)
         commit('SET_SEARCH', searchObject)
-        commit('SET_TABS', tabs)
+        commit('SET_TABS', data.tabs)
       } catch (_e) {
         commit('TOGGLE_TABS', true)
         commit('SET_LOADING', false)
