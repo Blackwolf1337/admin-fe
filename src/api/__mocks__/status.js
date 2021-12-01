@@ -30,9 +30,9 @@ export async function fetchStatus(id, authHost, token) {
 }
 
 export async function fetchStatusesByInstance({ instance, authHost, token, pageSize, page }) {
-  let data
+  let activities, total
   if (pageSize === 1) {
-    data = page === 1 || page === 2
+    activities = page === 1 || page === 2
       ? [{
         'account': {
           'avatar': 'http://localhost:4000/images/avi.png',
@@ -47,8 +47,9 @@ export async function fetchStatusesByInstance({ instance, authHost, token, pageS
         'visibility': 'unlisted'
       }]
       : []
+    total = 1
   } else {
-    data = [
+    activities = [
       {
         'account': {
           'avatar': 'http://localhost:4000/images/avi.png',
@@ -75,8 +76,9 @@ export async function fetchStatusesByInstance({ instance, authHost, token, pageS
         'url': 'http://localhost:4000/objects/449c90fe-c457-4c64-baf2-fe6d0a59ca25',
         'visibility': 'unlisted'
       }]
+    total = 2
   }
-  return Promise.resolve({ data })
+  return Promise.resolve({ data: { activities, total }})
 }
 
 export async function fetchStatusesCount(instance, authHost, token) {
