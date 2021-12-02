@@ -48,7 +48,7 @@ const userProfile = {
       commit('SET_STATUSES_LOADING', true)
 
       fetchUserStatuses(userId, getters.authHost, godmode, getters.token)
-        .then(statuses => dispatch('SetStatuses', statuses.data))
+        .then(res => dispatch('SetStatuses', res.data.activities))
 
       commit('SET_STATUSES_LOADING', false)
     },

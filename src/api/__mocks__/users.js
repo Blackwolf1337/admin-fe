@@ -34,7 +34,7 @@ export async function fetchUsers(filters, actorTypeFilters, authHost, token, pag
 }
 
 export async function fetchUserStatuses(id, authHost, godmode, token) {
-  return Promise.resolve({ data: userStatuses })
+  return Promise.resolve({ data: { activities: userStatuses, total: userStatuses.length }})
 }
 
 export async function fetchUserChats(id, authHost, godmode, token) {

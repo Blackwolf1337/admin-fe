@@ -122,7 +122,7 @@ const status = {
               token: getters.token,
               pageSize: state.statusesByInstance.pageSize,
               page: state.statusesByInstance.page
-            })
+            }).then(res => res.data)
           : await fetchStatusesByInstance(
             {
               instance: state.statusesByInstance.selectedInstance,
@@ -130,9 +130,9 @@ const status = {
               token: getters.token,
               pageSize: state.statusesByInstance.pageSize,
               page: state.statusesByInstance.page
-            })
-        commit('SET_STATUSES_BY_INSTANCE', statuses.data)
-        if (statuses.data.length < state.statusesByInstance.pageSize) {
+            }).then(res => res.data.activities)
+        commit('SET_STATUSES_BY_INSTANCE', statuses)
+        if (statuses.length < state.statusesByInstance.pageSize) {
           commit('SET_ALL_LOADED', true)
         }
       }
@@ -149,7 +149,7 @@ const status = {
             token: getters.token,
             pageSize: state.statusesByInstance.pageSize,
             page: state.statusesByInstance.page
-          })
+          }).then(res => res.data)
         : await fetchStatusesByInstance(
           {
             instance: state.statusesByInstance.selectedInstance,
@@ -157,10 +157,10 @@ const status = {
             token: getters.token,
             pageSize: state.statusesByInstance.pageSize,
             page: state.statusesByInstance.page
-          })
-      commit('PUSH_STATUSES', statuses.data)
+          }).then(res => res.data.activities)
+      commit('PUSH_STATUSES', statuses)
       commit('SET_BUTTON_LOADING', false)
-      if (statuses.data.length < state.statusesByInstance.pageSize) {
+      if (statuses.length < state.statusesByInstance.pageSize) {
         commit('SET_ALL_LOADED', true)
       }
     },
