@@ -55,7 +55,12 @@ export default {
     },
     async handleOpen($event) {
       if ($event === '/settings') {
-        if (!localStorage.getItem('settingsTabs')) {
+        let settingsTabs = localStorage.getItem('settingsTabs')
+        if (settingsTabs === '[]') {
+          localStorage.removeItem('settingsTabs')
+          settingsTabs = null
+        }
+        if (!settingsTabs) {
           await this.$store.dispatch('FetchSettings')
           const menuItems = this.tabs
           localStorage.setItem('settingsTabs', JSON.stringify(menuItems))
