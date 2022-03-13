@@ -28,7 +28,7 @@ const getCurrentValue = (type, value, path) => {
 }
 
 const getValueWithoutKey = (key, [type, value]) => {
-  if (prependWithСolon(type, value)) {
+  if (prependWithColon(type, value)) {
     return `:${value}`
   } else if (key === ':backends') {
     const index = value.findIndex(el => el === ':ex_syslogger')
@@ -113,8 +113,8 @@ export const parseTuples = (tuples, key) => {
       accum[item.tuple[0]] = parseNonTuples(item.tuple[0], item.tuple[1])
     } else if (item.tuple[0] === ':ip_whitelist') {
       accum[item.tuple[0]] = item.tuple[1].map(ip => typeof ip === 'string' ? ip : ip.tuple.join('.'))
-    } else if (Array.isArray(item.tuple[1]) &&
-      (typeof item.tuple[1][0] === 'object' && !Array.isArray(item.tuple[1][0])) && item.tuple[1][0]['tuple']) {
+    } else if (Array.isArray(item.tuple[1]) && (item.tuple[1][0] !== null &&
+        typeof item.tuple[1][0] === 'object' && !Array.isArray(item.tuple[1][0])) && item.tuple[1][0]['tuple']) {
       accum[item.tuple[0]] = parseTuples(item.tuple[1], item.tuple[0])
     } else if (Array.isArray(item.tuple[1])) {
       accum[item.tuple[0]] = item.tuple[1]
@@ -167,7 +167,7 @@ const parseStringOrTupleValue = (key, value) => {
   }
 }
 
-const prependWithСolon = (type, value) => {
+const prependWithColon = (type, value) => {
   return (type === 'atom' && value.length > 0) ||
     (Array.isArray(type) && type.includes('boolean') && type.includes('atom') && typeof value === 'string')
 }
@@ -256,7 +256,7 @@ const wrapValues = (settings, currentState) => {
       ))
     ) {
       return { 'tuple': [setting, wrapValues(value, currentState)] }
-    } else if (prependWithСolon(type, value)) {
+    } else if (prependWithColon(type, value)) {
       return { 'tuple': [setting, `:${value}`] }
     } else if (type.includes('tuple') &&
       (type.includes('string') || type.includes('atom') || type.includes('boolean'))) {
