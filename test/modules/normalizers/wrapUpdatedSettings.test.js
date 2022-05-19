@@ -321,10 +321,10 @@ describe('Wrap settings', () => {
       }]}]
     }]
 
-    const settings2 = { 'Pleroma.Web.MediaProxy.Invalidation.Http': { 
+    const settings2 = { 'Pleroma.Web.MediaProxy.Invalidation.Http': {
       ':options': ['keyword', { ':params': [['map', 'string'], { aaa: ['list', 'bbb'], xxx: ['list', 'zzz'] }]}]
     }}
-    const state2 = { ':pleroma': { 'Pleroma.Web.MediaProxy.Invalidation.Http': { 
+    const state2 = { ':pleroma': { 'Pleroma.Web.MediaProxy.Invalidation.Http': {
       ':options': { ':params': [{ aaa: { value: 'bbb', id: '1' }, xxx: { value: 'zzz', id: '2' }}] }
     }}}
 
@@ -340,14 +340,14 @@ describe('Wrap settings', () => {
     expect(_.isEqual(result1, expectedResult1)).toBeTruthy()
     expect(_.isEqual(result2, expectedResult2)).toBeTruthy()
   })
-  
+
   it('wraps settings with type [`list`, `map`]', () => {
     const settings = { ':manifest': { ':icons': [['map', 'list'], [
       { ':src': '/static/logo.png', ':type': 'image/png' },
       { ':src': '/static/icon.png', ':type': 'image/png' }
     ]]}}
-    
-    const state = { ':pleroma': { ':manifest': { 
+
+    const state = { ':pleroma': { ':manifest': {
       ':background_color': '#191b22',
       ':theme_color': '#282c37',
       ':icons': [
@@ -379,8 +379,8 @@ describe('Wrap settings', () => {
       { ':src': '/static/logo.png', ':type': 'image/png' },
       { ':src': '/static/icon.png', ':type': 'image/png' }
     ]]}}
-    
-    const state = { ':pleroma': { ':manifest': { 
+
+    const state = { ':pleroma': { ':manifest': {
       ':background_color': '#191b22',
       ':theme_color': '#282c37',
       ':icons': [
@@ -402,20 +402,6 @@ describe('Wrap settings', () => {
         { ':src': '/static/logo.png', ':type': 'image/png' },
         { ':src': '/static/icon.png', ':type': 'image/png' }
       ]]}]
-    }]
-
-    expect(_.isEqual(result, expectedResult)).toBeTruthy()
-  })
-
-
-  it('wraps IP setting', () => {
-    const settings = { ':gopher': { ':ip': ['tuple', '127.0.0.1']}}
-    const state = { ':pleroma': { ':gopher': {}}}
-    const result = wrapUpdatedSettings(':pleroma', settings, state)
-    const expectedResult = [{
-      group: ':pleroma',
-      key: ':gopher',
-      value: [{ tuple: [':ip', { tuple: [127, 0, 0, 1] }]}]
     }]
 
     expect(_.isEqual(result, expectedResult)).toBeTruthy()

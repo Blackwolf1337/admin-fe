@@ -94,17 +94,6 @@ describe('Parse tuples', () => {
     expect(_.isEqual(expectedResult, result)).toBeTruthy()
   })
 
-  it('parses ip', () => {
-    const tuples = [
-      { tuple: [':enabled', false]},
-      { tuple: [':ip', { tuple: [0, 0, 0, 0] }]}
-    ]
-    const expectedResult = { ':enabled': false, ':ip': '0.0.0.0' }
-
-    const result = parseTuples(tuples, ':gopher')
-    expect(_.isEqual(expectedResult, result)).toBeTruthy()
-  })
-
   it('parses prune setting that is a tuple', () => {
     const tuples = [
       { tuple: [':verbose', false]},
@@ -242,7 +231,7 @@ describe('Parse tuples', () => {
 
   it('parses options setting in MediaProxy.Invalidation.Http group', () => {
     const tuples = [{ tuple: [':options', [{ tuple: [':params', { xxx: 'zzz', aaa: 'bbb' }]}]]}]
-    const expectedResult = { ':options': { ':params': 
+    const expectedResult = { ':options': { ':params':
       [ { xxx: { value: 'zzz' }}, { aaa: { value: 'bbb' }}]
     }}
 
@@ -250,7 +239,7 @@ describe('Parse tuples', () => {
 
     expect(typeof parsed).toBe('object')
     expect(':options' in parsed).toBeTruthy()
-    
+
     const idRemoved = parsed[':options'][':params'].map(el => {
       const key = Object.keys(el)[0]
       const { id, ...rest } = el[key]

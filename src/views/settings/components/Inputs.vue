@@ -237,7 +237,7 @@ export default {
       return Array.isArray(this.data) ? this.data : []
     },
     inputValue() {
-      if ([':esshd', ':cors_plug', ':quack', ':tesla', ':swoosh'].includes(this.settingGroup.group) &&
+      if ([':cors_plug', ':quack', ':tesla', ':swoosh'].includes(this.settingGroup.group) &&
         this.data[this.setting.key]) {
         return this.setting.type === 'atom' && this.data[this.setting.key].value[0] === ':'
           ? this.data[this.setting.key].value.substr(1)
