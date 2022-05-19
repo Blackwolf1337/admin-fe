@@ -20,6 +20,7 @@ build:
   stage: build
   before_script: &before-build
     - apk --no-cache add git
+    - git config --global url."https://github.com/".insteadOf git://github.com/
   script:
     - npm install
     - npm run build:prod
@@ -32,6 +33,7 @@ lint:
   stage: test
   before_script: &before-yarn
     - apk --no-cache add git
+    - git config --global url."https://github.com/".insteadOf git://github.com/
     - yarn cache clean
     - yarn
   cache:
