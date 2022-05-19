@@ -8,10 +8,6 @@ export const tabs = description => {
       label: 'settings.auth',
       settings: [':auth', ':ldap', ':oauth2', 'Pleroma.Web.Auth.Authenticator']
     },
-    'esshd': {
-      label: 'settings.esshd',
-      settings: [':esshd']
-    },
     'captcha': {
       label: 'settings.captcha',
       settings: ['Pleroma.Captcha', 'Pleroma.Captcha.Kocaptcha']
@@ -23,10 +19,6 @@ export const tabs = description => {
     'frontend': {
       label: 'settings.frontend',
       settings: [':assets', ':chat', ':frontends', ':emoji', ':frontend_configurations', ':markup', ':static_fe', 'Pleroma.Web.Preload']
-    },
-    'gopher': {
-      label: 'settings.gopher',
-      settings: [':gopher']
     },
     'http': {
       label: 'settings.http',
