@@ -96,8 +96,11 @@
                 </tr>
                 <tr class="el-table__row">
                   <td>{{ $t('userProfile.lastKnownIp') }}</td>
-                  <td>
+                  <td v-if="user.last_known_ip !== null">
                     {{ user.last_known_ip.length &lt;= 4 ? user.last_known_ip.join('.') : user.last_known_ip.map(x => x.toString(16)).join(':') }}
+                  </td>
+                  <td v-else>
+                    No IP recorded yet.
                   </td>
                 </tr>
               </tbody>
