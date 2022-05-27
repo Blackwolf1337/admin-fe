@@ -94,6 +94,12 @@
                     <el-tag v-if="!user.is_active" type="danger">{{ $t('userProfile.deactivated') }}</el-tag>
                   </td>
                 </tr>
+                <tr class="el-table__row">
+                  <td>{{ $t('userProfile.lastKnownIp') }}</td>
+                  <td>
+                    {{ user.last_known_ip.length &lt;= 4 ? user.last_known_ip.join('.') : user.last_known_ip.map(x => x.toString(16)).join(':') }}
+                  </td>
+                </tr>
               </tbody>
             </table>
             <div v-if="user.registration_reason">
@@ -232,7 +238,7 @@ export default {
         'mrf_tag:disable-remote-subscription': 'Disable remote subscription',
         'mrf_tag:disable-any-subscription': 'Disable any subscription'
       }
-      return mapTags[tag]
+      return mapTags[tag] !== undefined ? mapTags[tag] : tag
     },
     onTogglePrivate() {
       this.$store.dispatch('FetchUserProfile', { userId: this.$route.params.id, godmode: this.showPrivate })
