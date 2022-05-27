@@ -52,6 +52,24 @@
                   </td>
                 </tr>
                 <tr class="el-table__row">
+                  <td class="name-col">Display name</td>
+                  <td>
+                    {{ user.display_name }}
+                  </td>
+                </tr>
+                <tr class="el-table__row">
+                  <td class="name-col">E-Mail</td>
+                  <td>
+                    {{ user.email ? user.email : 'N/A' }}
+                  </td>
+                </tr>
+                <tr class="el-table__row">
+                  <td class="name-col">Creation date (dd.mm.yyyy)</td>
+                  <td>
+                    {{ formatDate(user.created_at) }}
+                  </td>
+                </tr>
+                <tr class="el-table__row">
                   <td>{{ $t('userProfile.actorType') }}</td>
                   <td>
                     <el-tag
@@ -171,6 +189,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import Status from '@/components/Status'
 import ModerationDropdown from './components/ModerationDropdown'
 import SecuritySettingsModal from './components/SecuritySettingsModal'
@@ -251,6 +270,9 @@ export default {
     },
     propertyExists(account, property) {
       return account[property]
+    },
+    formatDate(date) {
+      return moment(String(date)).format('DD.MM.YYYY hh:mm:ss')
     }
   }
 }
