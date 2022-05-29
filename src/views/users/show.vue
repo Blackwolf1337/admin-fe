@@ -248,6 +248,7 @@ export default {
     this.$store.dispatch('NeedReboot')
     this.$store.dispatch('GetNodeInfo')
     this.$store.dispatch('FetchUserProfile', { userId: this.$route.params.id, godmode: false })
+    this.$store.dispatch('FetchTagPolicySetting')
   },
   methods: {
     closeResetPasswordDialog() {
