@@ -94,7 +94,10 @@ export default {
       return this.$store.state.status.fetchedStatus
     },
     statuses() {
-      return this.$store.state.userProfile.statuses
+      if (this.$store.state.userProfile.statuses.activities && Array.isArray(this.$store.state.userProfile.statuses.activities)) {
+        return this.$store.state.userProfile.statuses?.activities.reverse()
+      }
+      return undefined
     },
     statusesLoading() {
       return this.$store.state.userProfile.statusesLoading

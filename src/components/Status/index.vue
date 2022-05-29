@@ -98,7 +98,10 @@
           </ul>
         </div>
         <div v-for="(attachment, index) in status.media_attachments" :key="index" class="image">
-          <img :src="attachment.preview_url">
+          <img v-if="attachment.type !== 'video'" :src="attachment.preview_url">
+          <video v-if="attachment.type === 'video'" controls="controls" preload="metadata" >
+            <source :src="attachment.preview_url" >
+          </video>
         </div>
       </div>
       <div class="status-footer">
