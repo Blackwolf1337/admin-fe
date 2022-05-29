@@ -113,8 +113,11 @@ const status = {
       if (state.statusesByInstance.selectedInstance === '') {
         commit('SET_STATUSES_BY_INSTANCE', [])
       } else {
-        const statuses = state.statusesByInstance.selectedInstance === rootState.user.authHost
-          ? await fetchStatuses(
+        const ownInstance = state.statusesByInstance.selectedInstance === rootState.user.authHost
+        let status
+
+        if (ownInstance) {
+          status = await fetchStatuses(
             {
               godmode: state.statusesByInstance.showPrivate,
               localOnly: state.statusesByInstance.showLocal,
@@ -123,7 +126,8 @@ const status = {
               pageSize: state.statusesByInstance.pageSize,
               page: state.statusesByInstance.page
             })
-          : await fetchStatusesByInstance(
+        } else {
+          status = await fetchStatusesByInstance(
             {
               instance: state.statusesByInstance.selectedInstance,
               authHost: getters.authHost,
@@ -131,8 +135,9 @@ const status = {
               pageSize: state.statusesByInstance.pageSize,
               page: state.statusesByInstance.page
             })
-        commit('SET_STATUSES_BY_INSTANCE', statuses.data)
-        if (statuses.data.length < state.statusesByInstance.pageSize) {
+        }
+        commit('SET_STATUSES_BY_INSTANCE', ownInstance ? status.data : status.data.activities)
+        if (status.data.length < state.statusesByInstance.pageSize) {
           commit('SET_ALL_LOADED', true)
         }
       }
