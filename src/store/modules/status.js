@@ -37,7 +37,12 @@ const status = {
       state.fetchedStatuses = statuses
     },
     PUSH_STATUSES: (state, statuses) => {
-      state.fetchedStatuses = [...state.fetchedStatuses, ...statuses]
+      console.log(statuses)
+      if (statuses.hasOwnProperty('activities')) {
+        state.fetchedStatuses = [...state.fetchedStatuses, ...statuses.activities]
+      } else {
+        state.fetchedStatuses = [...state.fetchedStatuses, ...statuses]
+      }
     },
     SET_ALL_LOADED: (state, status) => {
       state.statusesByInstance.allLoaded = status
@@ -137,7 +142,9 @@ const status = {
             })
         }
         commit('SET_STATUSES_BY_INSTANCE', ownInstance ? status.data : status.data.activities)
-        if (status.data.length < state.statusesByInstance.pageSize) {
+        if (ownInstance && status.data.length < state.statusesByInstance.pageSize) {
+          commit('SET_ALL_LOADED', true)
+        } else if (!ownInstance && status.data?.activites?.length < state.statusesByInstance.pageSize) {
           commit('SET_ALL_LOADED', true)
         }
       }
