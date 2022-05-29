@@ -181,7 +181,7 @@
           <el-timeline-item v-for="status in statuses" :key="status.id">
             <status :status="status" :account="status.account" :show-checkbox="false" :user-id="user.id" :godmode="showPrivate"/>
           </el-timeline-item>
-          <p v-if="statuses.length === 0" class="no-statuses">{{ $t('userProfile.noStatuses') }}</p>
+          <p v-if="statuses === undefined || statuses.length === 0" class="no-statuses">{{ $t('userProfile.noStatuses') }}</p>
         </el-timeline>
       </div>
     </div>
@@ -220,7 +220,10 @@ export default {
       return this.$store.state.users.loading
     },
     statuses() {
-      return this.$store.state.userProfile.statuses
+      if (this.$store.state.userProfile.statuses.activities && Array.isArray(this.$store.state.userProfile.statuses.activities)) {
+        return this.$store.state.userProfile.statuses?.activities.reverse()
+      }
+      return undefined
     },
     statusesLoading() {
       return this.$store.state.userProfile.statusesLoading
