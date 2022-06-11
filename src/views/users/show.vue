@@ -285,7 +285,7 @@ export default {
       return account[property]
     },
     formatDate(date) {
-      return moment(String(date)).format('DD.MM.YYYY hh:mm:ss')
+      return moment(String(date)).format('DD.MM.YYYY HH:mm:ss')
     }
   }
 }
