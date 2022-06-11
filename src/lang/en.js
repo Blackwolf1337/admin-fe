@@ -315,6 +315,7 @@ export default {
     external: 'External',
     accountType: 'Account Type',
     lastKnownIp: 'Last IP-Address',
+    lastActiveAt: 'last seen at',
     actorType: 'Actor Type',
     nickname: 'Nickname',
     recentStatuses: 'Recent Statuses',

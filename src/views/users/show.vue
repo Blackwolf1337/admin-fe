@@ -121,6 +121,15 @@
                     No IP recorded yet.
                   </td>
                 </tr>
+                <tr class="el-table__row">
+                  <td>{{ $t('userProfile.lastActiveAt') }}</td>
+                  <td v-if="user.last_active_at !== null">
+                    {{ formatDate(user.last_active_at) }} <b>UTC</b>
+                  </td>
+                  <td v-else>
+                    N/A
+                  </td>
+                </tr>
               </tbody>
             </table>
             <div v-if="user.registration_reason">
